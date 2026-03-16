@@ -20,35 +20,8 @@ const itemVariants = {
 const WidgetSection = () => {
   return (
     <section className="py-8 md:py-12 px-5 md:px-8 relative overflow-hidden bg-gradient-to-br from-primary/[0.04] via-primary/[0.02] to-transparent border-y border-primary/10">
-      {/* Large repeating finance pattern background */}
-      <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <pattern id="finance-pattern" x="0" y="0" width="320" height="280" patternUnits="userSpaceOnUse">
-            {/* Bar chart */}
-            <rect x="20" y="80" width="24" height="50" rx="4" fill="hsl(var(--gov-blue))" />
-            <rect x="52" y="55" width="24" height="75" rx="4" fill="hsl(var(--gov-blue))" />
-            <rect x="84" y="30" width="24" height="100" rx="4" fill="hsl(var(--gov-blue))" />
-            <rect x="116" y="65" width="24" height="65" rx="4" fill="hsl(var(--gov-blue))" />
-            <line x1="15" y1="132" x2="145" y2="132" stroke="hsl(var(--gov-blue))" strokeWidth="2.5" />
-            
-            {/* Pie chart */}
-            <circle cx="240" cy="60" r="40" fill="none" stroke="hsl(var(--gov-blue))" strokeWidth="12" strokeDasharray="62.8 188.5" />
-            <circle cx="240" cy="60" r="40" fill="none" stroke="hsl(var(--gov-blue))" strokeWidth="12" strokeDasharray="94.2 157.1" strokeDashoffset="-62.8" opacity="0.5" />
-            <circle cx="240" cy="60" r="40" fill="none" stroke="hsl(var(--gov-blue))" strokeWidth="12" strokeDasharray="50.3 200.9" strokeDashoffset="-157" opacity="0.25" />
-            
-            {/* Coin / currency circle */}
-            <circle cx="80" cy="210" r="32" stroke="hsl(var(--gov-blue))" strokeWidth="3" fill="none" />
-            <circle cx="80" cy="210" r="24" stroke="hsl(var(--gov-blue))" strokeWidth="2" fill="none" />
-            <text x="80" y="218" textAnchor="middle" fill="hsl(var(--gov-blue))" fontSize="22" fontWeight="700" fontFamily="serif">₩</text>
-            
-            {/* Trend line */}
-            <polyline points="180,240 210,220 230,230 260,190 290,200 310,170" fill="none" stroke="hsl(var(--gov-blue))" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-            <circle cx="260" cy="190" r="4" fill="hsl(var(--gov-blue))" />
-            <circle cx="310" cy="170" r="4" fill="hsl(var(--gov-blue))" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#finance-pattern)" />
-      </svg>
+      {/* Subtle pattern overlay */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(hsl(var(--gov-blue)) 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
       
       <div className="max-w-[1400px] mx-auto relative">
         <div className="flex items-center justify-between mb-6">
