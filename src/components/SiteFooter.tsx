@@ -54,7 +54,7 @@ const SiteFooter = () => {
           <div>
             {/* Logo */}
             <div className="flex items-center gap-2 mb-4">
-              <img src={logoImg} alt="열린재정" className="h-10 w-auto" />
+              <img src={logoImg} alt="열린재정" className="h-14 w-auto" />
             </div>
 
             {/* Links */}
