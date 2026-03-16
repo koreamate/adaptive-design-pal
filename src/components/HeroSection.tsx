@@ -105,9 +105,8 @@ const HeroSection = () => {
             {kpiData.map((kpi) => {
               const Icon = kpi.icon;
               return (
-                <motion.div
+                <div
                   key={kpi.label}
-                  variants={itemVariants}
                   className="group relative rounded-xl border border-border bg-card p-4 hover:shadow-md hover:border-primary/20 transition-all duration-300 cursor-default"
                 >
                   <div className="flex items-start justify-between mb-3">
