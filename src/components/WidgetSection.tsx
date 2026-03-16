@@ -36,9 +36,6 @@ const WidgetSection = () => {
             <button className="p-2 rounded-lg hover:bg-muted border border-border transition-colors bg-card">
               <Settings className="w-4 h-4 text-muted-foreground" />
             </button>
-            <button className="p-2 rounded-lg hover:bg-gov-blue/10 border border-gov-blue/30 transition-colors bg-gov-blue/5">
-              <Plus className="w-5 h-5 text-gov-blue" />
-            </button>
           </div>
         </div>
 
