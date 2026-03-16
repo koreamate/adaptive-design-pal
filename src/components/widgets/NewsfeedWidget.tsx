@@ -17,7 +17,7 @@ const NewsfeedWidget = () => (
       </div>
     </div>
     <div className="mt-4">
-      <div className="aspect-[5/2] rounded-lg overflow-hidden border border-border mb-3 relative group">
+      <div className="aspect-[2/1] rounded-lg overflow-hidden border border-border mb-3 relative group">
         <img src={newsThumb} alt="뉴스 이미지" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
       </div>
