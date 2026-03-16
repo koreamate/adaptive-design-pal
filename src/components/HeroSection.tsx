@@ -69,7 +69,7 @@ const HeroSection = () => {
         {/* Background image */}
         <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
         {/* Dark blue overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(221,60%,18%,0.92)] via-[hsl(221,55%,22%,0.85)] to-[hsl(221,50%,28%,0.75)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(221,60%,25%,0.82)] via-[hsl(221,55%,32%,0.72)] to-[hsl(221,50%,38%,0.6)]" />
         {/* Geometric decorative shapes */}
         <div className="absolute top-[10%] left-[5%] w-[300px] h-[300px] border border-white/[0.06] rounded-3xl rotate-12" />
         <div className="absolute bottom-[15%] left-[15%] w-[200px] h-[200px] border border-white/[0.04] rounded-2xl -rotate-6" />
