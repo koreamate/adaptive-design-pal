@@ -172,10 +172,10 @@ const HeroSection = () => {
         </motion.div>
 
         {/* Navigation arrows */}
-        <button className="absolute left-2 top-1/2 -translate-y-1/2 p-2 text-white/30 hover:text-white transition-colors hidden lg:block">
+        <button className="absolute left-2 top-1/2 -translate-y-1/2 p-2 text-muted-foreground/50 hover:text-foreground transition-colors hidden lg:block">
           <ChevronLeft className="w-10 h-10" strokeWidth={1.5} />
         </button>
-        <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-white/30 hover:text-white transition-colors hidden lg:block">
+        <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-muted-foreground/50 hover:text-foreground transition-colors hidden lg:block">
           <ChevronRight className="w-10 h-10" strokeWidth={1.5} />
         </button>
 
