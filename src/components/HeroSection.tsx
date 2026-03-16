@@ -62,7 +62,7 @@ const HeroSection = () => {
   return (
     <section className="relative overflow-hidden">
       {/* Hero Background — real photo */}
-      <div className="relative bg-[hsl(221,50%,15%)]">
+      <div className="relative">
         
         <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-24 md:pb-32">
           <motion.div
