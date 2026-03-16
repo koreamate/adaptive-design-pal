@@ -64,9 +64,9 @@ const HeroSection = () => {
       {/* Hero Banner with Background */}
       <div className="relative">
         <div className="absolute inset-0">
-          <img src={heroBg} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gov-navy/20" />
-          <div className="absolute bottom-0 left-0 right-0 h-[72%] bg-gradient-to-t from-background via-background/85 via-45% to-transparent" />
+          <img src={heroBg} alt="" className="w-full h-full object-cover object-right" />
+          <div className="absolute inset-0 bg-gradient-to-r from-gov-navy/70 via-gov-navy/40 to-gov-navy/10" />
+          <div className="absolute bottom-0 left-0 right-0 h-[78%] bg-gradient-to-t from-background via-background/88 via-50% to-transparent" />
         </div>
         
         <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-24 md:pb-32">
