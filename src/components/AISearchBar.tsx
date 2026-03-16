@@ -9,7 +9,7 @@ const AISearchBar = () => {
   return (
     <div className="space-y-3">
       <div className="relative">
-        <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/80 backdrop-blur-md border border-white/60 shadow-lg">
+        <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/50 backdrop-blur-md border border-white/40 shadow-lg">
           <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary shrink-0 shadow-md">
             <Sparkles className="w-4.5 h-4.5 text-primary-foreground" />
           </div>
