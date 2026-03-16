@@ -98,13 +98,12 @@ const HeroSection = () => {
         </motion.div>
       </div>
 
-      {/* KPI + Chart Card (overlapping banner) */}
-      <div className="max-w-[1400px] mx-auto px-5 md:px-8 -mt-16 md:-mt-20 relative z-10">
+      {/* KPI + Chart — no box, blended with background */}
+      <div className="max-w-[1400px] mx-auto px-5 md:px-8 -mt-10 md:-mt-14 relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="p-5 md:p-8 rounded-2xl bg-white/30 backdrop-blur-lg border border-white/30 shadow-xl"
         >
           {/* KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 md:mb-8">
@@ -112,130 +111,121 @@ const HeroSection = () => {
               <motion.div
                 key={kpi.label}
                 variants={itemVariants}
-                className="relative p-4 md:p-5 rounded-xl bg-white/70 backdrop-blur-sm border border-white/50 shadow-sm group hover:border-gov-blue/30 transition-all duration-300"
+                className="relative p-4 md:p-5 rounded-xl border border-white/30 bg-white/20 backdrop-blur-md group hover:bg-white/35 transition-all duration-300"
               >
-                {/* Decorative corner accent */}
-                <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-gov-blue/5 to-transparent rounded-bl-3xl rounded-tr-xl" />
-                
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{kpi.icon}</span>
-                    <span className="text-xs font-semibold text-foreground">{kpi.label}</span>
+                    <span className="text-xs font-bold text-white drop-shadow-sm">{kpi.label}</span>
                   </div>
-                  <span className={kpi.up ? "gov-badge-up" : "gov-badge-down"}>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-white/20 text-white border border-white/20">
                     {kpi.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                     {kpi.change}
                   </span>
                 </div>
                 <div className="flex items-baseline gap-1 mb-1">
-                  <span className="gov-kpi-value">{kpi.value}</span>
-                  <span className="text-lg font-bold text-foreground/70">{kpi.unit}</span>
+                  <span className="text-2xl md:text-3xl font-extrabold text-white drop-shadow-md">{kpi.value}</span>
+                  <span className="text-lg font-bold text-white/70">{kpi.unit}</span>
                 </div>
-                <p className="text-xs font-medium text-foreground/60">{kpi.sub}</p>
-                
-                {/* Bottom accent line */}
-                <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-gov-blue/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <p className="text-xs font-medium text-white/60">{kpi.sub}</p>
               </motion.div>
             ))}
           </div>
 
           {/* Chart */}
           <motion.div variants={itemVariants}>
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-1.5 h-6 rounded-full bg-primary" />
-                <h3 className="text-base font-bold text-foreground tracking-tight">연도별 세입 · 세출 추이</h3>
-                <span className="text-[10px] text-foreground/50 bg-foreground/5 px-2.5 py-1 rounded-full font-semibold border border-foreground/10">단위: 조원</span>
+                <div className="w-1.5 h-6 rounded-full bg-white/60" />
+                <h3 className="text-base font-bold text-white drop-shadow-sm tracking-tight">연도별 세입 · 세출 추이</h3>
+                <span className="text-[10px] text-white/60 bg-white/15 px-2.5 py-1 rounded-full font-semibold border border-white/20">단위: 조원</span>
               </div>
-              <div className="flex items-center gap-5 bg-white/60 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/50">
-                <span className="inline-flex items-center gap-2 text-xs font-semibold text-foreground/80">
-                  <span className="w-3.5 h-3.5 rounded-md bg-primary shadow-sm shadow-primary/30" /> 세입
+              <div className="flex items-center gap-5">
+                <span className="inline-flex items-center gap-2 text-xs font-semibold text-white/90">
+                  <span className="w-3.5 h-3.5 rounded-sm" style={{ background: "hsl(221, 83%, 65%)" }} /> 세입
                 </span>
-                <span className="inline-flex items-center gap-2 text-xs font-semibold text-foreground/80">
-                  <span className="w-3.5 h-3.5 rounded-md" style={{ background: "hsl(210 70% 65%)" }} /> 세출
+                <span className="inline-flex items-center gap-2 text-xs font-semibold text-white/90">
+                  <span className="w-3.5 h-3.5 rounded-sm" style={{ background: "hsl(210, 70%, 78%)" }} /> 세출
                 </span>
-                <span className="inline-flex items-center gap-2 text-xs font-semibold text-foreground/80">
-                  <span className="w-5 h-[3px] rounded-full" style={{ background: "hsl(200 80% 45%)" }} /> 국가채무
+                <span className="inline-flex items-center gap-2 text-xs font-semibold text-white/90">
+                  <span className="w-5 h-[3px] rounded-full bg-white/80" /> 국가채무
                 </span>
               </div>
             </div>
-            <div className="h-[280px] md:h-[340px] rounded-2xl bg-white/60 backdrop-blur-sm border border-white/50 p-5 shadow-sm">
+            <div className="h-[280px] md:h-[340px] rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 p-5">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={chartData} barCategoryGap="30%" margin={{ top: 20, right: 16, left: -4, bottom: 4 }}>
                   <defs>
                     <linearGradient id="barGradient1" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(221, 83%, 53%)" stopOpacity={0.95} />
-                      <stop offset="100%" stopColor="hsl(221, 83%, 53%)" stopOpacity={0.6} />
+                      <stop offset="0%" stopColor="hsl(221, 83%, 65%)" stopOpacity={0.95} />
+                      <stop offset="100%" stopColor="hsl(221, 83%, 65%)" stopOpacity={0.5} />
                     </linearGradient>
                     <linearGradient id="barGradient2" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(210, 70%, 65%)" stopOpacity={0.9} />
-                      <stop offset="100%" stopColor="hsl(210, 70%, 65%)" stopOpacity={0.5} />
+                      <stop offset="0%" stopColor="hsl(210, 70%, 78%)" stopOpacity={0.9} />
+                      <stop offset="100%" stopColor="hsl(210, 70%, 78%)" stopOpacity={0.4} />
                     </linearGradient>
                     <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(200, 80%, 45%)" stopOpacity={0.15} />
-                      <stop offset="80%" stopColor="hsl(200, 80%, 45%)" stopOpacity={0.02} />
+                      <stop offset="0%" stopColor="white" stopOpacity={0.1} />
+                      <stop offset="80%" stopColor="white" stopOpacity={0.01} />
                     </linearGradient>
-                    <filter id="barShadow" x="-10%" y="-10%" width="120%" height="130%">
-                      <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="hsl(221, 83%, 53%)" floodOpacity="0.15" />
-                    </filter>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 6" stroke="hsl(214, 32%, 91%)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 6" stroke="rgba(255,255,255,0.12)" vertical={false} />
                   <XAxis
                     dataKey="year"
-                    tick={{ fontSize: 12, fill: "hsl(215, 16%, 47%)", fontWeight: 600 }}
-                    axisLine={{ stroke: "hsl(214, 32%, 91%)", strokeWidth: 1 }}
+                    tick={{ fontSize: 12, fill: "rgba(255,255,255,0.6)", fontWeight: 600 }}
+                    axisLine={{ stroke: "rgba(255,255,255,0.15)", strokeWidth: 1 }}
                     tickLine={false}
                     dy={10}
                   />
                   <YAxis
-                    tick={{ fontSize: 11, fill: "hsl(215, 16%, 47%)" }}
+                    tick={{ fontSize: 11, fill: "rgba(255,255,255,0.5)" }}
                     axisLine={false}
                     tickLine={false}
                     dx={-6}
                     tickFormatter={(v) => `${v}`}
                   />
                   <Tooltip
-                    cursor={{ fill: "hsl(221, 83%, 53%, 0.04)", radius: 12 }}
+                    cursor={{ fill: "rgba(255,255,255,0.06)", radius: 12 }}
                     content={({ active, payload, label }) => {
                       if (!active || !payload?.length) return null;
                       const colorMap: Record<string, string> = {
-                        '세입': 'hsl(221, 83%, 53%)',
-                        '세출': 'hsl(210, 70%, 65%)',
-                        '국가채무': 'hsl(200, 80%, 45%)',
+                        '세입': 'hsl(221, 83%, 65%)',
+                        '세출': 'hsl(210, 70%, 78%)',
+                        '국가채무': 'rgba(255,255,255,0.8)',
                       };
                       return (
-                        <div className="bg-white/95 backdrop-blur-md border border-border/50 rounded-2xl shadow-xl p-5 min-w-[200px]">
-                          <p className="text-sm font-bold text-foreground mb-3 pb-2.5 border-b border-border/50">{label}년</p>
+                        <div className="bg-foreground/80 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl p-5 min-w-[200px]">
+                          <p className="text-sm font-bold text-white mb-3 pb-2.5 border-b border-white/15">{label}년</p>
                           {payload.map((entry: any) => (
                             <div key={entry.dataKey} className="flex items-center justify-between py-1.5">
-                              <span className="flex items-center gap-2.5 text-xs font-medium text-foreground/60">
+                              <span className="flex items-center gap-2.5 text-xs font-medium text-white/60">
                                 <span
-                                  className="w-3 h-3 rounded-full shadow-sm"
+                                  className="w-3 h-3 rounded-full"
                                   style={{ background: colorMap[entry.dataKey] || entry.color }}
                                 />
                                 {entry.dataKey}
                               </span>
-                              <span className="text-sm font-bold text-foreground">{entry.value}<span className="text-xs font-normal text-foreground/50 ml-0.5">조</span></span>
+                              <span className="text-sm font-bold text-white">{entry.value}<span className="text-xs font-normal text-white/50 ml-0.5">조</span></span>
                             </div>
                           ))}
                         </div>
                       );
                     }}
                   />
-                  <Bar dataKey="세입" fill="url(#barGradient1)" radius={[2, 2, 0, 0]} barSize={32} filter="url(#barShadow)">
-                    <LabelList dataKey="세입" position="top" fontSize={10} fontWeight={700} fill="hsl(221, 83%, 53%)" formatter={(v: number) => v} />
+                  <Bar dataKey="세입" fill="url(#barGradient1)" radius={[2, 2, 0, 0]} barSize={32}>
+                    <LabelList dataKey="세입" position="top" fontSize={10} fontWeight={700} fill="rgba(255,255,255,0.7)" formatter={(v: number) => v} />
                   </Bar>
                   <Bar dataKey="세출" fill="url(#barGradient2)" radius={[2, 2, 0, 0]} barSize={32}>
-                    <LabelList dataKey="세출" position="top" fontSize={10} fontWeight={700} fill="hsl(210, 70%, 65%)" formatter={(v: number) => v} />
+                    <LabelList dataKey="세출" position="top" fontSize={10} fontWeight={700} fill="rgba(255,255,255,0.6)" formatter={(v: number) => v} />
                   </Bar>
                   <Area type="monotone" dataKey="국가채무" fill="url(#areaGradient)" stroke="none" />
                   <Line
                     type="monotone"
                     dataKey="국가채무"
-                    stroke="hsl(200, 80%, 45%)"
+                    stroke="rgba(255,255,255,0.7)"
                     strokeWidth={3}
-                    dot={{ r: 5, fill: "white", stroke: "hsl(200, 80%, 45%)", strokeWidth: 3 }}
-                    activeDot={{ r: 7, fill: "hsl(200, 80%, 45%)", stroke: "white", strokeWidth: 3 }}
+                    dot={{ r: 5, fill: "rgba(255,255,255,0.15)", stroke: "rgba(255,255,255,0.7)", strokeWidth: 3 }}
+                    activeDot={{ r: 7, fill: "rgba(255,255,255,0.8)", stroke: "white", strokeWidth: 3 }}
                   />
                 </ComposedChart>
               </ResponsiveContainer>
