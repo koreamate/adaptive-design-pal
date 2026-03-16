@@ -128,10 +128,7 @@ const HeroSection = () => {
           {/* Dashboard Grid: Chart + Sidebar */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
             {/* Main Chart */}
-            <motion.div
-              variants={itemVariants}
-              className="lg:col-span-2 rounded-xl border border-border bg-card p-4 md:p-5"
-            >
+            <div className="lg:col-span-2 rounded-xl border border-border bg-card p-4 md:p-5">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <BarChart3 className="w-4 h-4 text-primary" />
@@ -171,7 +168,7 @@ const HeroSection = () => {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-            </motion.div>
+            </div>
 
             {/* Sidebar: Debt Trend + Quick Stats */}
             <motion.div variants={itemVariants} className="flex flex-col gap-3">
