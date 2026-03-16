@@ -82,20 +82,20 @@ const HeroSection = () => {
                 국가데이터로 보는 재정, 신뢰로 만드는 정책!
               </p>
             </div>
-          <div className="flex gap-2">
-            {tabs.map((tab, i) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(i)}
-                className={i === activeTab
-                  ? "px-4 py-2 text-sm font-semibold rounded-lg bg-white text-gov-blue transition-all shadow-md"
-                  : "px-4 py-2 text-sm font-medium rounded-lg text-white hover:bg-white/20 border border-white/30 transition-all drop-shadow-sm"
-                }
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+            <div className="flex gap-2">
+              {tabs.map((tab, i) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(i)}
+                  className={i === activeTab
+                    ? "px-5 py-2.5 text-sm font-bold rounded-lg bg-primary text-primary-foreground transition-all shadow-md"
+                    : "px-5 py-2.5 text-sm font-semibold rounded-lg text-foreground/70 bg-white/50 hover:bg-white/70 border border-foreground/10 backdrop-blur-sm transition-all"
+                  }
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
         </motion.div>
       </div>
 
