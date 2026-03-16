@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, TrendingUp, Landmark, BarChart3, Wallet } from "lucide-react";
 import { motion } from "framer-motion";
-import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend, CartesianGrid, LabelList } from "recharts";
 import AISearchBar from "./AISearchBar";
 import heroIllustration from "@/assets/hero-illustration.png";
 
@@ -146,26 +146,55 @@ const HeroSection = () => {
             </div>
 
             {/* Mini Chart */}
-            <div>
+            <div className="p-4 rounded-xl bg-card/60 backdrop-blur-sm border border-border/60">
               <h3 className="text-sm font-bold text-foreground mb-3">연도별 세입·세출 추이</h3>
-              <div className="h-[160px]">
+              <div className="h-[180px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart data={chartData} barCategoryGap="25%" margin={{ top: 10, right: 8, left: -20, bottom: 0 }}>
+                  <ComposedChart data={chartData} barCategoryGap="20%" margin={{ top: 16, right: 12, left: -16, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                     <XAxis
                       dataKey="year"
                       tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
                       axisLine={false}
                       tickLine={false}
+                      tickFormatter={(v) => `'${v}`}
                     />
-                    <YAxis hide />
-                    <Bar dataKey="세입" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} barSize={20} />
-                    <Bar dataKey="세출" fill="hsl(var(--destructive))" radius={[2, 2, 0, 0]} barSize={20} />
+                    <YAxis
+                      tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
+                      axisLine={false}
+                      tickLine={false}
+                      width={36}
+                      tickFormatter={(v) => `${v}`}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: "8px",
+                        fontSize: "12px",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                      }}
+                      formatter={(value: number, name: string) => [`${value}조`, name]}
+                      labelFormatter={(label) => `20${label}년`}
+                    />
+                    <Legend
+                      iconType="circle"
+                      iconSize={8}
+                      wrapperStyle={{ fontSize: "11px", paddingTop: "4px" }}
+                    />
+                    <Bar dataKey="세입" fill="hsl(var(--chart-revenue))" radius={[2, 2, 0, 0]} barSize={18}>
+                      <LabelList dataKey="세입" position="top" style={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+                    </Bar>
+                    <Bar dataKey="세출" fill="hsl(var(--chart-expense))" radius={[2, 2, 0, 0]} barSize={18}>
+                      <LabelList dataKey="세출" position="top" style={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+                    </Bar>
                     <Line
                       type="monotone"
                       dataKey="국가채무"
-                      stroke="hsl(var(--gov-green))"
+                      stroke="hsl(var(--chart-debt))"
                       strokeWidth={2.5}
-                      dot={{ r: 3, fill: "hsl(var(--gov-green))", strokeWidth: 0 }}
+                      dot={{ r: 3.5, fill: "hsl(var(--chart-debt))", strokeWidth: 2, stroke: "white" }}
+                      activeDot={{ r: 5, strokeWidth: 2, stroke: "white" }}
                     />
                   </ComposedChart>
                 </ResponsiveContainer>
