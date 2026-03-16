@@ -65,14 +65,13 @@ const HeroSection = () => {
       <div className="relative">
         <div className="absolute inset-0">
           <img src={heroBg} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-gov-navy/70 via-gov-navy/50 via-40% via-gov-navy/30 via-65% to-background" />
+          {/* Multi-layer gradient for smooth transition */}
+          <div className="absolute inset-0 bg-gov-navy/60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-gov-navy/40 via-transparent via-50% to-background" />
+          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background via-background/80 to-transparent" />
         </div>
         
-        {/* Decorative elements */}
-        <div className="absolute top-10 right-10 w-64 h-64 rounded-full bg-gov-blue/10 blur-3xl" />
-        <div className="absolute bottom-20 left-10 w-48 h-48 rounded-full bg-gov-blue/5 blur-2xl" />
-        
-        <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-20 md:pb-28">
+        <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-24 md:pb-32">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -108,7 +107,7 @@ const HeroSection = () => {
       </div>
 
       {/* KPI + Chart Card (overlapping banner) */}
-      <div className="max-w-[1400px] mx-auto px-5 md:px-8 -mt-12 md:-mt-16 relative z-10">
+      <div className="max-w-[1400px] mx-auto px-5 md:px-8 -mt-16 md:-mt-20 relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
