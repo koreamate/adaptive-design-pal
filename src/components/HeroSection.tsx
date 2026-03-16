@@ -121,6 +121,7 @@ const HeroSection = () => {
                     <span className="text-[10px] text-muted-foreground/60">{kpi.label}</span>
                   </div>
                 </div>
+              );
             })}
           </div>
 
