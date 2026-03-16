@@ -99,12 +99,7 @@ const HeroSection = () => {
           </div>
         </motion.div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="space-y-4"
-        >
+        <div className="space-y-4">
           {/* KPI Row */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {kpiData.map((kpi) => {
