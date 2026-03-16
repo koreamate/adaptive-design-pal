@@ -30,7 +30,7 @@ const SiteFooter = () => {
       {/* Related Sites Banner */}
       <div className="border-b border-border bg-muted/30">
         <div className="max-w-[1400px] mx-auto px-5 md:px-8 py-3">
-          <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
+          <div className="flex items-center justify-between flex-wrap gap-y-4">
             {relatedSites.map((site) => (
               <a
                 key={site.name}
@@ -38,7 +38,7 @@ const SiteFooter = () => {
                 className="opacity-70 hover:opacity-100 transition-opacity"
                 title={site.name}
               >
-                <img src={site.logo} alt={site.name} className={`${site.name === "국세외수입포털" ? "h-[52px] md:h-[56px]" : "h-9 md:h-11"} w-auto object-contain`} />
+                <img src={site.logo} alt={site.name} className={`${site.name === "국세외수입포털" ? "h-[64px] md:h-[72px]" : "h-12 md:h-14"} w-auto object-contain`} />
               </a>
             ))}
           </div>
