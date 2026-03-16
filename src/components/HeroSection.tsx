@@ -101,7 +101,7 @@ const HeroSection = () => {
           className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-0 pb-8 items-center lg:-ml-10"
         >
           {/* Left: Illustration */}
-          <motion.div variants={itemVariants} className="flex items-center justify-center -mt-5">
+          <motion.div variants={itemVariants} className="flex items-center justify-center -mt-1">
             <img
               src={heroIllustration}
               alt="재정 데이터 분석 일러스트"
