@@ -1,4 +1,10 @@
 import logoImg from "@/assets/logo.png";
+import logoMoef from "@/assets/logo-moef.png";
+import logoKpfis from "@/assets/logo-kpfis.png";
+import logoNap from "@/assets/logo-nap.png";
+import logoNontax from "@/assets/logo-nontax.png";
+import logoElearn from "@/assets/logo-elearn.png";
+import logoSubsidy from "@/assets/logo-subsidy.png";
 
 const footerLinks = [
   "이용약관",
@@ -9,12 +15,12 @@ const footerLinks = [
 ];
 
 const relatedSites = [
-  "기획예산처",
-  "한국재정정보원",
-  "국유재산포털",
-  "국세외수입포털",
-  "e재정배움",
-  "보조금통합포털",
+  { name: "기획재정부", logo: logoMoef },
+  { name: "한국재정정보원", logo: logoKpfis },
+  { name: "국유재산포털", logo: logoNap },
+  { name: "국세외수입포털", logo: logoNontax },
+  { name: "e재정배움", logo: logoElearn },
+  { name: "보조금통합포털", logo: logoSubsidy },
 ];
 
 const SiteFooter = () => {
