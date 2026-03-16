@@ -147,13 +147,13 @@ const HeroSection = () => {
                 <span className="text-[10px] text-foreground/60 bg-white/60 px-2 py-0.5 rounded-full font-semibold">단위: 조원</span>
               </div>
               <div className="flex items-center gap-4">
-                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground/80">
                   <span className="w-3 h-3 rounded-[3px] bg-primary shadow-sm" /> 세입
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground/80">
                   <span className="w-3 h-3 rounded-[3px]" style={{ background: "hsl(var(--gov-blue) / 0.35)" }} /> 세출
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground/80">
                   <span className="w-3 h-1 rounded-full bg-destructive" /> 국가채무
                 </span>
               </div>
