@@ -161,38 +161,35 @@ const ContentSection = () => {
 
           {/* Quick Actions */}
           <motion.div variants={itemVariants} className="flex flex-col gap-4">
-            {/* 참여예산 퀵 가드 */}
-            <div className="relative flex-1 rounded-2xl overflow-hidden bg-primary p-5 group cursor-pointer hover:shadow-lg transition-all">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-[60px]" />
-              <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-tr-[40px]" />
-              <div className="relative flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 border border-white/20">
-                  <Users className="w-6 h-6 text-white" />
+            <div className="gov-card p-5 relative overflow-hidden group flex-1">
+              <div className="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-gov-blue/5 group-hover:bg-gov-blue/10 transition-colors" />
+              <div className="absolute -right-2 -top-2 w-16 h-16 rounded-full bg-gov-blue/5 group-hover:bg-gov-blue/10 transition-colors" />
+              <div className="relative flex items-start gap-3">
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-gov-blue/20 to-gov-blue/5 flex items-center justify-center shrink-0 border border-gov-blue/10">
+                  <Users className="w-5 h-5 text-gov-blue" />
                 </div>
-                <div className="flex-1">
-                  <h4 className="text-sm font-bold text-white mb-0.5">참여예산 퀵 가드</h4>
-                  <p className="text-xs text-white/70">국민의 아이디어로 예산을 바꿉니다.</p>
-                </div>
-                <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                  <ArrowUpRight className="w-4 h-4 text-white" />
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground mb-1">참여예산 퀵 가드</h4>
+                  <p className="text-xs text-muted-foreground mb-2">국민의 아이디어로 예산을 바꿉니다.</p>
+                  <button className="gov-link flex items-center gap-0.5 text-xs">
+                    참여하기 <ArrowUpRight className="w-3 h-3" />
+                  </button>
                 </div>
               </div>
             </div>
-
-            {/* 수혜서비스 퀵 검색 */}
-            <div className="relative flex-1 rounded-2xl overflow-hidden p-5 group cursor-pointer hover:shadow-lg transition-all" style={{ background: "linear-gradient(135deg, hsl(210, 70%, 50%), hsl(200, 80%, 45%))" }}>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-[60px]" />
-              <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-tr-[40px]" />
-              <div className="relative flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 border border-white/20">
-                  <Sparkles className="w-6 h-6 text-white" />
+            <div className="gov-card p-5 relative overflow-hidden group flex-1">
+              <div className="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-gov-green/5 group-hover:bg-gov-green/10 transition-colors" />
+              <div className="absolute -right-2 -top-2 w-16 h-16 rounded-full bg-gov-green/5 group-hover:bg-gov-green/10 transition-colors" />
+              <div className="relative flex items-start gap-3">
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-gov-green/20 to-gov-green/5 flex items-center justify-center shrink-0 border border-gov-green/10">
+                  <Sparkles className="w-5 h-5 text-gov-green" />
                 </div>
-                <div className="flex-1">
-                  <h4 className="text-sm font-bold text-white mb-0.5">수혜서비스 퀵 검색</h4>
-                  <p className="text-xs text-white/70">AI 매칭으로 나에게 맞는 서비스를 추천해 드려요.</p>
-                </div>
-                <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                  <ArrowUpRight className="w-4 h-4 text-white" />
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground mb-1">수혜서비스 퀵 검색</h4>
+                  <p className="text-xs text-muted-foreground mb-2">AI 매칭으로 나에게 맞는 서비스를 추천해 드려요.</p>
+                  <button className="gov-link flex items-center gap-0.5 text-xs">
+                    나의 수혜서비스 찾기 <ArrowUpRight className="w-3 h-3" />
+                  </button>
                 </div>
               </div>
             </div>
