@@ -21,7 +21,7 @@ const GNBHeader = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img src={logoImg} alt="열린재정" className="h-10 md:h-12 w-auto" />
+            <img src={logoImg} alt="열린재정" className="h-12 md:h-14 w-auto" />
           </div>
 
           {/* Desktop Nav */}
