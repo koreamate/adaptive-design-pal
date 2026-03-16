@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Search, Menu, X, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import logoImg from "@/assets/logo.png";
 
 const navItems = [
   "알기쉬운재정",
