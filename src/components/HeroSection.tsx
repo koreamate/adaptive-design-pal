@@ -150,7 +150,7 @@ const HeroSection = () => {
                   <ComposedChart data={chartData} barCategoryGap="25%" margin={{ top: 10, right: 8, left: -20, bottom: 0 }}>
                     <XAxis
                       dataKey="year"
-                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{ fontSize: 11, fill: "rgba(255,255,255,0.5)" }}
                       axisLine={false}
                       tickLine={false}
                     />
