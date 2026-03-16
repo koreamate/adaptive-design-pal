@@ -121,20 +121,20 @@ const HeroSection = () => {
               {kpiData.map((kpi) => (
                 <div
                   key={kpi.label}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-white/10 border border-white/15 backdrop-blur-xl shadow-sm hover:bg-white/15 transition-all"
+                  className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-white/10 text-2xl shrink-0">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-muted text-2xl shrink-0">
                     {kpi.icon}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-white/60 mb-0.5">{kpi.label}</p>
+                    <p className="text-xs font-semibold text-muted-foreground mb-0.5">{kpi.label}</p>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl md:text-3xl font-extrabold text-white">{kpi.value}</span>
-                      <span className="text-base font-bold text-white/60">{kpi.unit}</span>
+                      <span className="text-2xl md:text-3xl font-extrabold text-foreground">{kpi.value}</span>
+                      <span className="text-base font-bold text-muted-foreground">{kpi.unit}</span>
                     </div>
-                    <p className="text-[11px] text-white/50 mt-0.5">{kpi.sub}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">{kpi.sub}</p>
                   </div>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold text-gov-orange">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold text-destructive">
                     <TrendingUp className="w-3.5 h-3.5" />
                     {kpi.change}
                   </span>
