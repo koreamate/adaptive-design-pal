@@ -98,8 +98,7 @@ const HeroSection = () => {
             </div>
           </motion.div>
         </div>
-        
-      
+      </div>
 
       {/* KPI + Chart Card (overlapping banner) */}
       <div className="max-w-[1400px] mx-auto px-5 md:px-8 -mt-16 md:-mt-20 relative z-10">
