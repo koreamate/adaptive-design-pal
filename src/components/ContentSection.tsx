@@ -145,7 +145,7 @@ const ContentSection = () => {
               재정지표 대시보드
             </h3>
             <p className="text-xs text-muted-foreground mb-4">주요 재정지표를 다양한 통계 그래프로 한 눈에 확인하세요.</p>
-            <div className="relative rounded-xl overflow-hidden border border-border flex-1 min-h-0">
+            <div className="relative rounded-xl overflow-hidden border border-border aspect-[3/1]">
               <img
                 src={dashboardImg}
                 alt="재정지표 대시보드 미리보기"
