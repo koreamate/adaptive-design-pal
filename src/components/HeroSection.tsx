@@ -118,7 +118,7 @@ const HeroSection = () => {
                     <span className="text-lg">{kpi.icon}</span>
                     <span className="text-xs font-bold text-foreground drop-shadow-sm">{kpi.label}</span>
                   </div>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-white/20 text-white border border-white/20">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-primary/15 text-primary border border-primary/20">
                     {kpi.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                     {kpi.change}
                   </span>
