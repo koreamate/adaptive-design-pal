@@ -63,7 +63,7 @@ const HeroSection = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[hsl(210_20%_96%)] via-[hsl(214_30%_89%)] to-[hsl(210_25%_94%)]">
+    <section className="relative overflow-hidden bg-gradient-to-br from-[hsl(210_25%_90%)] via-[hsl(214_35%_82%)] to-[hsl(220_30%_88%)]">
       {/* Background pattern overlay */}
       <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, hsl(215 20% 65%) 1px, transparent 0)', backgroundSize: '32px 32px' }} />
       {/* Gradient glow accents */}
