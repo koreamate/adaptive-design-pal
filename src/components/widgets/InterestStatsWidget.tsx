@@ -16,7 +16,7 @@ const colors = [
 ];
 
 const InterestStatsWidget = () => (
-  <div className="gov-card p-5 h-full flex flex-col">
+  <div className="gov-card p-4 h-full flex flex-col overflow-hidden">
     <div className="gov-widget-header">
       <button className="flex items-center gap-1 text-sm font-semibold text-foreground hover:text-gov-blue transition-colors">
         관심 통계 <ChevronRight className="w-4 h-4" />
@@ -50,7 +50,7 @@ const InterestStatsWidget = () => (
 
     {/* Chart */}
     <p className="text-[11px] text-muted-foreground mb-2">전년 대비 변동 요약 (2024 → 2025)</p>
-    <div className="flex-1 min-h-0" style={{ minHeight: "160px" }}>
+    <div className="flex-1 min-h-0">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} barCategoryGap="25%">
           <XAxis

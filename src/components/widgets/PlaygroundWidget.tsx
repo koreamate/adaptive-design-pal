@@ -2,7 +2,7 @@ import { Move, X, ChevronRight } from "lucide-react";
 import playgroundThumb from "@/assets/playground-thumb.jpg";
 
 const PlaygroundWidget = () => (
-  <div className="gov-card p-5 h-full">
+  <div className="gov-card p-4 h-full overflow-hidden">
     <div className="gov-widget-header">
       <button className="flex items-center gap-1 text-sm font-semibold text-foreground hover:text-gov-blue transition-colors">
         나라살림 놀이터 <ChevronRight className="w-4 h-4" />

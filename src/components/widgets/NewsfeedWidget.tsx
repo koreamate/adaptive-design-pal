@@ -2,7 +2,7 @@ import { Move, X, ChevronRight } from "lucide-react";
 import newsThumb from "@/assets/news-thumb.jpg";
 
 const NewsfeedWidget = () => (
-  <div className="gov-card p-5 h-full">
+  <div className="gov-card p-4 h-full overflow-hidden">
     <div className="gov-widget-header">
       <button className="flex items-center gap-1 text-sm font-semibold text-foreground hover:text-gov-blue transition-colors">
         재정 뉴스피드 <ChevronRight className="w-4 h-4" />
