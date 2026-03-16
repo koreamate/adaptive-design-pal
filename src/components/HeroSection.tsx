@@ -65,7 +65,8 @@ const HeroSection = () => {
       <div className="relative">
         <div className="absolute inset-0">
           <img src={heroBg} alt="" className="w-full h-full object-cover" />
-          <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background to-transparent" />
+          <div className="absolute inset-0 bg-gov-navy/20" />
+          <div className="absolute bottom-0 left-0 right-0 h-[72%] bg-gradient-to-t from-background via-background/85 via-45% to-transparent" />
         </div>
         
         <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-24 md:pb-32">
