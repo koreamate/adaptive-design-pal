@@ -111,7 +111,7 @@ const HeroSection = () => {
               <motion.div
                 key={kpi.label}
                 variants={itemVariants}
-                className="relative p-4 md:p-5 rounded-xl border border-white/40 bg-white/45 backdrop-blur-xl group hover:bg-white/55 transition-all duration-300"
+                className="relative p-4 md:p-5 rounded-xl border border-white/40 bg-white/55 backdrop-blur-xl group hover:bg-white/65 transition-all duration-300"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
