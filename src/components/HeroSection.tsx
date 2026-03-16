@@ -62,10 +62,8 @@ const HeroSection = () => {
   return (
     <section className="relative overflow-hidden">
       {/* Hero Background — real photo */}
-      <div className="relative">
-        <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(221,50%,15%,0.85)] via-[hsl(221,50%,15%,0.7)] to-[hsl(221,50%,15%,0.5)]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
+      <div className="relative bg-[hsl(221,50%,15%)]">
+        <img src={heroPattern} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60" />
         
         <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-24 md:pb-32">
           <motion.div
