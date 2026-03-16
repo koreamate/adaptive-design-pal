@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TrendingUp, ArrowUpRight, TrendingDown } from "lucide-react";
 import { motion } from "framer-motion";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { ComposedChart, Bar, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import AISearchBar from "./AISearchBar";
 import heroBg from "@/assets/hero-bg.jpg";
 
