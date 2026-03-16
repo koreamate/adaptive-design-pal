@@ -57,12 +57,12 @@ const HeroSection = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-gov-navy via-primary to-gov-navy">
+    <section className="relative overflow-hidden bg-gradient-to-br from-[hsl(210_20%_96%)] via-[hsl(214_32%_91%)] to-[hsl(210_25%_95%)]">
       {/* Background pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, hsl(0 0% 100%) 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+      <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, hsl(215 20% 65%) 1px, transparent 0)', backgroundSize: '32px 32px' }} />
       {/* Gradient glow accents */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-primary/20 blur-[120px]" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-gov-blue/15 blur-[100px]" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px]" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-primary/5 blur-[100px]" />
 
       <div className="relative max-w-[1400px] mx-auto px-5 md:px-8">
         {/* Tabs - top center */}
