@@ -106,16 +106,16 @@ const ContentSection = () => {
           </div>
         </motion.div>
 
-        {/* Bottom Grid: 공지사항 + 재정지표 대시보드 + Quick Actions */}
+        {/* Bottom Grid: 공지사항 + 재정지표 대시보드 + Quick Actions — equal height */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-fr"
         >
           {/* 공지사항 */}
-          <motion.div variants={itemVariants} className="gov-card p-5">
+          <motion.div variants={itemVariants} className="gov-card p-5 flex flex-col">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
                 <Bell className="w-4 h-4 text-gov-orange" />
@@ -125,7 +125,7 @@ const ContentSection = () => {
                 더보기 <ChevronRight className="w-3 h-3" />
               </button>
             </div>
-            <ul className="space-y-3">
+            <ul className="space-y-3 flex-1">
               {notices.map((n, i) => (
                 <li key={i} className="flex items-center justify-between gap-3 group cursor-pointer">
                   <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors line-clamp-1 flex-1">
@@ -135,22 +135,21 @@ const ContentSection = () => {
                 </li>
               ))}
             </ul>
-            {/* Decorative bottom gradient */}
             <div className="mt-4 h-1 rounded-full bg-gradient-to-r from-gov-blue/20 via-gov-blue/40 to-gov-blue/20" />
           </motion.div>
 
           {/* 재정지표 대시보드 */}
-          <motion.div variants={itemVariants} className="gov-card p-5 overflow-hidden relative">
+          <motion.div variants={itemVariants} className="gov-card p-5 overflow-hidden relative flex flex-col">
             <h3 className="text-base font-semibold text-foreground mb-2 flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-gov-blue" />
               재정지표 대시보드
             </h3>
             <p className="text-xs text-muted-foreground mb-4">주요 재정지표를 다양한 통계 그래프로 한 눈에 확인하세요.</p>
-            <div className="relative rounded-xl overflow-hidden border border-border">
+            <div className="relative rounded-xl overflow-hidden border border-border flex-1 min-h-0">
               <img
                 src={dashboardImg}
                 alt="재정지표 대시보드 미리보기"
-                className="w-full h-auto object-cover"
+                className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent flex items-end p-4">
                 <button className="px-4 py-2 bg-gov-blue text-white text-xs font-medium rounded-lg shadow-lg hover:bg-gov-blue/90 transition-colors flex items-center gap-1">
@@ -161,9 +160,8 @@ const ContentSection = () => {
           </motion.div>
 
           {/* Quick Actions */}
-          <motion.div variants={itemVariants} className="space-y-4">
-            <div className="gov-card p-5 relative overflow-hidden group">
-              {/* Decorative background pattern */}
+          <motion.div variants={itemVariants} className="flex flex-col gap-4">
+            <div className="gov-card p-5 relative overflow-hidden group flex-1">
               <div className="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-gov-blue/5 group-hover:bg-gov-blue/10 transition-colors" />
               <div className="absolute -right-2 -top-2 w-16 h-16 rounded-full bg-gov-blue/5 group-hover:bg-gov-blue/10 transition-colors" />
               <div className="relative flex items-start gap-3">
@@ -179,7 +177,7 @@ const ContentSection = () => {
                 </div>
               </div>
             </div>
-            <div className="gov-card p-5 relative overflow-hidden group">
+            <div className="gov-card p-5 relative overflow-hidden group flex-1">
               <div className="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-gov-green/5 group-hover:bg-gov-green/10 transition-colors" />
               <div className="absolute -right-2 -top-2 w-16 h-16 rounded-full bg-gov-green/5 group-hover:bg-gov-green/10 transition-colors" />
               <div className="relative flex items-start gap-3">
