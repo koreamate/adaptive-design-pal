@@ -37,7 +37,7 @@ const SiteFooter = () => {
                 title={site.name}
               >
                 <div className="flex h-[40px] md:h-[44px] items-center justify-center">
-                  <img src={site.logo} alt={site.name} className={`${site.name === "국세외수입포털" ? "h-[38px] md:h-[42px]" : "h-7 md:h-8"} w-auto object-contain`} />
+                  <img src={site.logo} alt={site.name} className={`${site.name === "국세외수입포털" ? "h-[48px] md:h-[54px]" : "h-10 md:h-11"} w-auto object-contain`} />
                 </div>
                 <span className="text-[10px] text-muted-foreground group-hover:text-foreground transition-colors font-medium">
                   {site.name}
