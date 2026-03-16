@@ -26,9 +26,10 @@ const RecentViewWidget = () => (
     </div>
     <ul className="mt-4 space-y-3">
       {items.map((item, i) => (
-        <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
-          <span className="w-1.5 h-1.5 rounded-full bg-gov-blue mt-2 shrink-0" />
-          {item}
+        <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
+          <span className="w-1.5 h-1.5 rounded-full bg-gov-blue shrink-0" />
+          <span className="flex-1 line-clamp-1">{item.text}</span>
+          <span className="text-[11px] text-muted-foreground/60 shrink-0">{item.date}</span>
         </li>
       ))}
     </ul>
