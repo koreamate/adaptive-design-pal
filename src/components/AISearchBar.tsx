@@ -27,7 +27,7 @@ const AISearchBar = () => {
         </div>
       </div>
       <div className="flex gap-2 flex-wrap items-center">
-        <span className="text-xs font-semibold text-foreground/50 mr-1">추천 검색:</span>
+        <span className="text-xs font-bold text-foreground/70 mr-1">추천 검색:</span>
         {suggestions.map((s) => (
           <button
             key={s}
