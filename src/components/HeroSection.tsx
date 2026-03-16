@@ -77,8 +77,8 @@ const HeroSection = () => {
               key={tab}
               onClick={() => setActiveTab(i)}
               className={i === activeTab
-                ? "px-8 py-3 text-sm font-bold rounded-lg bg-primary text-primary-foreground shadow-md transition-all"
-                : "px-8 py-3 text-sm font-semibold rounded-lg text-muted-foreground bg-card border border-border hover:border-primary/30 hover:text-primary transition-all"
+                ? "px-8 py-3 text-sm font-bold rounded-lg bg-white/20 text-white shadow-md backdrop-blur-sm border border-white/20 transition-all"
+                : "px-8 py-3 text-sm font-semibold rounded-lg text-white/70 bg-white/5 border border-white/10 hover:border-white/30 hover:text-white transition-all"
               }
             >
               {tab}
