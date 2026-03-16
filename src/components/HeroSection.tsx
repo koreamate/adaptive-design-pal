@@ -63,7 +63,8 @@ const HeroSection = () => {
 
   return (
     <section className="relative">
-      <div className="max-w-[1400px] mx-auto px-5 md:px-8 py-6 md:py-8">
+      <img src={heroDashboardBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 py-6 md:py-8">
         {/* Top bar: title + tabs */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
           <div className="flex items-center gap-4">
