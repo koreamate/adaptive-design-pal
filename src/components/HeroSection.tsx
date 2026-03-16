@@ -65,10 +65,7 @@ const HeroSection = () => {
       <div className="relative">
         <div className="absolute inset-0">
           <img src={heroBg} alt="" className="w-full h-full object-cover" />
-          {/* Multi-layer gradient for smooth transition */}
-          <div className="absolute inset-0 bg-gov-navy/60" />
-          <div className="absolute inset-0 bg-gradient-to-b from-gov-navy/40 via-transparent via-50% to-background" />
-          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background via-background/80 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background to-transparent" />
         </div>
         
         <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-24 md:pb-32">
