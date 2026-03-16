@@ -83,13 +83,8 @@ const SiteFooter = () => {
           </div>
 
           {/* Certification Badges */}
-          <div className="flex items-center gap-4">
-            <div className="w-20 h-10 rounded bg-muted/50 border border-border flex items-center justify-center">
-              <span className="text-[9px] text-muted-foreground font-medium">FiS</span>
-            </div>
-            <div className="w-10 h-10 rounded-full bg-muted/50 border border-border flex items-center justify-center">
-              <span className="text-[8px] text-muted-foreground">WA</span>
-            </div>
+          <div className="flex items-center">
+            <img src={footerBadges} alt="한국재정정보원 FiS · WA 인증마크" className="h-12 w-auto object-contain" />
           </div>
         </div>
       </div>
