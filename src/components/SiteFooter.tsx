@@ -1,4 +1,10 @@
 import logoImg from "@/assets/logo.png";
+import logoMoef from "@/assets/logo-moef.png";
+import logoKpfis from "@/assets/logo-kpfis.png";
+import logoNap from "@/assets/logo-nap.png";
+import logoNontax from "@/assets/logo-nontax.png";
+import logoElearn from "@/assets/logo-elearn.png";
+import logoSubsidy from "@/assets/logo-subsidy.png";
 
 const footerLinks = [
   "이용약관",
@@ -9,12 +15,12 @@ const footerLinks = [
 ];
 
 const relatedSites = [
-  "기획예산처",
-  "한국재정정보원",
-  "국유재산포털",
-  "국세외수입포털",
-  "e재정배움",
-  "보조금통합포털",
+  { name: "기획재정부", logo: logoMoef },
+  { name: "한국재정정보원", logo: logoKpfis },
+  { name: "국유재산포털", logo: logoNap },
+  { name: "국세외수입포털", logo: logoNontax },
+  { name: "e재정배움", logo: logoElearn },
+  { name: "보조금통합포털", logo: logoSubsidy },
 ];
 
 const SiteFooter = () => {
@@ -23,13 +29,14 @@ const SiteFooter = () => {
       {/* Related Sites */}
       <div className="border-b border-border">
         <div className="max-w-[1400px] mx-auto px-5 md:px-8 py-4">
-          <div className="flex items-center gap-4 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-6 overflow-x-auto scrollbar-hide">
             {relatedSites.map((site) => (
               <button
-                key={site}
-                className="text-xs text-muted-foreground hover:text-foreground whitespace-nowrap transition-colors"
+                key={site.name}
+                className="shrink-0 hover:opacity-70 transition-opacity"
+                title={site.name}
               >
-                {site}
+                <img src={site.logo} alt={site.name} className="h-8 w-auto" />
               </button>
             ))}
           </div>
