@@ -146,7 +146,7 @@ const HeroSection = () => {
             </div>
 
             {/* Mini Chart */}
-            <div className="p-4 rounded-xl bg-card/60 backdrop-blur-sm border border-border/60">
+            <div>
               <h3 className="text-sm font-bold text-foreground mb-3">연도별 세입·세출 추이</h3>
               <div className="h-[180px]">
                 <ResponsiveContainer width="100%" height="100%">
