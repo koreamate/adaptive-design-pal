@@ -171,8 +171,7 @@ const HeroSection = () => {
             </div>
 
             {/* Sidebar: Debt Trend + Quick Stats */}
-            <motion.div variants={itemVariants} className="flex flex-col gap-3">
-              {/* Mini trend chart */}
+            <div className="flex flex-col gap-3">
               <div className="rounded-xl border border-border bg-card p-4 flex-1">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -197,7 +196,6 @@ const HeroSection = () => {
                 </div>
               </div>
 
-              {/* Quick stats */}
               <div className="rounded-xl border border-border bg-card p-4 flex-1">
                 <h3 className="text-xs font-semibold text-foreground mb-3 flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-primary" />
@@ -217,14 +215,13 @@ const HeroSection = () => {
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
 
-          {/* AI Search */}
-          <motion.div variants={itemVariants}>
+          <div>
             <AISearchBar />
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );
