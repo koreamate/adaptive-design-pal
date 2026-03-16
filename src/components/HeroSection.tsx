@@ -102,7 +102,7 @@ const HeroSection = () => {
         >
           {/* Left: Illustration with title */}
           <motion.div variants={itemVariants} className="flex flex-col items-center justify-center mt-[26px]">
-            <div className="text-center mb-4">
+            <div className="text-left mb-4 w-full max-w-[522px]">
               <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
                 열린재정
               </h1>
