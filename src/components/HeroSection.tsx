@@ -144,7 +144,7 @@ const HeroSection = () => {
               <div className="flex items-center gap-3">
                 <div className="w-1 h-5 rounded-full bg-primary" />
                 <h3 className="text-sm font-bold text-foreground tracking-tight">연도별 세입 · 세출 추이</h3>
-                <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full font-medium">단위: 조원</span>
+                <span className="text-[10px] text-foreground/60 bg-white/60 px-2 py-0.5 rounded-full font-semibold">단위: 조원</span>
               </div>
               <div className="flex items-center gap-4">
                 <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
