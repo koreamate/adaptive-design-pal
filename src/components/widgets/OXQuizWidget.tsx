@@ -31,20 +31,20 @@ const OXQuizWidget = () => {
         </div>
 
         {/* Question Card */}
-        <div className="w-full rounded-xl p-4 bg-primary/5 border border-primary/15 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-bl-[40px]" />
-          <p className="text-[13px] font-bold text-foreground text-center leading-relaxed relative z-10">
+        <div className="w-full rounded-lg p-2.5 bg-primary/5 border border-primary/15 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-14 h-14 bg-primary/5 rounded-bl-[28px]" />
+          <p className="text-xs font-bold text-foreground text-center leading-snug relative z-10">
             국가채무는 세입보다 많다?
           </p>
         </div>
 
-        {/* O/X Buttons */}
-        <div className="flex gap-4 py-3">
+        {/* O/X Buttons - horizontal layout */}
+        <div className="flex gap-3 py-2 w-full justify-center">
           <button
             onClick={() => setAnswered(true)}
-            className={`w-14 h-14 rounded-2xl text-lg font-black transition-all duration-300 flex items-center justify-center ${
+            className={`flex-1 max-w-[80px] h-10 rounded-xl text-sm font-black transition-all duration-300 flex items-center justify-center ${
               answered === true
-                ? "bg-primary text-primary-foreground scale-110 shadow-lg shadow-primary/30"
+                ? "bg-primary text-primary-foreground scale-105 shadow-md shadow-primary/30"
                 : "bg-primary/5 border-2 border-primary/20 text-primary hover:border-primary/40 hover:bg-primary/10"
             }`}
           >
@@ -52,9 +52,9 @@ const OXQuizWidget = () => {
           </button>
           <button
             onClick={() => setAnswered(false)}
-            className={`w-14 h-14 rounded-2xl text-lg font-black transition-all duration-300 flex items-center justify-center ${
+            className={`flex-1 max-w-[80px] h-10 rounded-xl text-sm font-black transition-all duration-300 flex items-center justify-center ${
               answered === false
-                ? "bg-[hsl(210,70%,40%)] text-white scale-110 shadow-lg shadow-[hsl(210,70%,40%)/0.3]"
+                ? "bg-[hsl(210,70%,40%)] text-white scale-105 shadow-md shadow-[hsl(210,70%,40%)/0.3]"
                 : "bg-[hsl(210,50%,92%)] border-2 border-[hsl(210,50%,70%)]/30 text-[hsl(210,70%,40%)] hover:border-[hsl(210,50%,70%)]/50 hover:bg-[hsl(210,50%,88%)]"
             }`}
           >
