@@ -89,7 +89,7 @@ const HeroSection = () => {
             <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
               열린재정
             </h1>
-            <p className="text-sm md:text-base font-semibold text-muted-foreground max-w-md mt-5">
+            <p className="text-sm md:text-base font-semibold text-muted-foreground max-w-md mt-5 ml-5">
               국가데이터로 보는 재정, 신뢰로 만드는 정책!
             </p>
           </motion.div>
