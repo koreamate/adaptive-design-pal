@@ -72,7 +72,7 @@ const ContentSection = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {storyCards.map((card, i) => (
               <motion.div key={i} variants={itemVariants} className="gov-content-card group cursor-pointer">
-                <div className="aspect-[3/1] relative overflow-hidden">
+                <div className="aspect-[5/2] relative overflow-hidden">
                   <img
                     src={card.image}
                     alt={card.title}
