@@ -49,11 +49,10 @@ const HeroSection = () => {
       <div className="relative min-h-[94vh]">
         {/* Background */}
         <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(221,60%,20%,0.88)] via-[hsl(221,55%,25%,0.78)] to-[hsl(221,50%,18%,0.92)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(221,70%,12%,0.4)] via-[hsl(221,60%,15%,0.3)] to-[hsl(221,60%,12%,0.6)]" />
 
-        {/* Decorative shapes */}
-        <div className="absolute top-[8%] left-[3%] w-[350px] h-[350px] border border-white/[0.05] rounded-3xl rotate-12" />
-        <div className="absolute bottom-[20%] right-[5%] w-[250px] h-[250px] border border-white/[0.04] rounded-2xl -rotate-6" />
+        {/* Subtle vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,hsl(221,70%,8%,0.5)_100%)]" />
 
         {/* Content */}
         <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 min-h-[94vh] flex flex-col">
