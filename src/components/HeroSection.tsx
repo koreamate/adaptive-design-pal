@@ -105,7 +105,7 @@ const HeroSection = () => {
             <img
               src={heroIllustration}
               alt="재정 데이터 분석 일러스트"
-              className="w-full max-w-[600px] h-auto object-contain"
+              className="w-full max-w-[540px] h-auto object-contain"
             />
           </motion.div>
 
