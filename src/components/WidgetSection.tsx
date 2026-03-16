@@ -19,17 +19,9 @@ const itemVariants = {
 
 const WidgetSection = () => {
   return (
-    <section className="py-8 md:py-12 px-5 md:px-8 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-b from-muted/40 via-muted/20 to-background" />
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-      
-      {/* Decorative dots pattern */}
-      <div className="absolute top-8 right-8 grid grid-cols-4 gap-2 opacity-20">
-        {Array.from({ length: 16 }).map((_, i) => (
-          <div key={i} className="w-1.5 h-1.5 rounded-full bg-gov-blue" />
-        ))}
-      </div>
+    <section className="py-8 md:py-12 px-5 md:px-8 relative overflow-hidden bg-gradient-to-br from-primary/[0.04] via-primary/[0.02] to-transparent border-y border-primary/10">
+      {/* Subtle pattern overlay */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(hsl(var(--gov-blue)) 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
       
       <div className="max-w-[1400px] mx-auto relative">
         <div className="flex items-center justify-between mb-6">
