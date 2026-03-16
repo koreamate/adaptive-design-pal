@@ -111,7 +111,7 @@ const HeroSection = () => {
               <motion.div
                 key={kpi.label}
                 variants={itemVariants}
-                className="relative p-4 md:p-5 rounded-xl border border-white/40 bg-white/45 backdrop-blur-xl group hover:bg-white/55 transition-all duration-300"
+                className="relative p-4 md:p-5 rounded-xl border border-white/40 bg-white/55 backdrop-blur-xl group hover:bg-white/65 transition-all duration-300"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -152,7 +152,7 @@ const HeroSection = () => {
                 </span>
               </div>
             </div>
-            <div className="h-[280px] md:h-[340px] rounded-2xl bg-white/40 backdrop-blur-xl border border-white/40 p-5">
+            <div className="h-[280px] md:h-[340px] rounded-2xl bg-white/50 backdrop-blur-xl border border-white/45 p-5">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={chartData} barCategoryGap="30%" margin={{ top: 20, right: 16, left: -4, bottom: 4 }}>
                   <defs>
