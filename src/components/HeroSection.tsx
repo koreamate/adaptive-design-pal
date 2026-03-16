@@ -124,10 +124,10 @@ const HeroSection = () => {
                   </span>
                 </div>
                 <div className="flex items-baseline gap-1 mb-1">
-                  <span className="text-2xl md:text-3xl font-extrabold text-white drop-shadow-md">{kpi.value}</span>
-                  <span className="text-lg font-bold text-white/70">{kpi.unit}</span>
+                  <span className="text-2xl md:text-3xl font-extrabold text-foreground">{kpi.value}</span>
+                  <span className="text-lg font-bold text-foreground/60">{kpi.unit}</span>
                 </div>
-                <p className="text-xs font-medium text-white/60">{kpi.sub}</p>
+                <p className="text-xs font-medium text-foreground/50">{kpi.sub}</p>
               </motion.div>
             ))}
           </div>
