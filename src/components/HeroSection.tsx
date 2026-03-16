@@ -70,17 +70,15 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-4 backdrop-blur-sm">
+            <h1 className="text-3xl md:text-5xl font-extrabold text-foreground tracking-tight mb-2 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
+              열린재정
+            </h1>
+            <p className="text-sm md:text-lg font-semibold text-foreground/70 mb-4 max-w-xl drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)]">
+              국가데이터로 보는 재정, 신뢰로 만드는 정책!
+            </p>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6 backdrop-blur-sm">
               <span className="w-2 h-2 rounded-full bg-gov-green animate-pulse" />
               <span className="text-xs font-semibold text-primary">실시간 재정정보 업데이트</span>
-            </div>
-            <div className="inline-block bg-white/70 backdrop-blur-md rounded-2xl px-6 py-5 mb-4 shadow-sm border border-white/50">
-              <h1 className="text-3xl md:text-5xl font-extrabold text-foreground tracking-tight mb-2">
-                열린재정
-              </h1>
-              <p className="text-sm md:text-lg font-medium text-foreground/70 max-w-xl">
-                국가데이터로 보는 재정, 신뢰로 만드는 정책!
-              </p>
             </div>
             <div className="flex gap-2">
               {tabs.map((tab, i) => (
