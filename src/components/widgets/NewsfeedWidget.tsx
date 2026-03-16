@@ -1,0 +1,32 @@
+import { Move, X, ChevronRight } from "lucide-react";
+
+const NewsfeedWidget = () => (
+  <div className="gov-card p-5 h-full">
+    <div className="gov-widget-header">
+      <button className="flex items-center gap-1 text-sm font-semibold text-foreground hover:text-gov-blue transition-colors">
+        재정 뉴스피드 <ChevronRight className="w-4 h-4" />
+      </button>
+      <div className="flex gap-1">
+        <button className="p-1.5 rounded hover:bg-muted transition-colors">
+          <Move className="w-3.5 h-3.5 text-muted-foreground" />
+        </button>
+        <button className="p-1.5 rounded hover:bg-muted transition-colors">
+          <X className="w-3.5 h-3.5 text-muted-foreground" />
+        </button>
+      </div>
+    </div>
+    <div className="mt-4">
+      <div className="aspect-video rounded-lg bg-muted/50 border border-border mb-3 flex items-center justify-center">
+        <span className="text-xs text-muted-foreground">뉴스 이미지</span>
+      </div>
+      <h4 className="text-sm font-semibold text-foreground mb-1">
+        2025년 하반기 재정데이터분석 미니 프로젝트
+      </h4>
+      <p className="text-xs text-muted-foreground line-clamp-2">
+        더 나은 사회를 만들기 위해 해결이 필요한 '현상'과 '문제'를 논리적으로 정의하고, 데이터를 기반으로 분석합니다.
+      </p>
+    </div>
+  </div>
+);
+
+export default NewsfeedWidget;
