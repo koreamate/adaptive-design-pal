@@ -111,7 +111,7 @@ const HeroSection = () => {
               <motion.div
                 key={kpi.label}
                 variants={itemVariants}
-                className="relative p-4 md:p-5 rounded-xl bg-gradient-to-br from-muted/50 to-muted/20 border border-border group hover:border-gov-blue/30 transition-all duration-300"
+                className="relative p-4 md:p-5 rounded-xl bg-white/70 backdrop-blur-sm border border-white/50 shadow-sm group hover:border-gov-blue/30 transition-all duration-300"
               >
                 {/* Decorative corner accent */}
                 <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-gov-blue/5 to-transparent rounded-bl-3xl rounded-tr-xl" />
@@ -119,7 +119,7 @@ const HeroSection = () => {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{kpi.icon}</span>
-                    <span className="text-xs font-medium text-muted-foreground">{kpi.label}</span>
+                    <span className="text-xs font-semibold text-foreground">{kpi.label}</span>
                   </div>
                   <span className={kpi.up ? "gov-badge-up" : "gov-badge-down"}>
                     {kpi.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
@@ -128,9 +128,9 @@ const HeroSection = () => {
                 </div>
                 <div className="flex items-baseline gap-1 mb-1">
                   <span className="gov-kpi-value">{kpi.value}</span>
-                  <span className="text-lg font-semibold text-muted-foreground">{kpi.unit}</span>
+                  <span className="text-lg font-bold text-foreground/70">{kpi.unit}</span>
                 </div>
-                <p className="text-xs text-muted-foreground">{kpi.sub}</p>
+                <p className="text-xs font-medium text-foreground/60">{kpi.sub}</p>
                 
                 {/* Bottom accent line */}
                 <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-gov-blue/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -144,21 +144,21 @@ const HeroSection = () => {
               <div className="flex items-center gap-3">
                 <div className="w-1 h-5 rounded-full bg-primary" />
                 <h3 className="text-sm font-bold text-foreground tracking-tight">연도별 세입 · 세출 추이</h3>
-                <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full font-medium">단위: 조원</span>
+                <span className="text-[10px] text-foreground/60 bg-white/60 px-2 py-0.5 rounded-full font-semibold">단위: 조원</span>
               </div>
               <div className="flex items-center gap-4">
-                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground/80">
                   <span className="w-3 h-3 rounded-[3px] bg-primary shadow-sm" /> 세입
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground/80">
                   <span className="w-3 h-3 rounded-[3px]" style={{ background: "hsl(var(--gov-blue) / 0.35)" }} /> 세출
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground/80">
                   <span className="w-3 h-1 rounded-full bg-destructive" /> 국가채무
                 </span>
               </div>
             </div>
-            <div className="h-[260px] md:h-[320px] rounded-xl bg-muted/30 border border-border/50 p-4">
+            <div className="h-[260px] md:h-[320px] rounded-xl bg-white/50 backdrop-blur-sm border border-white/40 p-4">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={chartData} barCategoryGap="25%" margin={{ top: 8, right: 12, left: -8, bottom: 0 }}>
                   <defs>
