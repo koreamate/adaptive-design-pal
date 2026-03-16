@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { Search, Sparkles, Send } from "lucide-react";
 
 const suggestions = ["교육예산 추이", "국가채무", "추경", "지방교부세", "복지예산"];
 
