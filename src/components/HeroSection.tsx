@@ -158,14 +158,14 @@ const HeroSection = () => {
                       tickLine={false}
                     />
                     <YAxis hide />
-                    <Bar dataKey="세입" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} barSize={20} />
-                    <Bar dataKey="세출" fill="hsl(var(--destructive))" radius={[2, 2, 0, 0]} barSize={20} />
+                    <Bar dataKey="세입" fill="hsl(221 83% 76%)" radius={[2, 2, 0, 0]} barSize={20} />
+                    <Bar dataKey="세출" fill="hsl(210 40% 85%)" radius={[2, 2, 0, 0]} barSize={20} />
                     <Line
                       type="monotone"
                       dataKey="국가채무"
-                      stroke="hsl(var(--gov-green))"
+                      stroke="hsl(152 50% 65%)"
                       strokeWidth={2.5}
-                      dot={{ r: 3, fill: "hsl(var(--gov-green))", strokeWidth: 0 }}
+                      dot={{ r: 3, fill: "hsl(152 50% 65%)", strokeWidth: 0 }}
                     />
                   </ComposedChart>
                 </ResponsiveContainer>
