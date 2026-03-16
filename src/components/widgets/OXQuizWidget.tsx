@@ -5,7 +5,7 @@ const OXQuizWidget = () => {
   const [answered, setAnswered] = useState<boolean | null>(null);
 
   return (
-    <div className="gov-card p-5 h-full flex flex-col">
+    <div className="gov-card p-4 h-full flex flex-col overflow-hidden">
       <div className="gov-widget-header">
         <button className="flex items-center gap-1 text-sm font-semibold text-foreground hover:text-gov-blue transition-colors">
           게이미피케이션 <ChevronRight className="w-4 h-4" />
