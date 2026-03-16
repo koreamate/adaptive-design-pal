@@ -85,7 +85,7 @@ const HeroSection = () => {
 
         {/* Title */}
         <motion.div variants={containerVariants} initial="hidden" animate="visible">
-          <motion.div variants={itemVariants} className="mb-6">
+          <motion.div variants={itemVariants} className="mb-6 mt-5">
             <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
               열린재정
             </h1>
