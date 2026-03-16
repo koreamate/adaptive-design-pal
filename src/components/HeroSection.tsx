@@ -221,10 +221,10 @@ const HeroSection = () => {
                       );
                     }}
                   />
-                  <Bar dataKey="세입" fill="url(#barGradient1)" radius={[10, 10, 3, 3]} barSize={32} filter="url(#barShadow)">
+                  <Bar dataKey="세입" fill="url(#barGradient1)" radius={[2, 2, 0, 0]} barSize={32} filter="url(#barShadow)">
                     <LabelList dataKey="세입" position="top" fontSize={10} fontWeight={700} fill="hsl(221, 83%, 53%)" formatter={(v: number) => v} />
                   </Bar>
-                  <Bar dataKey="세출" fill="url(#barGradient2)" radius={[10, 10, 3, 3]} barSize={32}>
+                  <Bar dataKey="세출" fill="url(#barGradient2)" radius={[2, 2, 0, 0]} barSize={32}>
                     <LabelList dataKey="세출" position="top" fontSize={10} fontWeight={700} fill="hsl(210, 70%, 65%)" formatter={(v: number) => v} />
                   </Bar>
                   <Area type="monotone" dataKey="국가채무" fill="url(#areaGradient)" stroke="none" />
