@@ -5,6 +5,7 @@ import logoNap from "@/assets/logo-nap.png";
 import logoNontax from "@/assets/logo-nontax.png";
 import logoElearn from "@/assets/logo-elearn.png";
 import logoSubsidy from "@/assets/logo-subsidy.png";
+import footerBadges from "@/assets/footer-badges.jpg";
 
 const footerLinks = [
   "이용약관",
