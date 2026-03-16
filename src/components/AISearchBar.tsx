@@ -19,7 +19,7 @@ const AISearchBar = () => {
           placeholder="궁금한 재정정보를 물어보세요"
           className="flex-1 bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground outline-none"
         />
-        <button className="p-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm">
+        <button className="p-2.5 rounded-full text-muted-foreground hover:text-primary transition-colors">
           <Send className="w-4 h-4" strokeWidth={2} />
         </button>
       </div>
