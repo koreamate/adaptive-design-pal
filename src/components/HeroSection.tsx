@@ -65,7 +65,7 @@ const HeroSection = () => {
       <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0 bg-black/15" />
       
-      <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-24 md:pb-32">
+      <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-10 md:pb-14">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
