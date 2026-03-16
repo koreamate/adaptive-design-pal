@@ -50,7 +50,7 @@ const InterestStatsWidget = () => (
 
     {/* Chart */}
     <p className="text-[11px] text-muted-foreground mb-2">전년 대비 변동 요약 (2024 → 2025)</p>
-    <div className="flex-1 min-h-0" style={{ minHeight: "160px" }}>
+    <div className="flex-1 min-h-0">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} barCategoryGap="25%">
           <XAxis
