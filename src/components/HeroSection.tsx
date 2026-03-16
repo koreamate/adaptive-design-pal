@@ -23,7 +23,9 @@ const kpiData = [
     unit: "조",
     change: "+3.2%",
     sub: "GDP 대비 49.8%",
-    icon: "🏛️",
+    icon: Landmark,
+    iconColor: "text-primary",
+    iconBg: "bg-primary/10",
   },
   {
     label: "총세입 현황",
@@ -31,7 +33,9 @@ const kpiData = [
     unit: "조",
     change: "+1.8%",
     sub: "국세 422.1조 + 세외 75.7조",
-    icon: "📊",
+    icon: BarChart3,
+    iconColor: "text-gov-green",
+    iconBg: "bg-gov-green/10",
   },
   {
     label: "총 세출현황",
@@ -39,7 +43,9 @@ const kpiData = [
     unit: "조",
     change: "+2.5%",
     sub: "경상 412조 + 자본 146조",
-    icon: "💰",
+    icon: Wallet,
+    iconColor: "text-gov-orange",
+    iconBg: "bg-gov-orange/10",
   },
 ];
 
