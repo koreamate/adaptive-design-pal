@@ -76,7 +76,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="flex justify-center gap-3 pt-8 pb-10"
+          className="flex justify-center gap-3 pt-[55px] pb-10"
         >
           {tabs.map((tab, i) => (
             <button
