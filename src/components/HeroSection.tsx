@@ -65,7 +65,7 @@ const HeroSection = () => {
       <div className="relative">
         <div className="absolute inset-0">
           <img src={heroBg} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-gov-navy/80 via-gov-navy/60 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-gov-navy/70 via-gov-navy/50 via-40% via-gov-navy/30 via-65% to-background" />
         </div>
         
         {/* Decorative elements */}
