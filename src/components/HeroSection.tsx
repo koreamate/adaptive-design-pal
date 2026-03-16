@@ -61,23 +61,23 @@ const HeroSection = () => {
 
   return (
     <section className="relative overflow-hidden">
-      {/* Hero Background — real photo */}
-      <div className="relative">
-        
-        <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-24 md:pb-32">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 mb-4">
+      <div className="max-w-[1400px] mx-auto px-5 md:px-8 py-8 md:py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="gov-card p-5 md:p-8 border border-border shadow-xl"
+        >
+          {/* Header */}
+          <div className="mb-6 md:mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted border border-border mb-4">
               <span className="w-2 h-2 rounded-full bg-gov-green animate-pulse" />
-              <span className="text-xs font-medium text-white/80">실시간 재정정보 업데이트</span>
+              <span className="text-xs font-medium text-muted-foreground">실시간 재정정보 업데이트</span>
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-2">
+            <h1 className="text-2xl md:text-4xl font-bold text-foreground tracking-tight mb-2">
               열린재정
             </h1>
-            <p className="text-sm md:text-lg text-white/70 mb-8 max-w-xl">
+            <p className="text-sm md:text-base text-muted-foreground mb-6 max-w-xl">
               국가데이터로 보는 재정, 신뢰로 만드는 정책!
             </p>
             <div className="flex gap-2">
@@ -86,99 +86,86 @@ const HeroSection = () => {
                   key={tab}
                   onClick={() => setActiveTab(i)}
                   className={i === activeTab
-                    ? "px-4 py-2 text-sm font-semibold rounded-lg bg-white text-gov-blue transition-all"
-                    : "px-4 py-2 text-sm font-medium rounded-lg text-white/80 hover:bg-white/10 border border-white/20 transition-all"
+                    ? "px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-primary-foreground transition-all"
+                    : "px-4 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:bg-muted border border-border transition-all"
                   }
                 >
                   {tab}
                 </button>
               ))}
             </div>
-          </motion.div>
-        </div>
-        
-        {/* Bottom edge */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-border" />
-      </div>
-
-      {/* KPI + Chart Card (overlapping banner) */}
-      <div className="max-w-[1400px] mx-auto px-5 md:px-8 -mt-16 md:-mt-20 relative z-10">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="gov-card p-5 md:p-8 border-0 shadow-xl"
-        >
-          {/* KPI Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 md:mb-8">
-            {kpiData.map((kpi) => (
-              <motion.div
-                key={kpi.label}
-                variants={itemVariants}
-                className="relative p-4 md:p-5 rounded-xl bg-gradient-to-br from-muted/50 to-muted/20 border border-border group hover:border-gov-blue/30 transition-all duration-300"
-              >
-                {/* Decorative corner accent */}
-                <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-gov-blue/5 to-transparent rounded-bl-3xl rounded-tr-xl" />
-                
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">{kpi.icon}</span>
-                    <span className="text-xs font-medium text-muted-foreground">{kpi.label}</span>
-                  </div>
-                  <span className={kpi.up ? "gov-badge-up" : "gov-badge-down"}>
-                    {kpi.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                    {kpi.change}
-                  </span>
-                </div>
-                <div className="flex items-baseline gap-1 mb-1">
-                  <span className="gov-kpi-value">{kpi.value}</span>
-                  <span className="text-lg font-semibold text-muted-foreground">{kpi.unit}</span>
-                </div>
-                <p className="text-xs text-muted-foreground">{kpi.sub}</p>
-                
-                {/* Bottom accent line */}
-                <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-gov-blue/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              </motion.div>
-            ))}
           </div>
 
-          {/* Chart */}
-          <motion.div variants={itemVariants}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-foreground">연도별 세입 · 세출 추이</h3>
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-gov-blue" /> 세입
-                </span>
-                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                  <span className="w-2.5 h-2.5 rounded-sm" style={{ background: "hsl(210 25% 75%)" }} /> 세출
-                </span>
-                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-gov-red" /> 국가채무
-                </span>
+          {/* KPI Cards */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 md:mb-8">
+              {kpiData.map((kpi) => (
+                <motion.div
+                  key={kpi.label}
+                  variants={itemVariants}
+                  className="relative p-4 md:p-5 rounded-xl bg-muted/50 border border-border group hover:border-gov-blue/30 transition-all duration-300"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{kpi.icon}</span>
+                      <span className="text-xs font-medium text-muted-foreground">{kpi.label}</span>
+                    </div>
+                    <span className={kpi.up ? "gov-badge-up" : "gov-badge-down"}>
+                      {kpi.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                      {kpi.change}
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-1 mb-1">
+                    <span className="gov-kpi-value">{kpi.value}</span>
+                    <span className="text-lg font-semibold text-muted-foreground">{kpi.unit}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{kpi.sub}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Chart */}
+            <motion.div variants={itemVariants}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-semibold text-foreground">연도별 세입 · 세출 추이</h3>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-gov-blue" /> 세입
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                    <span className="w-2.5 h-2.5 rounded-sm" style={{ background: "hsl(210 25% 75%)" }} /> 세출
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-gov-red" /> 국가채무
+                  </span>
+                </div>
               </div>
-            </div>
-            <div className="h-[240px] md:h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} barCategoryGap="20%">
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 32% 91%)" vertical={false} />
-                  <XAxis dataKey="year" tick={{ fontSize: 12, fill: "hsl(215 16% 47%)" }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 12, fill: "hsl(215 16% 47%)" }} axisLine={false} tickLine={false} />
-                  <Tooltip
-                    contentStyle={{
-                      borderRadius: "12px",
-                      border: "1px solid hsl(214 32% 91%)",
-                      boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-                      fontSize: "12px",
-                      padding: "12px 16px",
-                    }}
-                  />
-                  <Bar dataKey="세입" fill="hsl(221 83% 53%)" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="세출" fill="hsl(210 25% 75%)" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="국가채무" fill="hsl(0 72% 51%)" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+              <div className="h-[240px] md:h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData} barCategoryGap="20%">
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 32% 91%)" vertical={false} />
+                    <XAxis dataKey="year" tick={{ fontSize: 12, fill: "hsl(215 16% 47%)" }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 12, fill: "hsl(215 16% 47%)" }} axisLine={false} tickLine={false} />
+                    <Tooltip
+                      contentStyle={{
+                        borderRadius: "12px",
+                        border: "1px solid hsl(214 32% 91%)",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+                        fontSize: "12px",
+                        padding: "12px 16px",
+                      }}
+                    />
+                    <Bar dataKey="세입" fill="hsl(221 83% 53%)" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="세출" fill="hsl(210 25% 75%)" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="국가채무" fill="hsl(0 72% 51%)" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </motion.div>
           </motion.div>
         </motion.div>
 
@@ -192,9 +179,6 @@ const HeroSection = () => {
           <AISearchBar />
         </motion.div>
       </div>
-      
-      {/* Bottom spacing */}
-      <div className="h-8 md:h-12" />
     </section>
   );
 };
