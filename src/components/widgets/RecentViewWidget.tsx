@@ -1,12 +1,12 @@
 import { Move, X, ChevronRight } from "lucide-react";
 
 const items = [
-  "2026년 예산 국회확정에 따른 정보 공개…",
-  "2025 열린재정 사용자 설문조사 이벤트 당…",
-  "2025년 열린재정 온라인모니터링단 모집",
-  "2025년 상반기 국가결산 보고서 공개 안내",
-  "지방재정 통합공개시스템 개편 사전 안내",
-  "2024 회계연도 기금결산 주요 현황 발표",
+  { text: "2026년 예산 국회확정에 따른 정보 공개…", date: "2026.03.15" },
+  { text: "2025 열린재정 사용자 설문조사 이벤트 당…", date: "2026.03.10" },
+  { text: "2025년 열린재정 온라인모니터링단 모집", date: "2026.02.28" },
+  { text: "2025년 상반기 국가결산 보고서 공개 안내", date: "2026.02.20" },
+  { text: "지방재정 통합공개시스템 개편 사전 안내", date: "2026.02.15" },
+  { text: "2024 회계연도 기금결산 주요 현황 발표", date: "2026.01.30" },
 ];
 
 const RecentViewWidget = () => (
@@ -26,9 +26,10 @@ const RecentViewWidget = () => (
     </div>
     <ul className="mt-4 space-y-3">
       {items.map((item, i) => (
-        <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
-          <span className="w-1.5 h-1.5 rounded-full bg-gov-blue mt-2 shrink-0" />
-          {item}
+        <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
+          <span className="w-1.5 h-1.5 rounded-full bg-gov-blue shrink-0" />
+          <span className="flex-1 line-clamp-1">{item.text}</span>
+          <span className="text-[11px] text-muted-foreground/60 shrink-0">{item.date}</span>
         </li>
       ))}
     </ul>
