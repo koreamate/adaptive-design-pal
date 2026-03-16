@@ -61,13 +61,14 @@ const HeroSection = () => {
 
   return (
     <section className="relative overflow-hidden">
-      {/* Hero Banner with Background */}
-      <div className="relative">
-        <div className="absolute inset-0">
-          <img src={heroBg} alt="" className="w-full h-full object-cover object-right" />
-          <div className="absolute inset-0 bg-gradient-to-r from-gov-navy/70 via-gov-navy/40 to-gov-navy/10" />
-          <div className="absolute bottom-0 left-0 right-0 h-[78%] bg-gradient-to-t from-background via-background/88 via-50% to-transparent" />
-        </div>
+      {/* Hero Background — light with subtle pattern */}
+      <div className="relative bg-gradient-to-br from-background via-gov-blue-light/40 to-background">
+        {/* Decorative pattern overlay */}
+        <img src={heroPattern} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60 pointer-events-none" />
+        
+        {/* Soft decorative blurs */}
+        <div className="absolute top-0 right-0 w-[500px] h-[400px] rounded-full bg-gov-blue/[0.04] blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[300px] rounded-full bg-gov-blue/[0.03] blur-3xl" />
         
         <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-24 md:pb-32">
           <motion.div
@@ -75,14 +76,14 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gov-blue/5 border border-gov-blue/10 mb-4">
               <span className="w-2 h-2 rounded-full bg-gov-green animate-pulse" />
-              <span className="text-xs font-medium text-white/90">실시간 재정정보 업데이트</span>
+              <span className="text-xs font-medium text-foreground/70">실시간 재정정보 업데이트</span>
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-2">
+            <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight mb-2">
               열린재정
             </h1>
-            <p className="text-sm md:text-lg text-white/70 mb-8 max-w-xl">
+            <p className="text-sm md:text-lg text-muted-foreground mb-8 max-w-xl">
               국가데이터로 보는 재정, 신뢰로 만드는 정책!
             </p>
             <div className="flex gap-2">
@@ -90,11 +91,7 @@ const HeroSection = () => {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(i)}
-                  className={`px-5 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    i === activeTab
-                      ? "bg-white text-gov-navy shadow-lg"
-                      : "text-white/70 hover:text-white hover:bg-white/10 backdrop-blur-sm"
-                  }`}
+                  className={i === activeTab ? "gov-tab-active" : "gov-tab"}
                 >
                   {tab}
                 </button>
@@ -102,6 +99,9 @@ const HeroSection = () => {
             </div>
           </motion.div>
         </div>
+        
+        {/* Bottom fade to background */}
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent" />
       </div>
 
       {/* KPI + Chart Card (overlapping banner) */}
