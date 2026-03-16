@@ -140,7 +140,7 @@ const HeroSection = () => {
             </div>
 
             {/* Mini Chart */}
-            <div className="mt-2">
+            <div className="mt-2 max-w-[360px]">
               <h3 className="text-xs font-bold text-foreground mb-2">연도별 세입·세출 추이</h3>
               <div className="h-[110px]">
                 <ResponsiveContainer width="100%" height="100%">
