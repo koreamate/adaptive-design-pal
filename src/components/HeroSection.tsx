@@ -128,7 +128,7 @@ const HeroSection = () => {
                 </div>
                 <div className="flex items-baseline gap-1 mb-1">
                   <span className="gov-kpi-value">{kpi.value}</span>
-                  <span className="text-lg font-semibold text-muted-foreground">{kpi.unit}</span>
+                  <span className="text-lg font-bold text-foreground/70">{kpi.unit}</span>
                 </div>
                 <p className="text-xs text-muted-foreground">{kpi.sub}</p>
                 
