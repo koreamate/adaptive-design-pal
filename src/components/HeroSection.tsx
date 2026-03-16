@@ -130,7 +130,7 @@ const HeroSection = () => {
                   <span className="gov-kpi-value">{kpi.value}</span>
                   <span className="text-lg font-bold text-foreground/70">{kpi.unit}</span>
                 </div>
-                <p className="text-xs text-muted-foreground">{kpi.sub}</p>
+                <p className="text-xs font-medium text-foreground/60">{kpi.sub}</p>
                 
                 {/* Bottom accent line */}
                 <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-gov-blue/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
