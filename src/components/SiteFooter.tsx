@@ -36,7 +36,9 @@ const SiteFooter = () => {
                 className="group flex flex-col items-center justify-center gap-1.5 rounded-lg border border-border bg-card px-3 py-3 hover:border-primary/30 hover:shadow-md transition-all h-[88px]"
                 title={site.name}
               >
-                <img src={site.logo} alt={site.name} className={`${site.name === "국세외수입포털" ? "h-[72px] md:h-[80px]" : "h-10 md:h-12"} w-auto object-contain`} />
+                <div className="flex h-[56px] md:h-[64px] items-center justify-center">
+                  <img src={site.logo} alt={site.name} className={`${site.name === "국세외수입포털" ? "h-[52px] md:h-[60px]" : "h-10 md:h-12"} w-auto object-contain`} />
+                </div>
                 <span className="text-[11px] text-muted-foreground group-hover:text-foreground transition-colors font-medium">
                   {site.name}
                 </span>
