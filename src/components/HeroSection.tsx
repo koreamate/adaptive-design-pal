@@ -111,7 +111,7 @@ const HeroSection = () => {
               <motion.div
                 key={kpi.label}
                 variants={itemVariants}
-                className="relative p-4 md:p-5 rounded-xl bg-gradient-to-br from-muted/50 to-muted/20 border border-border group hover:border-gov-blue/30 transition-all duration-300"
+                className="relative p-4 md:p-5 rounded-xl bg-white/70 backdrop-blur-sm border border-white/50 shadow-sm group hover:border-gov-blue/30 transition-all duration-300"
               >
                 {/* Decorative corner accent */}
                 <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-gov-blue/5 to-transparent rounded-bl-3xl rounded-tr-xl" />
