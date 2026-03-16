@@ -112,7 +112,7 @@ const HeroSection = () => {
           </motion.div>
 
           {/* Right: KPIs + Chart */}
-          <motion.div variants={itemVariants} className="w-full">
+          <motion.div variants={itemVariants} className="w-full max-w-[calc(100%-20px)]">
             {/* KPI Cards - stacked vertically */}
             <div className="space-y-3 mb-6">
               {kpiData.map((kpi) => (
