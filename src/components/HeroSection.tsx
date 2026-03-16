@@ -99,9 +99,7 @@ const HeroSection = () => {
           </motion.div>
         </div>
         
-        {/* Bottom fade to background */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent" />
-      </div>
+      
 
       {/* KPI + Chart Card (overlapping banner) */}
       <div className="max-w-[1400px] mx-auto px-5 md:px-8 -mt-16 md:-mt-20 relative z-10">
