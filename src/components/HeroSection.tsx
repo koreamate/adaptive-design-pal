@@ -137,8 +137,8 @@ const HeroSection = () => {
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-0.5">{kpi.sub}</p>
                   </div>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold text-destructive">
-                    <TrendingUp className="w-3.5 h-3.5" />
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold text-destructive">
+                    <TrendingUp className="w-4 h-4" />
                     {kpi.change}
                   </span>
                 </div>
