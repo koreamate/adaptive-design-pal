@@ -151,10 +151,10 @@ const HeroSection = () => {
                   <span className="w-3.5 h-3.5 rounded-md bg-primary shadow-sm shadow-primary/30" /> 세입
                 </span>
                 <span className="inline-flex items-center gap-2 text-xs font-semibold text-foreground/80">
-                  <span className="w-3.5 h-3.5 rounded-md bg-gov-green shadow-sm shadow-gov-green/30" /> 세출
+                  <span className="w-3.5 h-3.5 rounded-md" style={{ background: "hsl(210 70% 65%)" }} /> 세출
                 </span>
                 <span className="inline-flex items-center gap-2 text-xs font-semibold text-foreground/80">
-                  <span className="w-5 h-[3px] rounded-full bg-gov-orange" /> 국가채무
+                  <span className="w-5 h-[3px] rounded-full" style={{ background: "hsl(200 80% 45%)" }} /> 국가채무
                 </span>
               </div>
             </div>
@@ -163,44 +163,44 @@ const HeroSection = () => {
                 <ComposedChart data={chartData} barCategoryGap="30%" margin={{ top: 20, right: 16, left: -4, bottom: 4 }}>
                   <defs>
                     <linearGradient id="barGradient1" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.95} />
-                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                      <stop offset="0%" stopColor="hsl(221, 83%, 53%)" stopOpacity={0.95} />
+                      <stop offset="100%" stopColor="hsl(221, 83%, 53%)" stopOpacity={0.6} />
                     </linearGradient>
                     <linearGradient id="barGradient2" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--gov-green))" stopOpacity={0.85} />
-                      <stop offset="100%" stopColor="hsl(var(--gov-green))" stopOpacity={0.5} />
+                      <stop offset="0%" stopColor="hsl(210, 70%, 65%)" stopOpacity={0.9} />
+                      <stop offset="100%" stopColor="hsl(210, 70%, 65%)" stopOpacity={0.5} />
                     </linearGradient>
                     <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--gov-orange))" stopOpacity={0.15} />
-                      <stop offset="80%" stopColor="hsl(var(--gov-orange))" stopOpacity={0.02} />
+                      <stop offset="0%" stopColor="hsl(200, 80%, 45%)" stopOpacity={0.15} />
+                      <stop offset="80%" stopColor="hsl(200, 80%, 45%)" stopOpacity={0.02} />
                     </linearGradient>
                     <filter id="barShadow" x="-10%" y="-10%" width="120%" height="130%">
-                      <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="hsl(var(--primary))" floodOpacity="0.15" />
+                      <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="hsl(221, 83%, 53%)" floodOpacity="0.15" />
                     </filter>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 6" stroke="hsl(var(--foreground) / 0.06)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 6" stroke="hsl(214, 32%, 91%)" vertical={false} />
                   <XAxis
                     dataKey="year"
-                    tick={{ fontSize: 12, fill: "hsl(var(--foreground) / 0.5)", fontWeight: 600 }}
-                    axisLine={{ stroke: "hsl(var(--foreground) / 0.08)", strokeWidth: 1 }}
+                    tick={{ fontSize: 12, fill: "hsl(215, 16%, 47%)", fontWeight: 600 }}
+                    axisLine={{ stroke: "hsl(214, 32%, 91%)", strokeWidth: 1 }}
                     tickLine={false}
                     dy={10}
                   />
                   <YAxis
-                    tick={{ fontSize: 11, fill: "hsl(var(--foreground) / 0.4)" }}
+                    tick={{ fontSize: 11, fill: "hsl(215, 16%, 47%)" }}
                     axisLine={false}
                     tickLine={false}
                     dx={-6}
                     tickFormatter={(v) => `${v}`}
                   />
                   <Tooltip
-                    cursor={{ fill: "hsl(var(--foreground) / 0.04)", radius: 12 }}
+                    cursor={{ fill: "hsl(221, 83%, 53%, 0.04)", radius: 12 }}
                     content={({ active, payload, label }) => {
                       if (!active || !payload?.length) return null;
                       const colorMap: Record<string, string> = {
-                        '세입': 'hsl(var(--primary))',
-                        '세출': 'hsl(var(--gov-green))',
-                        '국가채무': 'hsl(var(--gov-orange))',
+                        '세입': 'hsl(221, 83%, 53%)',
+                        '세출': 'hsl(210, 70%, 65%)',
+                        '국가채무': 'hsl(200, 80%, 45%)',
                       };
                       return (
                         <div className="bg-white/95 backdrop-blur-md border border-border/50 rounded-2xl shadow-xl p-5 min-w-[200px]">
@@ -222,19 +222,19 @@ const HeroSection = () => {
                     }}
                   />
                   <Bar dataKey="세입" fill="url(#barGradient1)" radius={[10, 10, 3, 3]} barSize={32} filter="url(#barShadow)">
-                    <LabelList dataKey="세입" position="top" fontSize={10} fontWeight={700} fill="hsl(var(--primary))" formatter={(v: number) => v} />
+                    <LabelList dataKey="세입" position="top" fontSize={10} fontWeight={700} fill="hsl(221, 83%, 53%)" formatter={(v: number) => v} />
                   </Bar>
                   <Bar dataKey="세출" fill="url(#barGradient2)" radius={[10, 10, 3, 3]} barSize={32}>
-                    <LabelList dataKey="세출" position="top" fontSize={10} fontWeight={700} fill="hsl(var(--gov-green))" formatter={(v: number) => v} />
+                    <LabelList dataKey="세출" position="top" fontSize={10} fontWeight={700} fill="hsl(210, 70%, 65%)" formatter={(v: number) => v} />
                   </Bar>
                   <Area type="monotone" dataKey="국가채무" fill="url(#areaGradient)" stroke="none" />
                   <Line
                     type="monotone"
                     dataKey="국가채무"
-                    stroke="hsl(var(--gov-orange))"
+                    stroke="hsl(200, 80%, 45%)"
                     strokeWidth={3}
-                    dot={{ r: 5, fill: "white", stroke: "hsl(var(--gov-orange))", strokeWidth: 3 }}
-                    activeDot={{ r: 7, fill: "hsl(var(--gov-orange))", stroke: "white", strokeWidth: 3 }}
+                    dot={{ r: 5, fill: "white", stroke: "hsl(200, 80%, 45%)", strokeWidth: 3 }}
+                    activeDot={{ r: 7, fill: "hsl(200, 80%, 45%)", stroke: "white", strokeWidth: 3 }}
                   />
                 </ComposedChart>
               </ResponsiveContainer>
