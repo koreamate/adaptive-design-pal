@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { TrendingUp, TrendingDown, Calendar, ArrowRight, PieChart, BarChart3, Wallet } from "lucide-react";
-import { motion } from "framer-motion";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart } from "recharts";
+import { TrendingUp, TrendingDown, Calendar, PieChart, BarChart3, Wallet } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 import AISearchBar from "./AISearchBar";
 
 const tabs = ["중앙재정", "지방재정", "교육재정"];
@@ -57,15 +56,6 @@ const kpiData = [
   },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.06 } },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.2, 0.8, 0.2, 1] as const } },
-};
 
 const HeroSection = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -73,13 +63,8 @@ const HeroSection = () => {
   return (
     <section className="relative">
       <div className="max-w-[1400px] mx-auto px-5 md:px-8 py-6 md:py-8">
-        {/* Top bar: title + tabs + search */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5"
-        >
+        {/* Top bar: title + tabs */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
           <div className="flex items-center gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -106,22 +91,16 @@ const HeroSection = () => {
               </button>
             ))}
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="space-y-4"
-        >
+        <div className="space-y-4">
           {/* KPI Row */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {kpiData.map((kpi) => {
               const Icon = kpi.icon;
               return (
-                <motion.div
+                <div
                   key={kpi.label}
-                  variants={itemVariants}
                   className="group relative rounded-xl border border-border bg-card p-4 hover:shadow-md hover:border-primary/20 transition-all duration-300 cursor-default"
                 >
                   <div className="flex items-start justify-between mb-3">
@@ -141,7 +120,7 @@ const HeroSection = () => {
                     <p className="text-[11px] text-muted-foreground">{kpi.sub}</p>
                     <span className="text-[10px] text-muted-foreground/60">{kpi.label}</span>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>
@@ -149,10 +128,7 @@ const HeroSection = () => {
           {/* Dashboard Grid: Chart + Sidebar */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
             {/* Main Chart */}
-            <motion.div
-              variants={itemVariants}
-              className="lg:col-span-2 rounded-xl border border-border bg-card p-4 md:p-5"
-            >
+            <div className="lg:col-span-2 rounded-xl border border-border bg-card p-4 md:p-5">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <BarChart3 className="w-4 h-4 text-primary" />
@@ -192,11 +168,10 @@ const HeroSection = () => {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-            </motion.div>
+            </div>
 
             {/* Sidebar: Debt Trend + Quick Stats */}
-            <motion.div variants={itemVariants} className="flex flex-col gap-3">
-              {/* Mini trend chart */}
+            <div className="flex flex-col gap-3">
               <div className="rounded-xl border border-border bg-card p-4 flex-1">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -221,7 +196,6 @@ const HeroSection = () => {
                 </div>
               </div>
 
-              {/* Quick stats */}
               <div className="rounded-xl border border-border bg-card p-4 flex-1">
                 <h3 className="text-xs font-semibold text-foreground mb-3 flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-primary" />
@@ -241,14 +215,13 @@ const HeroSection = () => {
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
 
-          {/* AI Search */}
-          <motion.div variants={itemVariants}>
+          <div>
             <AISearchBar />
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );
