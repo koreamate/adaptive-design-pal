@@ -140,9 +140,9 @@ const HeroSection = () => {
             </div>
 
             {/* Mini Chart */}
-            <div className="mt-2 max-w-[360px]">
-              <h3 className="text-xs font-bold text-foreground mb-2">연도별 세입·세출 추이</h3>
-              <div className="h-[110px]">
+            <div>
+              <h3 className="text-sm font-bold text-foreground mb-3">연도별 세입·세출 추이</h3>
+              <div className="h-[160px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart data={chartData} barCategoryGap="25%" margin={{ top: 10, right: 8, left: -20, bottom: 0 }}>
                     <XAxis
