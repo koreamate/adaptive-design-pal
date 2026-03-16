@@ -28,18 +28,15 @@ const SiteFooter = () => {
     <footer className="border-t border-border bg-card">
       {/* Related Sites Banner */}
       <div className="border-b border-border bg-muted/30">
-        <div className="max-w-[1400px] mx-auto px-5 md:px-8 py-6">
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+        <div className="max-w-[1400px] mx-auto px-5 md:px-8 py-3">
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
             {relatedSites.map((site) => (
               <button
                 key={site.name}
-                className="group flex flex-col items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 py-4 hover:border-primary/30 hover:shadow-md transition-all"
+                className="group flex items-center justify-center rounded-lg border border-border bg-card px-3 py-2 hover:border-primary/30 hover:shadow-md transition-all"
                 title={site.name}
               >
-                <img src={site.logo} alt={site.name} className="h-10 md:h-12 w-auto object-contain" />
-                <span className="text-[11px] text-muted-foreground group-hover:text-foreground transition-colors font-medium">
-                  {site.name}
-                </span>
+                <img src={site.logo} alt={site.name} className="h-14 md:h-16 w-auto object-contain" />
               </button>
             ))}
           </div>
