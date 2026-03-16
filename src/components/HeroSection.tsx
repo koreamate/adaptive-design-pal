@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TrendingUp, TrendingDown, Calendar, PieChart, BarChart3, Wallet } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 import AISearchBar from "./AISearchBar";
+import heroDashboardBg from "@/assets/hero-dashboard-bg.jpg";
 
 const tabs = ["중앙재정", "지방재정", "교육재정"];
 
