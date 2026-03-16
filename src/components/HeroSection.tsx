@@ -143,39 +143,90 @@ const HeroSection = () => {
 
           {/* Chart */}
           <motion.div variants={itemVariants}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-foreground">연도별 세입 · 세출 추이</h3>
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-gov-blue" /> 세입
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-3">
+                <div className="w-1 h-5 rounded-full bg-primary" />
+                <h3 className="text-sm font-bold text-foreground tracking-tight">연도별 세입 · 세출 추이</h3>
+                <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full font-medium">단위: 조원</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span className="w-3 h-3 rounded-[3px] bg-primary shadow-sm" /> 세입
                 </span>
-                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                  <span className="w-2.5 h-2.5 rounded-sm" style={{ background: "hsl(210 25% 75%)" }} /> 세출
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span className="w-3 h-3 rounded-[3px]" style={{ background: "hsl(var(--gov-blue) / 0.35)" }} /> 세출
                 </span>
-                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-gov-red" /> 국가채무
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span className="w-3 h-1 rounded-full bg-destructive" /> 국가채무
                 </span>
               </div>
             </div>
-            <div className="h-[240px] md:h-[300px]">
+            <div className="h-[260px] md:h-[320px] rounded-xl bg-muted/30 border border-border/50 p-4">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} barCategoryGap="20%">
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 32% 91%)" vertical={false} />
-                  <XAxis dataKey="year" tick={{ fontSize: 12, fill: "hsl(215 16% 47%)" }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 12, fill: "hsl(215 16% 47%)" }} axisLine={false} tickLine={false} />
+                <ComposedChart data={chartData} barCategoryGap="25%" margin={{ top: 8, right: 12, left: -8, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="barGradient1" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.7} />
+                    </linearGradient>
+                    <linearGradient id="barGradient2" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--gov-blue))" stopOpacity={0.4} />
+                      <stop offset="100%" stopColor="hsl(var(--gov-blue))" stopOpacity={0.15} />
+                    </linearGradient>
+                    <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--destructive))" stopOpacity={0.08} />
+                      <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="4 4" stroke="hsl(var(--border))" vertical={false} />
+                  <XAxis
+                    dataKey="year"
+                    tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))", fontWeight: 500 }}
+                    axisLine={false}
+                    tickLine={false}
+                    dy={8}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                    axisLine={false}
+                    tickLine={false}
+                    dx={-4}
+                  />
                   <Tooltip
-                    contentStyle={{
-                      borderRadius: "12px",
-                      border: "1px solid hsl(214 32% 91%)",
-                      boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-                      fontSize: "12px",
-                      padding: "12px 16px",
+                    cursor={{ fill: "hsl(var(--muted) / 0.5)", radius: 8 }}
+                    content={({ active, payload, label }) => {
+                      if (!active || !payload?.length) return null;
+                      return (
+                        <div className="bg-card border border-border rounded-xl shadow-lg p-4 min-w-[180px]">
+                          <p className="text-xs font-bold text-foreground mb-2.5 pb-2 border-b border-border">{label}</p>
+                          {payload.map((entry: any) => (
+                            <div key={entry.dataKey} className="flex items-center justify-between py-1">
+                              <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full"
+                                  style={{ background: entry.dataKey === '국가채무' ? 'hsl(var(--destructive))' : entry.color }}
+                                />
+                                {entry.dataKey}
+                              </span>
+                              <span className="text-xs font-semibold text-foreground">{entry.value}조</span>
+                            </div>
+                          ))}
+                        </div>
+                      );
                     }}
                   />
-                  <Bar dataKey="세입" fill="hsl(221 83% 53%)" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="세출" fill="hsl(210 25% 75%)" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="국가채무" fill="hsl(0 72% 51%)" radius={[6, 6, 0, 0]} />
-                </BarChart>
+                  <Bar dataKey="세입" fill="url(#barGradient1)" radius={[8, 8, 2, 2]} barSize={28} />
+                  <Bar dataKey="세출" fill="url(#barGradient2)" radius={[8, 8, 2, 2]} barSize={28} />
+                  <Area type="monotone" dataKey="국가채무" fill="url(#areaGradient)" stroke="none" />
+                  <Line
+                    type="monotone"
+                    dataKey="국가채무"
+                    stroke="hsl(var(--destructive))"
+                    strokeWidth={2.5}
+                    dot={{ r: 4, fill: "hsl(var(--card))", stroke: "hsl(var(--destructive))", strokeWidth: 2.5 }}
+                    activeDot={{ r: 6, fill: "hsl(var(--destructive))", stroke: "hsl(var(--card))", strokeWidth: 3 }}
+                  />
+                </ComposedChart>
               </ResponsiveContainer>
             </div>
           </motion.div>
