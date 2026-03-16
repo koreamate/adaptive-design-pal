@@ -1,4 +1,5 @@
 import { Move, X, ChevronRight } from "lucide-react";
+import newsThumb from "@/assets/news-thumb.jpg";
 
 const NewsfeedWidget = () => (
   <div className="gov-card p-5 h-full">
@@ -16,8 +17,9 @@ const NewsfeedWidget = () => (
       </div>
     </div>
     <div className="mt-4">
-      <div className="aspect-video rounded-lg bg-muted/50 border border-border mb-3 flex items-center justify-center">
-        <span className="text-xs text-muted-foreground">뉴스 이미지</span>
+      <div className="aspect-video rounded-lg overflow-hidden border border-border mb-3 relative group">
+        <img src={newsThumb} alt="뉴스 이미지" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
       </div>
       <h4 className="text-sm font-semibold text-foreground mb-1">
         2025년 하반기 재정데이터분석 미니 프로젝트
