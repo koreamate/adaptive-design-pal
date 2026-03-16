@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, TrendingUp } from "lucide-react";
+import { ChevronLeft, ChevronRight, TrendingUp, Landmark, BarChart3, Wallet } from "lucide-react";
 import { motion } from "framer-motion";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import AISearchBar from "./AISearchBar";
@@ -23,7 +23,9 @@ const kpiData = [
     unit: "조",
     change: "+3.2%",
     sub: "GDP 대비 49.8%",
-    icon: "🏛️",
+    icon: Landmark,
+    iconColor: "text-primary",
+    iconBg: "bg-primary/10",
   },
   {
     label: "총세입 현황",
@@ -31,7 +33,9 @@ const kpiData = [
     unit: "조",
     change: "+1.8%",
     sub: "국세 422.1조 + 세외 75.7조",
-    icon: "📊",
+    icon: BarChart3,
+    iconColor: "text-gov-green",
+    iconBg: "bg-gov-green/10",
   },
   {
     label: "총 세출현황",
@@ -39,7 +43,9 @@ const kpiData = [
     unit: "조",
     change: "+2.5%",
     sub: "경상 412조 + 자본 146조",
-    icon: "💰",
+    icon: Wallet,
+    iconColor: "text-gov-orange",
+    iconBg: "bg-gov-orange/10",
   },
 ];
 
@@ -121,10 +127,10 @@ const HeroSection = () => {
               {kpiData.map((kpi) => (
                 <div
                   key={kpi.label}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow"
+                  className="flex items-center gap-4 p-4 rounded-xl bg-card/80 backdrop-blur-sm border border-border/60 shadow-sm hover:shadow-md transition-all"
                 >
-                  <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-muted text-2xl shrink-0">
-                    {kpi.icon}
+                  <div className={`flex items-center justify-center w-12 h-12 rounded-xl ${kpi.iconBg} shrink-0`}>
+                    <kpi.icon className={`w-6 h-6 ${kpi.iconColor}`} strokeWidth={1.8} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-muted-foreground mb-0.5">{kpi.label}</p>
