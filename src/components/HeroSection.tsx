@@ -158,7 +158,7 @@ const HeroSection = () => {
                 </span>
               </div>
             </div>
-            <div className="h-[260px] md:h-[320px] rounded-xl bg-muted/30 border border-border/50 p-4">
+            <div className="h-[260px] md:h-[320px] rounded-xl bg-white/50 backdrop-blur-sm border border-white/40 p-4">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={chartData} barCategoryGap="25%" margin={{ top: 8, right: 12, left: -8, bottom: 0 }}>
                   <defs>
