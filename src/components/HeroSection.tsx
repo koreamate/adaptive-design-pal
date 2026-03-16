@@ -89,10 +89,10 @@ const HeroSection = () => {
         {/* Title */}
         <motion.div variants={containerVariants} initial="hidden" animate="visible">
           <motion.div variants={itemVariants} className="mb-6 mt-5">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-2">
               열린재정
             </h1>
-            <p className="text-sm md:text-base font-semibold text-muted-foreground max-w-md mt-5">
+            <p className="text-sm md:text-base font-semibold text-white/70 max-w-md mt-5">
               국가데이터로 보는 재정, 신뢰로 만드는 정책!
             </p>
           </motion.div>
