@@ -17,7 +17,7 @@ const PlaygroundWidget = () => (
       </div>
     </div>
     <div className="mt-4">
-      <div className="aspect-[5/2] rounded-lg overflow-hidden border border-border mb-3 relative group">
+      <div className="aspect-[3/1] rounded-lg overflow-hidden border border-border mb-3 relative group">
         <img src={playgroundThumb} alt="나라살림 놀이터" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         <div className="absolute bottom-3 left-3">
