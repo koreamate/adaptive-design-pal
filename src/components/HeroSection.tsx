@@ -100,7 +100,7 @@ const HeroSection = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-5 pb-8 items-center"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-0 pb-8 items-center"
         >
           {/* Left: Illustration */}
           <motion.div variants={itemVariants} className="flex items-center justify-center">
