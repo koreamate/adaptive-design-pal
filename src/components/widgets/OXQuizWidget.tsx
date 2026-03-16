@@ -20,62 +20,62 @@ const OXQuizWidget = () => {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center py-3 gap-3">
-        {/* Question card */}
-        <div className="w-full rounded-xl p-3.5 bg-muted/50 border border-border relative">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="px-2 py-0.5 bg-gov-blue/10 text-gov-blue text-[10px] font-bold rounded-md">OX 퀴즈</span>
-            <span className="px-2 py-0.5 bg-gov-orange/10 text-gov-orange text-[10px] font-bold rounded-md">TODAY</span>
-            <span className="text-[10px] text-muted-foreground ml-auto">Q.12 / 20</span>
+      <div className="flex-1 flex flex-col items-center justify-between pt-3 pb-1 min-h-0">
+        {/* Question */}
+        <div className="w-full rounded-lg p-3 bg-muted/50 border border-border">
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <span className="px-1.5 py-0.5 bg-gov-blue/10 text-gov-blue text-[9px] font-bold rounded">OX퀴즈</span>
+            <span className="px-1.5 py-0.5 bg-gov-orange/10 text-gov-orange text-[9px] font-bold rounded">TODAY</span>
+            <span className="text-[9px] text-muted-foreground ml-auto">12/20</span>
           </div>
-          <p className="text-sm font-semibold text-foreground text-center">국가채무는 세입보다 많다?</p>
+          <p className="text-[13px] font-semibold text-foreground text-center">국가채무는 세입보다 많다?</p>
         </div>
 
         {/* O/X Buttons */}
-        <div className="flex gap-5">
+        <div className="flex gap-4 py-2">
           <button
             onClick={() => setAnswered(true)}
-            className={`w-14 h-14 rounded-2xl text-xl font-black transition-all duration-300 shadow-sm ${
+            className={`w-12 h-12 rounded-xl text-lg font-black transition-all duration-300 ${
               answered === true
-                ? "bg-gradient-to-br from-gov-blue to-gov-blue/80 text-white scale-110 shadow-lg shadow-gov-blue/30"
-                : "bg-card border-2 border-gov-blue/20 text-gov-blue hover:border-gov-blue/50 hover:shadow-md"
+                ? "bg-gov-blue text-white scale-110 shadow-md"
+                : "bg-card border-2 border-gov-blue/20 text-gov-blue hover:border-gov-blue/40"
             }`}
           >
             O
           </button>
           <button
             onClick={() => setAnswered(false)}
-            className={`w-14 h-14 rounded-2xl text-xl font-black transition-all duration-300 shadow-sm ${
+            className={`w-12 h-12 rounded-xl text-lg font-black transition-all duration-300 ${
               answered === false
-                ? "bg-gradient-to-br from-gov-red to-gov-red/80 text-white scale-110 shadow-lg shadow-gov-red/30"
-                : "bg-card border-2 border-gov-red/20 text-gov-red hover:border-gov-red/50 hover:shadow-md"
+                ? "bg-gov-red text-white scale-110 shadow-md"
+                : "bg-card border-2 border-gov-red/20 text-gov-red hover:border-gov-red/40"
             }`}
           >
             X
           </button>
         </div>
 
-        {/* Stats row */}
-        <div className="flex items-center gap-3 w-full">
-          <div className="flex-1 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gov-orange/5 border border-gov-orange/10">
+        {/* Stats */}
+        <div className="flex items-center gap-2 w-full">
+          <div className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-md bg-gov-orange/5 border border-gov-orange/10">
             <Trophy className="w-3 h-3 text-gov-orange" />
-            <span className="text-[11px] font-semibold text-gov-orange">80점</span>
+            <span className="text-[10px] font-semibold text-gov-orange">80점</span>
           </div>
-          <div className="flex-1 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gov-blue/5 border border-gov-blue/10">
+          <div className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-md bg-gov-blue/5 border border-gov-blue/10">
             <Zap className="w-3 h-3 text-gov-blue" />
-            <span className="text-[11px] font-semibold text-gov-blue">3위</span>
+            <span className="text-[10px] font-semibold text-gov-blue">3위</span>
           </div>
-          <div className="flex-1 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gov-green/5 border border-gov-green/10">
+          <div className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-md bg-gov-green/5 border border-gov-green/10">
             <Clock className="w-3 h-3 text-gov-green" />
-            <span className="text-[11px] font-semibold text-gov-green">12초</span>
+            <span className="text-[10px] font-semibold text-gov-green">12초</span>
           </div>
         </div>
-      </div>
 
-      <button className="w-full py-2 text-xs font-medium text-gov-blue bg-gov-blue/5 border border-gov-blue/10 rounded-lg hover:bg-gov-blue/10 transition-colors flex items-center justify-center gap-1.5">
-        <Share2 className="w-3 h-3" />
-        SNS 공유
-      </button>
+        {/* Share */}
+        <button className="w-full mt-2 py-1.5 text-[11px] font-medium text-gov-blue bg-gov-blue/5 border border-gov-blue/10 rounded-lg hover:bg-gov-blue/10 transition-colors flex items-center justify-center gap-1">
+          <Share2 className="w-3 h-3" /> SNS 공유
+        </button>
+      </div>
     </div>
   );
 };
