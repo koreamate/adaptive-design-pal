@@ -9,31 +9,30 @@ const AISearchBar = () => {
   return (
     <div className="space-y-3">
       <div className="relative">
-        <div className="gov-ai-search group">
-          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-gov-blue to-gov-blue/80 shrink-0 shadow-md">
-            <Sparkles className="w-4 h-4 text-white" />
+        <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/80 backdrop-blur-md border border-white/60 shadow-lg">
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary shrink-0 shadow-md">
+            <Sparkles className="w-4.5 h-4.5 text-primary-foreground" />
           </div>
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="궁금한 재정정보를 AI에게 물어보세요"
-            className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+            className="flex-1 bg-transparent text-sm font-medium text-foreground placeholder:text-foreground/40 outline-none"
           />
-          <button className="p-2.5 rounded-xl bg-gov-blue text-white hover:bg-gov-blue/90 transition-colors shadow-sm">
+          <button className="px-4 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm text-sm font-semibold flex items-center gap-1.5">
+            검색
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
-        {/* Glow effect */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-gov-blue/10 via-gov-blue/5 to-gov-blue/10 rounded-3xl blur-xl -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
-      <div className="flex gap-2 flex-wrap">
-        <span className="text-xs text-muted-foreground mr-1">추천 검색:</span>
+      <div className="flex gap-2 flex-wrap items-center">
+        <span className="text-xs font-semibold text-foreground/50 mr-1">추천 검색:</span>
         {suggestions.map((s) => (
           <button
             key={s}
             onClick={() => setQuery(s)}
-            className="gov-tag hover:bg-gov-blue/5 hover:border-gov-blue/30 hover:text-gov-blue transition-all cursor-pointer"
+            className="px-3 py-1.5 text-xs font-semibold rounded-full bg-white/60 backdrop-blur-sm border border-foreground/10 text-foreground/70 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all cursor-pointer"
           >
             {s}
           </button>
