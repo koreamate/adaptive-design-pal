@@ -20,7 +20,7 @@ const AISearchBar = () => {
           className="flex-1 bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground outline-none"
         />
         <button className="p-2.5 rounded-full text-muted-foreground hover:text-primary transition-colors">
-          <Send className="w-4 h-4" strokeWidth={2} />
+          <Send className="w-[21px] h-[21px]" strokeWidth={2} />
         </button>
       </div>
       <div className="flex gap-2 flex-wrap items-center justify-center">
