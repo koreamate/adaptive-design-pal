@@ -88,21 +88,23 @@ const HeroSection = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="flex flex-col lg:flex-row items-center gap-6 lg:gap-10 pb-8"
+          className="flex flex-col lg:flex-row items-stretch gap-6 lg:gap-10 pb-8"
         >
           {/* Left: Title + Illustration */}
-          <motion.div variants={itemVariants} className="flex-1 relative">
+          <motion.div variants={itemVariants} className="flex-1 flex flex-col">
             <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
               열린재정
             </h1>
             <p className="text-sm md:text-base font-semibold text-muted-foreground mb-6 max-w-md">
               국가데이터로 보는 재정, 신뢰로 만드는 정책!
             </p>
-            <img
-              src={heroIllustration}
-              alt="재정 데이터 분석 일러스트"
-              className="w-full max-w-[520px] h-auto object-contain"
-            />
+            <div className="flex-1 flex items-end">
+              <img
+                src={heroIllustration}
+                alt="재정 데이터 분석 일러스트"
+                className="w-full max-w-[520px] h-auto object-contain"
+              />
+            </div>
           </motion.div>
 
           {/* Right: KPIs + Chart */}
