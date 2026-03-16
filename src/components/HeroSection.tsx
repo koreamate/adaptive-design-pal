@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, TrendingUp } from "lucide-react";
+import { ChevronLeft, ChevronRight, TrendingUp, Landmark, BarChart3, Wallet } from "lucide-react";
 import { motion } from "framer-motion";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import AISearchBar from "./AISearchBar";
