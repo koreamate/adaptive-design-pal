@@ -124,7 +124,7 @@ const HeroSection = () => {
               {kpiData.map((kpi) => (
                 <div
                   key={kpi.label}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-card/40 backdrop-blur-sm border border-border/40 shadow-sm hover:shadow-md transition-all"
+                  className="flex items-center gap-4 p-4 rounded-xl bg-card/60 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-md transition-all"
                 >
                   <div className={`flex items-center justify-center w-12 h-12 rounded-xl ${kpi.iconBg} shrink-0`}>
                     <kpi.icon className={`w-6 h-6 ${kpi.iconColor}`} strokeWidth={1.8} />
