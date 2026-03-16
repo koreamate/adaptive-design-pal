@@ -42,10 +42,7 @@ const SiteFooter = () => {
           <div>
             {/* Logo */}
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-md bg-gov-navy flex items-center justify-center">
-                <span className="text-primary-foreground text-[10px] font-bold">FiS</span>
-              </div>
-              <span className="text-sm font-semibold text-foreground">한국재정정보원</span>
+              <img src={logoImg} alt="열린재정" className="h-7 w-auto" />
             </div>
 
             {/* Links */}
