@@ -147,25 +147,38 @@ const HeroSection = () => {
 
             {/* Mini Chart */}
             <div>
-              <h3 className="text-sm font-bold text-foreground mb-3">연도별 세입·세출 추이</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-foreground">연도별 세입·세출 추이</h3>
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground">
+                    <span className="w-3 h-3 rounded-sm bg-[hsl(221_83%_76%)]" /> 세입
+                  </span>
+                  <span className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground">
+                    <span className="w-3 h-3 rounded-sm bg-[hsl(210_40%_85%)]" /> 세출
+                  </span>
+                  <span className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground">
+                    <span className="w-3 h-3 rounded-full bg-[hsl(152_50%_65%)]" /> 국가채무
+                  </span>
+                </div>
+              </div>
               <div className="h-[160px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart data={chartData} barCategoryGap="25%" margin={{ top: 10, right: 8, left: -20, bottom: 0 }}>
                     <XAxis
                       dataKey="year"
-                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{ fontSize: 12, fill: "hsl(var(--foreground))", fontWeight: 600 }}
                       axisLine={false}
                       tickLine={false}
                     />
                     <YAxis hide />
-                    <Bar dataKey="세입" fill="hsl(221 83% 76%)" radius={[2, 2, 0, 0]} barSize={20} />
-                    <Bar dataKey="세출" fill="hsl(210 40% 85%)" radius={[2, 2, 0, 0]} barSize={20} />
+                    <Bar dataKey="세입" fill="hsl(221 83% 76%)" radius={[3, 3, 0, 0]} barSize={22} />
+                    <Bar dataKey="세출" fill="hsl(210 40% 85%)" radius={[3, 3, 0, 0]} barSize={22} />
                     <Line
                       type="monotone"
                       dataKey="국가채무"
                       stroke="hsl(152 50% 65%)"
                       strokeWidth={2.5}
-                      dot={{ r: 3, fill: "hsl(152 50% 65%)", strokeWidth: 0 }}
+                      dot={{ r: 4, fill: "hsl(152 50% 65%)", strokeWidth: 2, stroke: "white" }}
                     />
                   </ComposedChart>
                 </ResponsiveContainer>
