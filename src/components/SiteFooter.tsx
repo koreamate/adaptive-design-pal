@@ -29,13 +29,14 @@ const SiteFooter = () => {
       {/* Related Sites */}
       <div className="border-b border-border">
         <div className="max-w-[1400px] mx-auto px-5 md:px-8 py-4">
-          <div className="flex items-center gap-4 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-6 overflow-x-auto scrollbar-hide">
             {relatedSites.map((site) => (
               <button
-                key={site}
-                className="text-xs text-muted-foreground hover:text-foreground whitespace-nowrap transition-colors"
+                key={site.name}
+                className="shrink-0 hover:opacity-70 transition-opacity"
+                title={site.name}
               >
-                {site}
+                <img src={site.logo} alt={site.name} className="h-8 w-auto" />
               </button>
             ))}
           </div>
