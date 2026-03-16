@@ -32,7 +32,7 @@ const AISearchBar = () => {
           <button
             key={s}
             onClick={() => setQuery(s)}
-            className="px-3 py-1.5 text-xs font-semibold rounded-full bg-white/60 backdrop-blur-sm border border-foreground/10 text-foreground/70 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all cursor-pointer"
+            className="px-3 py-1.5 text-xs font-bold rounded-full bg-white/70 backdrop-blur-sm border border-foreground/15 text-foreground/80 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all cursor-pointer shadow-sm"
           >
             {s}
           </button>
