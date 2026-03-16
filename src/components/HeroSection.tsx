@@ -111,23 +111,23 @@ const HeroSection = () => {
               <motion.div
                 key={kpi.label}
                 variants={itemVariants}
-                className="relative p-4 md:p-5 rounded-xl border border-white/40 bg-white/55 backdrop-blur-xl group hover:bg-white/65 transition-all duration-300"
+                className="relative p-4 md:p-5 rounded-xl border border-white/15 bg-white/10 backdrop-blur-xl group hover:bg-white/15 transition-all duration-300"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{kpi.icon}</span>
-                    <span className="text-xs font-bold text-foreground drop-shadow-sm">{kpi.label}</span>
+                    <span className="text-xs font-bold text-white">{kpi.label}</span>
                   </div>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-primary/15 text-primary border border-primary/20">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-white/15 text-white/90 border border-white/20">
                     {kpi.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                     {kpi.change}
                   </span>
                 </div>
                 <div className="flex items-baseline gap-1 mb-1">
-                  <span className="text-2xl md:text-3xl font-extrabold text-foreground">{kpi.value}</span>
-                  <span className="text-lg font-bold text-foreground/60">{kpi.unit}</span>
+                  <span className="text-2xl md:text-3xl font-extrabold text-white">{kpi.value}</span>
+                  <span className="text-lg font-bold text-white/60">{kpi.unit}</span>
                 </div>
-                <p className="text-xs font-medium text-foreground/50">{kpi.sub}</p>
+                <p className="text-xs font-medium text-white/50">{kpi.sub}</p>
               </motion.div>
             ))}
           </div>
