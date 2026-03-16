@@ -135,7 +135,7 @@ const ContentSection = () => {
                 </li>
               ))}
             </ul>
-            <div className="mt-4 h-1 rounded-full bg-gradient-to-r from-gov-blue/20 via-gov-blue/40 to-gov-blue/20" />
+            
           </motion.div>
 
           {/* 재정지표 대시보드 */}
