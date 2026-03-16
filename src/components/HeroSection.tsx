@@ -107,7 +107,7 @@ const HeroSection = () => {
       </div>
 
       {/* KPI + Chart Card (overlapping banner) */}
-      <div className="max-w-[1400px] mx-auto px-5 md:px-8 -mt-12 md:-mt-16 relative z-10">
+      <div className="max-w-[1400px] mx-auto px-5 md:px-8 -mt-16 md:-mt-20 relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
