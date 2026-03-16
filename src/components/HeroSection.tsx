@@ -126,8 +126,7 @@ const HeroSection = () => {
                     <p className="text-[11px] text-muted-foreground">{kpi.sub}</p>
                     <span className="text-[10px] text-muted-foreground/60">{kpi.label}</span>
                   </div>
-                </motion.div>
-              );
+                </div>
             })}
           </div>
 
