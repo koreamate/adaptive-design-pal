@@ -3,7 +3,7 @@ import { TrendingUp, ArrowUpRight, TrendingDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import AISearchBar from "./AISearchBar";
-import heroBg from "@/assets/hero-bg.jpg";
+import heroPattern from "@/assets/hero-pattern.png";
 
 const tabs = ["중앙재정", "지방재정", "교육재정"];
 
