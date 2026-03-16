@@ -20,46 +20,34 @@ const itemVariants = {
 const WidgetSection = () => {
   return (
     <section className="py-8 md:py-12 px-5 md:px-8 relative overflow-hidden bg-gradient-to-br from-primary/[0.04] via-primary/[0.02] to-transparent border-y border-primary/10">
-      {/* Subtle pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(hsl(var(--gov-blue)) 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
-      
-      {/* Decorative finance illustrations - very subtle */}
-      {/* Bar chart - top right */}
-      <svg className="absolute top-6 right-12 opacity-[0.05]" width="120" height="100" viewBox="0 0 120 100" fill="none">
-        <rect x="10" y="60" width="16" height="35" rx="3" fill="hsl(var(--gov-blue))" />
-        <rect x="34" y="40" width="16" height="55" rx="3" fill="hsl(var(--gov-blue))" />
-        <rect x="58" y="20" width="16" height="75" rx="3" fill="hsl(var(--gov-blue))" />
-        <rect x="82" y="50" width="16" height="45" rx="3" fill="hsl(var(--gov-blue))" />
-        <line x1="5" y1="95" x2="105" y2="95" stroke="hsl(var(--gov-blue))" strokeWidth="2" />
-      </svg>
-      
-      {/* Coin stack - bottom left */}
-      <svg className="absolute bottom-8 left-10 opacity-[0.04]" width="80" height="90" viewBox="0 0 80 90" fill="none">
-        <ellipse cx="40" cy="75" rx="30" ry="8" fill="hsl(var(--gov-blue))" />
-        <ellipse cx="40" cy="65" rx="30" ry="8" fill="hsl(var(--gov-blue))" />
-        <ellipse cx="40" cy="55" rx="30" ry="8" fill="hsl(var(--gov-blue))" />
-        <ellipse cx="40" cy="45" rx="30" ry="8" fill="hsl(var(--gov-blue))" />
-        <rect x="10" y="45" width="60" height="30" fill="hsl(var(--gov-blue))" />
-      </svg>
-
-      {/* Pie chart - bottom right area */}
-      <svg className="absolute bottom-10 right-[30%] opacity-[0.03]" width="90" height="90" viewBox="0 0 90 90" fill="none">
-        <path d="M45 5 A40 40 0 0 1 85 45 L45 45 Z" fill="hsl(var(--gov-blue))" />
-        <path d="M85 45 A40 40 0 0 1 45 85 L45 45 Z" fill="hsl(var(--gov-blue))" opacity="0.6" />
-        <path d="M45 85 A40 40 0 0 1 5 45 L45 45 Z" fill="hsl(var(--gov-blue))" opacity="0.3" />
-        <path d="M5 45 A40 40 0 0 1 45 5 L45 45 Z" fill="hsl(var(--gov-blue))" opacity="0.15" />
-      </svg>
-
-      {/* Calculator - top left area */}
-      <svg className="absolute top-10 left-[18%] opacity-[0.04]" width="60" height="80" viewBox="0 0 60 80" fill="none">
-        <rect x="5" y="5" width="50" height="70" rx="6" stroke="hsl(var(--gov-blue))" strokeWidth="2.5" fill="none" />
-        <rect x="12" y="12" width="36" height="14" rx="2" fill="hsl(var(--gov-blue))" />
-        <circle cx="18" cy="38" r="3" fill="hsl(var(--gov-blue))" />
-        <circle cx="30" cy="38" r="3" fill="hsl(var(--gov-blue))" />
-        <circle cx="42" cy="38" r="3" fill="hsl(var(--gov-blue))" />
-        <circle cx="18" cy="50" r="3" fill="hsl(var(--gov-blue))" />
-        <circle cx="30" cy="50" r="3" fill="hsl(var(--gov-blue))" />
-        <circle cx="42" cy="50" r="3" fill="hsl(var(--gov-blue))" />
+      {/* Large repeating finance pattern background */}
+      <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="finance-pattern" x="0" y="0" width="320" height="280" patternUnits="userSpaceOnUse">
+            {/* Bar chart */}
+            <rect x="20" y="80" width="24" height="50" rx="4" fill="hsl(var(--gov-blue))" />
+            <rect x="52" y="55" width="24" height="75" rx="4" fill="hsl(var(--gov-blue))" />
+            <rect x="84" y="30" width="24" height="100" rx="4" fill="hsl(var(--gov-blue))" />
+            <rect x="116" y="65" width="24" height="65" rx="4" fill="hsl(var(--gov-blue))" />
+            <line x1="15" y1="132" x2="145" y2="132" stroke="hsl(var(--gov-blue))" strokeWidth="2.5" />
+            
+            {/* Pie chart */}
+            <circle cx="240" cy="60" r="40" fill="none" stroke="hsl(var(--gov-blue))" strokeWidth="12" strokeDasharray="62.8 188.5" />
+            <circle cx="240" cy="60" r="40" fill="none" stroke="hsl(var(--gov-blue))" strokeWidth="12" strokeDasharray="94.2 157.1" strokeDashoffset="-62.8" opacity="0.5" />
+            <circle cx="240" cy="60" r="40" fill="none" stroke="hsl(var(--gov-blue))" strokeWidth="12" strokeDasharray="50.3 200.9" strokeDashoffset="-157" opacity="0.25" />
+            
+            {/* Coin / currency circle */}
+            <circle cx="80" cy="210" r="32" stroke="hsl(var(--gov-blue))" strokeWidth="3" fill="none" />
+            <circle cx="80" cy="210" r="24" stroke="hsl(var(--gov-blue))" strokeWidth="2" fill="none" />
+            <text x="80" y="218" textAnchor="middle" fill="hsl(var(--gov-blue))" fontSize="22" fontWeight="700" fontFamily="serif">₩</text>
+            
+            {/* Trend line */}
+            <polyline points="180,240 210,220 230,230 260,190 290,200 310,170" fill="none" stroke="hsl(var(--gov-blue))" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="260" cy="190" r="4" fill="hsl(var(--gov-blue))" />
+            <circle cx="310" cy="170" r="4" fill="hsl(var(--gov-blue))" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#finance-pattern)" />
       </svg>
       
       <div className="max-w-[1400px] mx-auto relative">
