@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Search, Menu, X, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import logoImg from "@/assets/logo.png";
 
 const navItems = [
   "알기쉬운재정",
@@ -20,10 +21,7 @@ const GNBHeader = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-md bg-gov-navy flex items-center justify-center">
-              <span className="text-primary-foreground text-xs font-bold tracking-tight">FiS</span>
-            </div>
-            <span className="hidden sm:block text-sm font-semibold text-foreground">열린재정</span>
+            <img src={logoImg} alt="열린재정" className="h-8 md:h-9 w-auto" />
           </div>
 
           {/* Desktop Nav */}
