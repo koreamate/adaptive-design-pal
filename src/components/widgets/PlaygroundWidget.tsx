@@ -1,4 +1,5 @@
 import { Move, X, ChevronRight } from "lucide-react";
+import playgroundThumb from "@/assets/playground-thumb.jpg";
 
 const PlaygroundWidget = () => (
   <div className="gov-card p-5 h-full">
@@ -16,10 +17,12 @@ const PlaygroundWidget = () => (
       </div>
     </div>
     <div className="mt-4">
-      <div className="aspect-[16/9] rounded-lg bg-muted/50 border border-border flex items-center justify-center mb-3">
-        <div className="text-center">
-          <p className="text-xs text-muted-foreground">스토리가 있는 재정</p>
-          <p className="text-sm font-medium text-foreground mt-1">선거비 보전제도 편</p>
+      <div className="aspect-[16/9] rounded-lg overflow-hidden border border-border mb-3 relative group">
+        <img src={playgroundThumb} alt="나라살림 놀이터" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+        <div className="absolute bottom-3 left-3">
+          <p className="text-xs text-white/80 drop-shadow">스토리가 있는 재정</p>
+          <p className="text-sm font-medium text-white drop-shadow">선거비 보전제도 편</p>
         </div>
       </div>
       <p className="text-xs text-muted-foreground line-clamp-2">
