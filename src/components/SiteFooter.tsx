@@ -28,18 +28,18 @@ const SiteFooter = () => {
     <footer className="border-t border-border bg-card">
       {/* Related Sites Banner */}
       <div className="border-b border-border bg-muted/30">
-        <div className="max-w-[1400px] mx-auto px-5 md:px-8 py-3">
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+        <div className="max-w-[1400px] mx-auto px-5 md:px-8 py-2">
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
             {relatedSites.map((site) => (
               <button
                 key={site.name}
-                className="group flex flex-col items-center justify-center gap-1.5 rounded-lg border border-border bg-card px-3 py-3 hover:border-primary/30 hover:shadow-md transition-all h-[88px]"
+                className="group flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-card px-2 py-2 hover:border-primary/30 hover:shadow-md transition-all h-[68px]"
                 title={site.name}
               >
-                <div className="flex h-[56px] md:h-[64px] items-center justify-center">
-                  <img src={site.logo} alt={site.name} className={`${site.name === "국세외수입포털" ? "h-[52px] md:h-[60px]" : "h-10 md:h-12"} w-auto object-contain`} />
+                <div className="flex h-[40px] md:h-[44px] items-center justify-center">
+                  <img src={site.logo} alt={site.name} className={`${site.name === "국세외수입포털" ? "h-[38px] md:h-[42px]" : "h-7 md:h-8"} w-auto object-contain`} />
                 </div>
-                <span className="text-[11px] text-muted-foreground group-hover:text-foreground transition-colors font-medium">
+                <span className="text-[10px] text-muted-foreground group-hover:text-foreground transition-colors font-medium">
                   {site.name}
                 </span>
               </button>
