@@ -100,8 +100,16 @@ const HeroSection = () => {
           animate="visible"
           className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-0 pb-8 items-center lg:-ml-10"
         >
-          {/* Left: Illustration */}
-          <motion.div variants={itemVariants} className="flex items-center justify-center mt-[26px]">
+          {/* Left: Illustration with title */}
+          <motion.div variants={itemVariants} className="flex flex-col items-center justify-center mt-[26px]">
+            <div className="text-center mb-4">
+              <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
+                열린재정
+              </h1>
+              <p className="text-sm md:text-base font-semibold text-muted-foreground">
+                국가데이터로 보는 재정, 신뢰로 만드는 정책!
+              </p>
+            </div>
             <img
               src={heroIllustration}
               alt="재정 데이터 분석 일러스트"
