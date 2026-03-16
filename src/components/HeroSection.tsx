@@ -100,10 +100,10 @@ const HeroSection = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-0 pb-8 items-center"
+          className="flex flex-col lg:flex-row gap-6 lg:gap-0 pb-8 items-center justify-center"
         >
           {/* Left: Illustration */}
-          <motion.div variants={itemVariants} className="flex items-center justify-center">
+          <motion.div variants={itemVariants} className="flex items-center justify-center shrink-0">
             <img
               src={heroIllustration}
               alt="재정 데이터 분석 일러스트"
@@ -112,7 +112,7 @@ const HeroSection = () => {
           </motion.div>
 
           {/* Right: KPIs + Chart */}
-          <motion.div variants={itemVariants} className="w-full max-w-[calc(100%-40px)]">
+          <motion.div variants={itemVariants} className="w-full max-w-[calc(100%-40px)] lg:max-w-[480px]">
             {/* KPI Cards - stacked vertically */}
             <div className="space-y-3 mb-6">
               {kpiData.map((kpi) => (
