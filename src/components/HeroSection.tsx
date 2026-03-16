@@ -103,7 +103,7 @@ const HeroSection = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="gov-card p-5 md:p-8 border-0 shadow-xl"
+          className="p-5 md:p-8 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl"
         >
           {/* KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 md:mb-8">
