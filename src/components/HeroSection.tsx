@@ -63,7 +63,7 @@ const HeroSection = () => {
     <section className="relative overflow-hidden">
       {/* Hero Background — full image, no gradient, no overlay */}
       <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
-      <div className="absolute inset-0 bg-white/15" />
+      <div className="absolute inset-0 bg-black/20" />
       
       <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-10 md:pb-14">
         <motion.div
@@ -71,15 +71,15 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-            <h1 className="text-3xl md:text-5xl font-extrabold text-foreground tracking-tight mb-2 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
+            <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight mb-2">
               열린재정
             </h1>
-            <p className="text-sm md:text-lg font-semibold text-foreground/70 mb-4 max-w-xl drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)]">
+            <p className="text-sm md:text-lg font-semibold text-white/70 mb-4 max-w-xl">
               국가데이터로 보는 재정, 신뢰로 만드는 정책!
             </p>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6 backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 mb-6 backdrop-blur-sm">
               <span className="w-2 h-2 rounded-full bg-gov-green animate-pulse" />
-              <span className="text-xs font-semibold text-primary">실시간 재정정보 업데이트</span>
+              <span className="text-xs font-semibold text-white/90">실시간 재정정보 업데이트</span>
             </div>
             <div className="flex gap-2">
               {tabs.map((tab, i) => (
@@ -87,8 +87,8 @@ const HeroSection = () => {
                   key={tab}
                   onClick={() => setActiveTab(i)}
                   className={i === activeTab
-                    ? "px-5 py-2.5 text-sm font-bold rounded-lg bg-primary text-primary-foreground transition-all shadow-md"
-                    : "px-5 py-2.5 text-sm font-semibold rounded-lg text-foreground/70 bg-white/50 hover:bg-white/70 border border-foreground/10 backdrop-blur-sm transition-all"
+                    ? "px-5 py-2.5 text-sm font-bold rounded-lg bg-white text-primary transition-all shadow-md"
+                    : "px-5 py-2.5 text-sm font-semibold rounded-lg text-white/70 bg-white/10 hover:bg-white/20 border border-white/15 backdrop-blur-sm transition-all"
                   }
                 >
                   {tab}
@@ -111,23 +111,23 @@ const HeroSection = () => {
               <motion.div
                 key={kpi.label}
                 variants={itemVariants}
-                className="relative p-4 md:p-5 rounded-xl border border-white/40 bg-white/55 backdrop-blur-xl group hover:bg-white/65 transition-all duration-300"
+                className="relative p-4 md:p-5 rounded-xl border border-white/15 bg-white/10 backdrop-blur-xl group hover:bg-white/15 transition-all duration-300"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{kpi.icon}</span>
-                    <span className="text-xs font-bold text-foreground drop-shadow-sm">{kpi.label}</span>
+                    <span className="text-xs font-bold text-white">{kpi.label}</span>
                   </div>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-primary/15 text-primary border border-primary/20">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-white/15 text-white/90 border border-white/20">
                     {kpi.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                     {kpi.change}
                   </span>
                 </div>
                 <div className="flex items-baseline gap-1 mb-1">
-                  <span className="text-2xl md:text-3xl font-extrabold text-foreground">{kpi.value}</span>
-                  <span className="text-lg font-bold text-foreground/60">{kpi.unit}</span>
+                  <span className="text-2xl md:text-3xl font-extrabold text-white">{kpi.value}</span>
+                  <span className="text-lg font-bold text-white/60">{kpi.unit}</span>
                 </div>
-                <p className="text-xs font-medium text-foreground/50">{kpi.sub}</p>
+                <p className="text-xs font-medium text-white/50">{kpi.sub}</p>
               </motion.div>
             ))}
           </div>
@@ -152,7 +152,7 @@ const HeroSection = () => {
                 </span>
               </div>
             </div>
-            <div className="h-[280px] md:h-[340px] rounded-2xl bg-white/50 backdrop-blur-xl border border-white/45 p-5">
+            <div className="h-[280px] md:h-[340px] rounded-2xl bg-white/8 backdrop-blur-xl border border-white/15 p-5">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={chartData} barCategoryGap="30%" margin={{ top: 20, right: 16, left: -4, bottom: 4 }}>
                   <defs>
