@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { TrendingUp, TrendingDown, Calendar, ArrowRight, PieChart, BarChart3, Wallet } from "lucide-react";
-import { motion } from "framer-motion";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart } from "recharts";
+import { TrendingUp, TrendingDown, Calendar, PieChart, BarChart3, Wallet } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 import AISearchBar from "./AISearchBar";
 
 const tabs = ["중앙재정", "지방재정", "교육재정"];
