@@ -116,7 +116,7 @@ const HeroSection = () => {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{kpi.icon}</span>
-                    <span className="text-xs font-bold text-white drop-shadow-sm">{kpi.label}</span>
+                    <span className="text-xs font-bold text-foreground drop-shadow-sm">{kpi.label}</span>
                   </div>
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-white/20 text-white border border-white/20">
                     {kpi.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
