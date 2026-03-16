@@ -57,12 +57,12 @@ const HeroSection = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-gov-navy via-primary to-gov-navy">
+    <section className="relative overflow-hidden bg-gradient-to-br from-[hsl(210_20%_96%)] via-[hsl(214_32%_91%)] to-[hsl(210_25%_95%)]">
       {/* Background pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, hsl(0 0% 100%) 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+      <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, hsl(215 20% 65%) 1px, transparent 0)', backgroundSize: '32px 32px' }} />
       {/* Gradient glow accents */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-primary/20 blur-[120px]" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-gov-blue/15 blur-[100px]" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px]" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-primary/5 blur-[100px]" />
 
       <div className="relative max-w-[1400px] mx-auto px-5 md:px-8">
         {/* Tabs - top center */}
@@ -77,8 +77,8 @@ const HeroSection = () => {
               key={tab}
               onClick={() => setActiveTab(i)}
               className={i === activeTab
-                ? "px-8 py-3 text-sm font-bold rounded-lg bg-white/20 text-white shadow-md backdrop-blur-sm border border-white/20 transition-all"
-                : "px-8 py-3 text-sm font-semibold rounded-lg text-white/70 bg-white/5 border border-white/10 hover:border-white/30 hover:text-white transition-all"
+                ? "px-8 py-3 text-sm font-bold rounded-lg bg-primary text-primary-foreground shadow-md transition-all"
+                : "px-8 py-3 text-sm font-semibold rounded-lg text-muted-foreground bg-card border border-border hover:border-primary/30 hover:text-primary transition-all"
               }
             >
               {tab}
@@ -89,10 +89,10 @@ const HeroSection = () => {
         {/* Title */}
         <motion.div variants={containerVariants} initial="hidden" animate="visible">
           <motion.div variants={itemVariants} className="mb-6 mt-5">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-2">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
               열린재정
             </h1>
-            <p className="text-sm md:text-base font-semibold text-white/70 max-w-md mt-5">
+            <p className="text-sm md:text-base font-semibold text-muted-foreground max-w-md mt-5">
               국가데이터로 보는 재정, 신뢰로 만드는 정책!
             </p>
           </motion.div>
@@ -121,20 +121,20 @@ const HeroSection = () => {
               {kpiData.map((kpi) => (
                 <div
                   key={kpi.label}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-white/10 border border-white/15 backdrop-blur-xl shadow-sm hover:bg-white/15 transition-all"
+                  className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-white/10 text-2xl shrink-0">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-muted text-2xl shrink-0">
                     {kpi.icon}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-white/60 mb-0.5">{kpi.label}</p>
+                    <p className="text-xs font-semibold text-muted-foreground mb-0.5">{kpi.label}</p>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl md:text-3xl font-extrabold text-white">{kpi.value}</span>
-                      <span className="text-base font-bold text-white/60">{kpi.unit}</span>
+                      <span className="text-2xl md:text-3xl font-extrabold text-foreground">{kpi.value}</span>
+                      <span className="text-base font-bold text-muted-foreground">{kpi.unit}</span>
                     </div>
-                    <p className="text-[11px] text-white/50 mt-0.5">{kpi.sub}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">{kpi.sub}</p>
                   </div>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold text-gov-orange">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold text-destructive">
                     <TrendingUp className="w-3.5 h-3.5" />
                     {kpi.change}
                   </span>
@@ -144,19 +144,19 @@ const HeroSection = () => {
 
             {/* Mini Chart */}
             <div>
-              <h3 className="text-sm font-bold text-white mb-3">연도별 세입·세출 추이</h3>
+              <h3 className="text-sm font-bold text-foreground mb-3">연도별 세입·세출 추이</h3>
               <div className="h-[160px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart data={chartData} barCategoryGap="25%" margin={{ top: 10, right: 8, left: -20, bottom: 0 }}>
                     <XAxis
                       dataKey="year"
-                      tick={{ fontSize: 11, fill: "rgba(255,255,255,0.5)" }}
+                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
                       axisLine={false}
                       tickLine={false}
                     />
                     <YAxis hide />
-                    <Bar dataKey="세입" fill="rgba(255,255,255,0.7)" radius={[2, 2, 0, 0]} barSize={20} />
-                    <Bar dataKey="세출" fill="rgba(255,255,255,0.35)" radius={[2, 2, 0, 0]} barSize={20} />
+                    <Bar dataKey="세입" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} barSize={20} />
+                    <Bar dataKey="세출" fill="hsl(var(--destructive))" radius={[2, 2, 0, 0]} barSize={20} />
                     <Line
                       type="monotone"
                       dataKey="국가채무"
@@ -172,10 +172,10 @@ const HeroSection = () => {
         </motion.div>
 
         {/* Navigation arrows */}
-        <button className="absolute left-2 top-1/2 -translate-y-1/2 p-2 text-white/30 hover:text-white transition-colors hidden lg:block">
+        <button className="absolute left-2 top-1/2 -translate-y-1/2 p-2 text-muted-foreground/50 hover:text-foreground transition-colors hidden lg:block">
           <ChevronLeft className="w-10 h-10" strokeWidth={1.5} />
         </button>
-        <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-white/30 hover:text-white transition-colors hidden lg:block">
+        <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-muted-foreground/50 hover:text-foreground transition-colors hidden lg:block">
           <ChevronRight className="w-10 h-10" strokeWidth={1.5} />
         </button>
 
