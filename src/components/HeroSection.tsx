@@ -150,13 +150,13 @@ const HeroSection = () => {
                   <ComposedChart data={chartData} barCategoryGap="25%" margin={{ top: 10, right: 8, left: -20, bottom: 0 }}>
                     <XAxis
                       dataKey="year"
-                      tick={{ fontSize: 11, fill: "rgba(255,255,255,0.5)" }}
+                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
                       axisLine={false}
                       tickLine={false}
                     />
                     <YAxis hide />
-                    <Bar dataKey="세입" fill="rgba(255,255,255,0.7)" radius={[2, 2, 0, 0]} barSize={20} />
-                    <Bar dataKey="세출" fill="rgba(255,255,255,0.35)" radius={[2, 2, 0, 0]} barSize={20} />
+                    <Bar dataKey="세입" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} barSize={20} />
+                    <Bar dataKey="세출" fill="hsl(var(--destructive))" radius={[2, 2, 0, 0]} barSize={20} />
                     <Line
                       type="monotone"
                       dataKey="국가채무"
