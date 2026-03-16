@@ -83,32 +83,36 @@ const HeroSection = () => {
           ))}
         </motion.div>
 
-        {/* Two-column layout */}
+        {/* Title */}
+        <motion.div variants={containerVariants} initial="hidden" animate="visible">
+          <motion.div variants={itemVariants} className="mb-6">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
+              열린재정
+            </h1>
+            <p className="text-sm md:text-base font-semibold text-muted-foreground max-w-md">
+              국가데이터로 보는 재정, 신뢰로 만드는 정책!
+            </p>
+          </motion.div>
+        </motion.div>
+
+        {/* Two-column layout - illustration & KPIs aligned */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="flex flex-col lg:flex-row items-stretch gap-6 lg:gap-10 pb-8"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 pb-8 items-center"
         >
-          {/* Left: Title + Illustration */}
-          <motion.div variants={itemVariants} className="flex-1 flex flex-col">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
-              열린재정
-            </h1>
-            <p className="text-sm md:text-base font-semibold text-muted-foreground mb-6 max-w-md">
-              국가데이터로 보는 재정, 신뢰로 만드는 정책!
-            </p>
-            <div className="flex-1 flex items-end">
-              <img
-                src={heroIllustration}
-                alt="재정 데이터 분석 일러스트"
-                className="w-full max-w-[520px] h-auto object-contain"
-              />
-            </div>
+          {/* Left: Illustration */}
+          <motion.div variants={itemVariants} className="flex items-center justify-center">
+            <img
+              src={heroIllustration}
+              alt="재정 데이터 분석 일러스트"
+              className="w-full max-w-[500px] h-auto object-contain"
+            />
           </motion.div>
 
           {/* Right: KPIs + Chart */}
-          <motion.div variants={itemVariants} className="flex-1 w-full max-w-[560px]">
+          <motion.div variants={itemVariants} className="w-full">
             {/* KPI Cards - stacked vertically */}
             <div className="space-y-3 mb-6">
               {kpiData.map((kpi) => (
