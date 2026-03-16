@@ -61,43 +61,40 @@ const HeroSection = () => {
 
   return (
     <section className="relative overflow-hidden">
-      {/* Hero Background — real photo */}
-      <div className="relative">
-        <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-[hsl(221,50%,15%)]/60" />
-        
-        <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-24 md:pb-32">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 mb-4">
-              <span className="w-2 h-2 rounded-full bg-gov-green animate-pulse" />
-              <span className="text-xs font-medium text-white/80">실시간 재정정보 업데이트</span>
-            </div>
-            <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-2">
-              열린재정
-            </h1>
-            <p className="text-sm md:text-lg text-white/70 mb-8 max-w-xl">
-              국가데이터로 보는 재정, 신뢰로 만드는 정책!
-            </p>
-            <div className="flex gap-2">
-              {tabs.map((tab, i) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(i)}
-                  className={i === activeTab
-                    ? "px-4 py-2 text-sm font-semibold rounded-lg bg-white text-gov-blue transition-all"
-                    : "px-4 py-2 text-sm font-medium rounded-lg text-white/80 hover:bg-white/10 border border-white/20 transition-all"
-                  }
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+      {/* Hero Background — full image, no gradient, no overlay */}
+      <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
+      
+      <div className="relative max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-16 pb-24 md:pb-32">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 mb-4">
+            <span className="w-2 h-2 rounded-full bg-gov-green animate-pulse" />
+            <span className="text-xs font-medium text-white/80">실시간 재정정보 업데이트</span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-2 drop-shadow-lg">
+            열린재정
+          </h1>
+          <p className="text-sm md:text-lg text-white/90 mb-8 max-w-xl drop-shadow-md">
+            국가데이터로 보는 재정, 신뢰로 만드는 정책!
+          </p>
+          <div className="flex gap-2">
+            {tabs.map((tab, i) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(i)}
+                className={i === activeTab
+                  ? "px-4 py-2 text-sm font-semibold rounded-lg bg-white text-gov-blue transition-all shadow-md"
+                  : "px-4 py-2 text-sm font-medium rounded-lg text-white hover:bg-white/20 border border-white/30 transition-all drop-shadow-sm"
+                }
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+        </motion.div>
       </div>
 
       {/* KPI + Chart Card (overlapping banner) */}
