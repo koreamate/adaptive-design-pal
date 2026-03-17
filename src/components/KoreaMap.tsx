@@ -429,25 +429,18 @@ function ProvinceMapSVG({
           const nameLen = activeProvince.name.length;
           const pillW = Math.max(nameLen * 4 + 8, 20);
           const pillH = 9;
-          const arrowH = 3;
-          const pillY = py - pillH - arrowH - 1;
           return (
             <g className="pointer-events-none">
               {/* Shadow */}
-              <rect x={px - pillW / 2} y={pillY + 1} width={pillW} height={pillH} rx={pillH / 2} fill="rgba(0,0,0,0.08)" />
+              <rect x={px - pillW / 2} y={py - pillH / 2 + 1} width={pillW} height={pillH} rx={pillH / 2} fill="rgba(0,0,0,0.08)" />
               {/* Border */}
-              <rect x={px - pillW / 2} y={pillY} width={pillW} height={pillH} rx={pillH / 2} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.2" />
+              <rect x={px - pillW / 2} y={py - pillH / 2} width={pillW} height={pillH} rx={pillH / 2} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.2" />
               {/* Pill */}
-              <rect x={px - pillW / 2} y={pillY} width={pillW} height={pillH} rx={pillH / 2} fill={MAP_COLORS.tooltipBg} />
-              {/* Arrow */}
-              <polygon
-                points={`${px - 2},${pillY + pillH} ${px + 2},${pillY + pillH} ${px},${pillY + pillH + arrowH}`}
-                fill={MAP_COLORS.tooltipBg}
-              />
-              {/* Text */}
+              <rect x={px - pillW / 2} y={py - pillH / 2} width={pillW} height={pillH} rx={pillH / 2} fill={MAP_COLORS.tooltipBg} />
+              {/* Text - centered */}
               <text
                 x={px}
-                y={pillY + pillH / 2}
+                y={py}
                 textAnchor="middle"
                 dominantBaseline="central"
                 style={{
