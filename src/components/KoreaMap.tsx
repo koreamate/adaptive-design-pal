@@ -317,6 +317,7 @@ function MapSVG({
   onClick,
   fontSize,
   showGradientBg,
+  edgeSoftness = "default",
 }: {
   features: MapFeature[];
   hoveredName: string | null;
@@ -326,6 +327,7 @@ function MapSVG({
   onClick: (feature: MapFeature) => void;
   fontSize?: number;
   showGradientBg?: boolean;
+  edgeSoftness?: "default" | "soft";
 }) {
   const fs = fontSize ?? (features.length > 20 ? 6.5 : 8);
   const activeFeature = features.find((f) => f.name === (hoveredName ?? selectedName));
