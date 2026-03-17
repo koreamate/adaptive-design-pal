@@ -225,7 +225,7 @@ function useSubMunicipalityData(muniCode: string | null) {
   return { features, loading };
 }
 
-/* ── Pill Tooltip Label ── */
+/* ── Pill Tooltip Label (centered on label position) ── */
 function PillTooltip({ x, y, text }: { x: number; y: number; text: string }) {
   const textLen = text.length;
   const w = Math.max(textLen * 7 + 16, 40);
@@ -233,19 +233,15 @@ function PillTooltip({ x, y, text }: { x: number; y: number; text: string }) {
   return (
     <g className="pointer-events-none">
       {/* Shadow */}
-      <rect x={x - w / 2} y={y - h / 2 - 2} width={w} height={h} rx={h / 2} fill="rgba(0,0,0,0.1)" />
+      <rect x={x - w / 2} y={y - h / 2 + 1} width={w} height={h} rx={h / 2} fill="rgba(0,0,0,0.08)" />
       {/* Border */}
-      <rect x={x - w / 2} y={y - h / 2 - 3} width={w} height={h} rx={h / 2} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.5" />
+      <rect x={x - w / 2} y={y - h / 2} width={w} height={h} rx={h / 2} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.5" />
       {/* Pill bg */}
-      <rect x={x - w / 2} y={y - h / 2 - 3} width={w} height={h} rx={h / 2} fill={MAP_COLORS.tooltipBg} />
-      {/* Arrow */}
-      <polygon
-        points={`${x - 4},${y + h / 2 - 3} ${x + 4},${y + h / 2 - 3} ${x},${y + h / 2 + 3}`}
-        fill={MAP_COLORS.tooltipBg}
-      />
+      <rect x={x - w / 2} y={y - h / 2} width={w} height={h} rx={h / 2} fill={MAP_COLORS.tooltipBg} />
+      {/* Text - exactly centered */}
       <text
         x={x}
-        y={y - 1}
+        y={y}
         textAnchor="middle"
         dominantBaseline="central"
         style={{
@@ -352,7 +348,7 @@ function MapSVG({
         {activeFeature && (
           <PillTooltip
             x={activeFeature.centroidX}
-            y={activeFeature.centroidY - 8}
+            y={activeFeature.centroidY}
             text={activeFeature.name}
           />
         )}
@@ -433,25 +429,18 @@ function ProvinceMapSVG({
           const nameLen = activeProvince.name.length;
           const pillW = Math.max(nameLen * 4 + 8, 20);
           const pillH = 9;
-          const arrowH = 3;
-          const pillY = py - pillH - arrowH - 1;
           return (
             <g className="pointer-events-none">
               {/* Shadow */}
-              <rect x={px - pillW / 2} y={pillY + 1} width={pillW} height={pillH} rx={pillH / 2} fill="rgba(0,0,0,0.08)" />
+              <rect x={px - pillW / 2} y={py - pillH / 2 + 1} width={pillW} height={pillH} rx={pillH / 2} fill="rgba(0,0,0,0.08)" />
               {/* Border */}
-              <rect x={px - pillW / 2} y={pillY} width={pillW} height={pillH} rx={pillH / 2} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.2" />
+              <rect x={px - pillW / 2} y={py - pillH / 2} width={pillW} height={pillH} rx={pillH / 2} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.2" />
               {/* Pill */}
-              <rect x={px - pillW / 2} y={pillY} width={pillW} height={pillH} rx={pillH / 2} fill={MAP_COLORS.tooltipBg} />
-              {/* Arrow */}
-              <polygon
-                points={`${px - 2},${pillY + pillH} ${px + 2},${pillY + pillH} ${px},${pillY + pillH + arrowH}`}
-                fill={MAP_COLORS.tooltipBg}
-              />
-              {/* Text */}
+              <rect x={px - pillW / 2} y={py - pillH / 2} width={pillW} height={pillH} rx={pillH / 2} fill={MAP_COLORS.tooltipBg} />
+              {/* Text - centered */}
               <text
                 x={px}
-                y={pillY + pillH / 2}
+                y={py}
                 textAnchor="middle"
                 dominantBaseline="central"
                 style={{
