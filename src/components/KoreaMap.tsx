@@ -550,7 +550,7 @@ const KoreaMap = () => {
           시도 → 시군구 → 읍면동 순으로 클릭하여 탐색합니다
         </p>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8 items-start">
+        <div>
           {/* Map area */}
           <div className="relative w-full max-w-[520px] mx-auto">
             {/* Breadcrumb navigation */}
