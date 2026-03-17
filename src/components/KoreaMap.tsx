@@ -99,21 +99,46 @@ function extractRings(geometry: any): number[][][] {
   return [];
 }
 
-/* ── GeoJSON → SVG path converter ── */
+/* ── Catmull-Rom to Cubic Bézier smoothing ── */
+function smoothPath(points: [number, number][], tension = 0.3): string {
+  if (points.length < 3) {
+    return points.map((p, i) => `${i === 0 ? "M" : "L"}${p[0].toFixed(2)},${p[1].toFixed(2)}`).join("");
+  }
+
+  let d = `M${points[0][0].toFixed(2)},${points[0][1].toFixed(2)}`;
+
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i === 0 ? points.length - 2 : i - 1];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2 < points.length ? i + 2 : (i + 2) % points.length];
+
+    const cp1x = p1[0] + (p2[0] - p0[0]) * tension;
+    const cp1y = p1[1] + (p2[1] - p0[1]) * tension;
+    const cp2x = p2[0] - (p3[0] - p1[0]) * tension;
+    const cp2y = p2[1] - (p3[1] - p1[1]) * tension;
+
+    d += `C${cp1x.toFixed(2)},${cp1y.toFixed(2)} ${cp2x.toFixed(2)},${cp2y.toFixed(2)} ${p2[0].toFixed(2)},${p2[1].toFixed(2)}`;
+  }
+
+  return d;
+}
+
+/* ── GeoJSON → SVG path converter (smooth curves) ── */
 function geoToSvgPath(
   rings: number[][][],
   project: (coord: number[]) => [number, number]
 ): string {
   return rings
-    .map((ring) =>
-      ring
-        .map((coord, i) => {
-          const [x, y] = project(coord);
-          if (isNaN(x) || isNaN(y)) return "";
-          return `${i === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`;
-        })
-        .join("") + "Z"
-    )
+    .map((ring) => {
+      const projected: [number, number][] = [];
+      for (const coord of ring) {
+        const [x, y] = project(coord);
+        if (!isNaN(x) && !isNaN(y)) projected.push([x, y]);
+      }
+      if (projected.length < 2) return "";
+      return smoothPath(projected, 0.25) + "Z";
+    })
     .join("");
 }
 
