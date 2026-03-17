@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, useLayoutEffect } from "react";
+import { useState, useEffect, useCallback, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, MapPin } from "lucide-react";
 import * as topojson from "topojson-client";
@@ -572,22 +572,6 @@ const KoreaMap = () => {
     setHoveredSubMuni(null);
   }, [drillLevel, selectedProvince, selectedMuni, municipalities.length, subMunicipalities.length]);
 
-  /* ── Breadcrumb ── */
-  const breadcrumb = useMemo(() => {
-    const parts: { label: string; onClick?: () => void }[] = [
-      { label: "전국", onClick: drillLevel !== "province" ? handleBackToProvinces : undefined },
-    ];
-    if (selectedProvince) {
-      parts.push({
-        label: PROVINCE_SHORT[selectedProvince] || PROVINCE_MAP[selectedProvince] || selectedProvince,
-        onClick: drillLevel === "submuni" ? handleBackToMunicipalities : undefined,
-      });
-    }
-    if (selectedMuni) {
-      parts.push({ label: selectedMuni.name });
-    }
-    return parts;
-  }, [selectedProvince, selectedMuni, drillLevel, handleBackToProvinces, handleBackToMunicipalities]);
 
   return (
     <section className="py-10 md:py-16 px-5 md:px-8 bg-white">
@@ -596,7 +580,6 @@ const KoreaMap = () => {
         <div>
           {/* Map area */}
           <div className="relative w-full max-w-[520px] mx-auto">
-            {/* Breadcrumb navigation */}
             {drillLevel !== "province" && (
               <div className="flex items-center gap-1 mb-4 flex-wrap">
                 <button
@@ -607,20 +590,6 @@ const KoreaMap = () => {
                   <ArrowLeft className="w-4 h-4" />
                   뒤로
                 </button>
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  {breadcrumb.map((b, i) => (
-                    <span key={i} className="flex items-center gap-1">
-                      {i > 0 && <span className="text-muted-foreground/50">›</span>}
-                      {b.onClick ? (
-                        <button onClick={b.onClick} className="hover:text-primary transition-colors font-medium">
-                          {b.label}
-                        </button>
-                      ) : (
-                        <span className="font-bold text-foreground">{b.label}</span>
-                      )}
-                    </span>
-                  ))}
-                </div>
               </div>
             )}
 
@@ -649,15 +618,9 @@ const KoreaMap = () => {
               >
                 {muniLoading ? (
                   <LoadingSpinner />
-                ) : (
-                  <div>
-                    {/* Title badge */}
-                    <div className="absolute top-2 left-3 z-10 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border">
-                      <span className="text-sm font-bold text-foreground">
-                        {PROVINCE_SHORT[selectedProvince!] || PROVINCE_MAP[selectedProvince!]}
-                      </span>
-                    </div>
-                    <MapSVG
+                  ) : (
+                    <div>
+                      <MapSVG
                       features={municipalities}
                       hoveredName={hoveredMuni}
                       selectedName={null}
@@ -683,13 +646,9 @@ const KoreaMap = () => {
                   <div className="flex items-center justify-center h-[400px]">
                     <p className="text-sm text-muted-foreground">읍면동 데이터가 없습니다</p>
                   </div>
-                ) : (
-                  <div>
-                    {/* Title badge */}
-                    <div className="absolute top-2 left-3 z-10 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border">
-                      <span className="text-sm font-bold text-foreground">{selectedMuni?.name}</span>
-                    </div>
-                    <MapSVG
+                  ) : (
+                    <div>
+                      <MapSVG
                       features={subMunicipalities}
                       hoveredName={hoveredSubMuni}
                       selectedName={selectedSubMuni}
