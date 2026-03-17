@@ -572,22 +572,6 @@ const KoreaMap = () => {
     setHoveredSubMuni(null);
   }, [drillLevel, selectedProvince, selectedMuni, municipalities.length, subMunicipalities.length]);
 
-  /* ── Breadcrumb ── */
-  const breadcrumb = useMemo(() => {
-    const parts: { label: string; onClick?: () => void }[] = [
-      { label: "전국", onClick: drillLevel !== "province" ? handleBackToProvinces : undefined },
-    ];
-    if (selectedProvince) {
-      parts.push({
-        label: PROVINCE_SHORT[selectedProvince] || PROVINCE_MAP[selectedProvince] || selectedProvince,
-        onClick: drillLevel === "submuni" ? handleBackToMunicipalities : undefined,
-      });
-    }
-    if (selectedMuni) {
-      parts.push({ label: selectedMuni.name });
-    }
-    return parts;
-  }, [selectedProvince, selectedMuni, drillLevel, handleBackToProvinces, handleBackToMunicipalities]);
 
   return (
     <section className="py-10 md:py-16 px-5 md:px-8 bg-white">
