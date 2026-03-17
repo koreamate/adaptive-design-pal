@@ -45,7 +45,7 @@ const TOPO_PROVINCE_CODE_MAP: Record<string, string> = {
   "50": "39",
 };
 
-/* ── Static 시도 SVG data (from previous version) ── */
+/* ── Static 시도 SVG data ── */
 interface ProvinceRegion {
   id: string;
   code: string;
@@ -87,7 +87,6 @@ const PROVINCE_COLORS = [
 /* ── Extract all rings from any geometry ── */
 function extractRings(geometry: any): number[][][] {
   if (geometry.type === "MultiPolygon") {
-    // coordinates: number[][][][] → flatten to number[][][]
     const rings: number[][][] = [];
     for (const polygon of geometry.coordinates) {
       for (const ring of polygon) {
@@ -97,7 +96,7 @@ function extractRings(geometry: any): number[][][] {
     return rings;
   }
   if (geometry.type === "Polygon") {
-    return geometry.coordinates; // number[][][]
+    return geometry.coordinates;
   }
   return [];
 }
@@ -120,24 +119,85 @@ function geoToSvgPath(
     .join("");
 }
 
-/* ── Municipality sub-map view ── */
-interface MunicipalityFeature {
+/* ── Shared feature interface ── */
+interface MapFeature {
   name: string;
+  code: string;
   path: string;
   centroidX: number;
   centroidY: number;
 }
 
+/* ── Process GeoJSON features into MapFeature[] ── */
+function processFeatures(
+  filtered: any[],
+  svgW = 400,
+  svgH = 400,
+  padding = 20
+): MapFeature[] {
+  let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
+  for (const f of filtered) {
+    const rings = extractRings(f.geometry);
+    for (const ring of rings) {
+      for (const coord of ring) {
+        const lon = coord[0], lat = coord[1];
+        if (typeof lon !== "number" || typeof lat !== "number" || isNaN(lon) || isNaN(lat)) continue;
+        if (lon < minLon) minLon = lon;
+        if (lon > maxLon) maxLon = lon;
+        if (lat < minLat) minLat = lat;
+        if (lat > maxLat) maxLat = lat;
+      }
+    }
+  }
+
+  if (!isFinite(minLon) || !isFinite(maxLon)) return [];
+
+  const geoW = maxLon - minLon || 0.01;
+  const geoH = maxLat - minLat || 0.01;
+  const scale = Math.min((svgW - padding * 2) / geoW, (svgH - padding * 2) / geoH);
+  const offsetX = padding + ((svgW - padding * 2) - geoW * scale) / 2;
+  const offsetY = padding + ((svgH - padding * 2) - geoH * scale) / 2;
+
+  const project = (coord: number[]): [number, number] => [
+    offsetX + (coord[0] - minLon) * scale,
+    svgH - offsetY - (coord[1] - minLat) * scale,
+  ];
+
+  const result: MapFeature[] = [];
+  for (const f of filtered) {
+    try {
+      const rings = extractRings(f.geometry);
+      if (rings.length === 0) continue;
+      const pathStr = geoToSvgPath(rings, project);
+      let cx = 0, cy = 0, n = 0;
+      for (const ring of rings) {
+        for (const coord of ring) {
+          const [px, py] = project(coord);
+          if (!isNaN(px) && !isNaN(py)) { cx += px; cy += py; n++; }
+        }
+      }
+      if (n > 0) { cx /= n; cy /= n; }
+      result.push({
+        name: f.properties.name || f.properties.name_eng || "",
+        code: f.properties.code || "",
+        path: pathStr,
+        centroidX: cx,
+        centroidY: cy,
+      });
+    } catch (err) {
+      console.error("Error processing feature:", f.properties.name, err);
+    }
+  }
+  return result;
+}
+
+/* ── Municipality data hook ── */
 function useMunicipalityData(provinceCode: string | null) {
-  const [features, setFeatures] = useState<MunicipalityFeature[]>([]);
+  const [features, setFeatures] = useState<MapFeature[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!provinceCode) {
-      setFeatures([]);
-      return;
-    }
-
+    if (!provinceCode) { setFeatures([]); return; }
     const topoProvinceCode = TOPO_PROVINCE_CODE_MAP[provinceCode] ?? provinceCode;
     setLoading(true);
 
@@ -146,115 +206,54 @@ function useMunicipalityData(provinceCode: string | null) {
       .then((topoData) => {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
-
         const filtered = geoData.features.filter(
           (f: any) => f.properties.code?.substring(0, 2) === topoProvinceCode
         );
-
-        console.log(
-          `Province ${provinceCode} → topo ${topoProvinceCode}: found ${filtered.length} municipalities out of ${geoData.features.length} total`
-        );
-
-        if (filtered.length === 0) {
-          const codes = new Set(
-            geoData.features.map((f: any) => f.properties.code?.substring(0, 2))
-          );
-          console.log("Available province codes:", [...codes]);
-          setFeatures([]);
-          setLoading(false);
-          return;
-        }
-
-        // Calculate bounding box using extractRings
-        let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
-        for (const f of filtered) {
-          const rings = extractRings(f.geometry);
-          for (const ring of rings) {
-            for (const coord of ring) {
-              const lon = coord[0], lat = coord[1];
-              if (typeof lon !== "number" || typeof lat !== "number" || isNaN(lon) || isNaN(lat)) continue;
-              if (lon < minLon) minLon = lon;
-              if (lon > maxLon) maxLon = lon;
-              if (lat < minLat) minLat = lat;
-              if (lat > maxLat) maxLat = lat;
-            }
-          }
-        }
-
-        if (!isFinite(minLon) || !isFinite(maxLon)) {
-          console.error("Could not calculate bounding box");
-          setFeatures([]);
-          setLoading(false);
-          return;
-        }
-
-        const padding = 20;
-        const svgW = 400;
-        const svgH = 400;
-        const geoW = maxLon - minLon || 0.01;
-        const geoH = maxLat - minLat || 0.01;
-        const scale = Math.min(
-          (svgW - padding * 2) / geoW,
-          (svgH - padding * 2) / geoH
-        );
-        const offsetX = padding + ((svgW - padding * 2) - geoW * scale) / 2;
-        const offsetY = padding + ((svgH - padding * 2) - geoH * scale) / 2;
-
-        const project = (coord: number[]): [number, number] => [
-          offsetX + (coord[0] - minLon) * scale,
-          svgH - offsetY - (coord[1] - minLat) * scale,
-        ];
-
-        const result: MunicipalityFeature[] = [];
-        for (const f of filtered) {
-          try {
-            const rings = extractRings(f.geometry);
-            if (rings.length === 0) continue;
-
-            const pathStr = geoToSvgPath(rings, project);
-
-            // Calculate centroid (simple average)
-            let cx = 0, cy = 0, n = 0;
-            for (const ring of rings) {
-              for (const coord of ring) {
-                const [px, py] = project(coord);
-                if (!isNaN(px) && !isNaN(py)) {
-                  cx += px;
-                  cy += py;
-                  n++;
-                }
-              }
-            }
-            if (n > 0) {
-              cx /= n;
-              cy /= n;
-            }
-
-            result.push({
-              name: f.properties.name || f.properties.name_eng || "",
-              path: pathStr,
-              centroidX: cx,
-              centroidY: cy,
-            });
-          } catch (err) {
-            console.error("Error processing feature:", f.properties.name, err);
-          }
-        }
-
-        console.log(`Processed ${result.length} municipality features`);
-        setFeatures(result);
+        console.log(`Province ${provinceCode} → topo ${topoProvinceCode}: found ${filtered.length} municipalities`);
+        setFeatures(processFeatures(filtered));
         setLoading(false);
       })
-      .catch((err) => {
-        console.error("Failed to load municipality data:", err);
-        setLoading(false);
-      });
+      .catch((err) => { console.error("Failed to load municipality data:", err); setLoading(false); });
   }, [provinceCode]);
 
   return { features, loading };
 }
 
-/* ── Color palette for municipalities ── */
+/* ── Sub-municipality (읍면동) data hook ── */
+function useSubMunicipalityData(muniCode: string | null) {
+  const [features, setFeatures] = useState<MapFeature[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!muniCode) { setFeatures([]); return; }
+    setLoading(true);
+    // muniCode is 4-digit prefix from municipality topo data (e.g., "1101", "3902")
+    const prefix = muniCode.substring(0, 4);
+
+    fetch("/data/korea-submunicipalities-topo.json")
+      .then((r) => r.json())
+      .then((topoData) => {
+        const objectKey = Object.keys(topoData.objects)[0];
+        const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
+        const filtered = geoData.features.filter(
+          (f: any) => f.properties.code?.substring(0, 4) === prefix
+        );
+        console.log(`Municipality ${muniCode} → prefix ${prefix}: found ${filtered.length} sub-municipalities`);
+        if (filtered.length === 0) {
+          // Try with full code prefix (some codes may need different length)
+          const codes = new Set(geoData.features.map((f: any) => f.properties.code?.substring(0, 4)));
+          console.log("Available 4-digit prefixes sample:", [...codes].slice(0, 20));
+        }
+        setFeatures(processFeatures(filtered));
+        setLoading(false);
+      })
+      .catch((err) => { console.error("Failed to load sub-municipality data:", err); setLoading(false); });
+  }, [muniCode]);
+
+  return { features, loading };
+}
+
+/* ── Color palettes ── */
 const MUNI_COLORS = [
   "hsl(210, 50%, 78%)", "hsl(200, 45%, 75%)", "hsl(220, 48%, 80%)",
   "hsl(190, 42%, 76%)", "hsl(215, 52%, 77%)", "hsl(205, 46%, 79%)",
@@ -262,7 +261,6 @@ const MUNI_COLORS = [
   "hsl(210, 55%, 73%)", "hsl(200, 50%, 80%)", "hsl(230, 42%, 82%)",
   "hsl(180, 50%, 74%)", "hsl(215, 45%, 76%)", "hsl(205, 55%, 72%)",
 ];
-
 const MUNI_HOVER_COLORS = [
   "hsl(210, 60%, 62%)", "hsl(200, 55%, 60%)", "hsl(220, 58%, 65%)",
   "hsl(190, 52%, 61%)", "hsl(215, 62%, 62%)", "hsl(205, 56%, 64%)",
@@ -270,31 +268,152 @@ const MUNI_HOVER_COLORS = [
   "hsl(210, 65%, 58%)", "hsl(200, 60%, 65%)", "hsl(230, 52%, 67%)",
   "hsl(180, 60%, 59%)", "hsl(215, 55%, 61%)", "hsl(205, 65%, 57%)",
 ];
+const SUBMUNI_COLORS = [
+  "hsl(140, 45%, 76%)", "hsl(150, 40%, 74%)", "hsl(160, 42%, 78%)",
+  "hsl(130, 38%, 75%)", "hsl(145, 48%, 72%)", "hsl(155, 44%, 77%)",
+  "hsl(135, 40%, 73%)", "hsl(165, 42%, 79%)", "hsl(125, 46%, 74%)",
+  "hsl(140, 50%, 70%)", "hsl(150, 45%, 78%)", "hsl(170, 38%, 80%)",
+  "hsl(120, 44%, 72%)", "hsl(145, 42%, 75%)", "hsl(155, 50%, 70%)",
+];
+const SUBMUNI_HOVER_COLORS = [
+  "hsl(140, 55%, 58%)", "hsl(150, 50%, 56%)", "hsl(160, 52%, 60%)",
+  "hsl(130, 48%, 57%)", "hsl(145, 58%, 55%)", "hsl(155, 54%, 59%)",
+  "hsl(135, 50%, 55%)", "hsl(165, 52%, 61%)", "hsl(125, 56%, 56%)",
+  "hsl(140, 60%, 52%)", "hsl(150, 55%, 60%)", "hsl(170, 48%, 62%)",
+  "hsl(120, 54%, 54%)", "hsl(145, 52%, 57%)", "hsl(155, 60%, 52%)",
+];
+
+/* ── Shared SVG Map Renderer ── */
+function MapSVG({
+  features,
+  colors,
+  hoverColors,
+  hoveredName,
+  selectedName,
+  onHover,
+  onLeave,
+  onClick,
+  fontSize,
+}: {
+  features: MapFeature[];
+  colors: string[];
+  hoverColors: string[];
+  hoveredName: string | null;
+  selectedName: string | null;
+  onHover: (name: string) => void;
+  onLeave: () => void;
+  onClick: (feature: MapFeature) => void;
+  fontSize?: number;
+}) {
+  const fs = fontSize ?? (features.length > 20 ? 7 : 9);
+  return (
+    <svg viewBox="0 0 400 400" className="w-full h-auto drop-shadow-sm" xmlns="http://www.w3.org/2000/svg">
+      {features.map((f, i) => {
+        const isHovered = hoveredName === f.name;
+        const isSelected = selectedName === f.name;
+        const colorIdx = i % colors.length;
+        return (
+          <g key={f.code + i}>
+            <path
+              d={f.path}
+              fill={isSelected || isHovered ? hoverColors[colorIdx] : colors[colorIdx]}
+              stroke="white"
+              strokeWidth={isSelected ? 1.5 : 0.8}
+              className="cursor-pointer transition-all duration-200"
+              onMouseEnter={() => onHover(f.name)}
+              onMouseLeave={onLeave}
+              onClick={() => onClick(f)}
+            />
+            <text
+              x={f.centroidX}
+              y={f.centroidY}
+              textAnchor="middle"
+              dominantBaseline="central"
+              className="pointer-events-none select-none"
+              style={{
+                fontSize: `${fs}px`,
+                fontWeight: isHovered || isSelected ? 700 : 500,
+                fill: isHovered || isSelected ? "hsl(222, 47%, 11%)" : "hsl(215, 16%, 30%)",
+                fontFamily: "'Noto Sans KR', sans-serif",
+              }}
+            >
+              {f.name}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+/* ── Loading Spinner ── */
+function LoadingSpinner() {
+  return (
+    <div className="flex items-center justify-center h-[400px]">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
+        <p className="text-sm text-muted-foreground">지도 로딩 중...</p>
+      </div>
+    </div>
+  );
+}
 
 /* ── Main Component ── */
+type DrillLevel = "province" | "municipality" | "submuni";
+
 const KoreaMap = () => {
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
   const [hoveredMuni, setHoveredMuni] = useState<string | null>(null);
-  const [selectedMuni, setSelectedMuni] = useState<string | null>(null);
+  const [selectedMuni, setSelectedMuni] = useState<MapFeature | null>(null);
+  const [hoveredSubMuni, setHoveredSubMuni] = useState<string | null>(null);
+  const [selectedSubMuni, setSelectedSubMuni] = useState<string | null>(null);
 
-  const selectedProvinceData = selectedProvince
-    ? provinces.find((p) => p.code === selectedProvince)
-    : null;
+  const drillLevel: DrillLevel = selectedMuni ? "submuni" : selectedProvince ? "municipality" : "province";
 
-  const { features: municipalities, loading } = useMunicipalityData(selectedProvince);
+  const { features: municipalities, loading: muniLoading } = useMunicipalityData(selectedProvince);
+  const { features: subMunicipalities, loading: subMuniLoading } = useSubMunicipalityData(selectedMuni?.code ?? null);
 
   const handleProvinceClick = useCallback((code: string) => {
     setSelectedProvince(code);
     setSelectedMuni(null);
-    setHoveredMuni(null);
+    setSelectedSubMuni(null);
   }, []);
 
-  const handleBack = useCallback(() => {
+  const handleMuniClick = useCallback((feature: MapFeature) => {
+    setSelectedMuni(feature);
+    setSelectedSubMuni(null);
+    setHoveredSubMuni(null);
+  }, []);
+
+  const handleBackToProvinces = useCallback(() => {
     setSelectedProvince(null);
     setSelectedMuni(null);
-    setHoveredMuni(null);
+    setSelectedSubMuni(null);
   }, []);
+
+  const handleBackToMunicipalities = useCallback(() => {
+    setSelectedMuni(null);
+    setSelectedSubMuni(null);
+    setHoveredSubMuni(null);
+  }, []);
+
+  /* ── Breadcrumb ── */
+  const breadcrumb = useMemo(() => {
+    const parts: { label: string; onClick?: () => void }[] = [
+      { label: "전국", onClick: drillLevel !== "province" ? handleBackToProvinces : undefined },
+    ];
+    if (selectedProvince) {
+      parts.push({
+        label: PROVINCE_MAP[selectedProvince] || selectedProvince,
+        onClick: drillLevel === "submuni" ? handleBackToMunicipalities : undefined,
+      });
+    }
+    if (selectedMuni) {
+      parts.push({ label: selectedMuni.name });
+    }
+    return parts;
+  }, [selectedProvince, selectedMuni, drillLevel, handleBackToProvinces, handleBackToMunicipalities]);
 
   return (
     <section className="py-10 md:py-16 px-5 md:px-8 bg-background">
@@ -306,15 +425,41 @@ const KoreaMap = () => {
           </h2>
         </div>
         <p className="text-xs text-muted-foreground mb-8 ml-3">
-          시도를 클릭하면 시군구 지도로 이동합니다
+          시도 → 시군구 → 읍면동 순으로 클릭하여 탐색합니다
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8 items-start">
           {/* Map area */}
           <div className="relative w-full max-w-[520px] mx-auto">
+            {/* Breadcrumb navigation */}
+            {drillLevel !== "province" && (
+              <div className="flex items-center gap-1 mb-4 flex-wrap">
+                <button
+                  onClick={drillLevel === "submuni" ? handleBackToMunicipalities : handleBackToProvinces}
+                  className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-sm font-semibold text-primary hover:bg-primary/5 transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  뒤로
+                </button>
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  {breadcrumb.map((b, i) => (
+                    <span key={i} className="flex items-center gap-1">
+                      {i > 0 && <span className="text-muted-foreground/50">›</span>}
+                      {b.onClick ? (
+                        <button onClick={b.onClick} className="hover:text-primary transition-colors font-medium">
+                          {b.label}
+                        </button>
+                      ) : (
+                        <span className="font-bold text-foreground">{b.label}</span>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <AnimatePresence mode="wait">
-              {!selectedProvince ? (
-                /* ── Province-level map ── */
+              {drillLevel === "province" && (
                 <motion.div
                   key="provinces"
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -360,8 +505,9 @@ const KoreaMap = () => {
                     })}
                   </svg>
                 </motion.div>
-              ) : (
-                /* ── Municipality-level map ── */
+              )}
+
+              {drillLevel === "municipality" && (
                 <motion.div
                   key={`muni-${selectedProvince}`}
                   initial={{ opacity: 0, scale: 1.05 }}
@@ -369,71 +515,49 @@ const KoreaMap = () => {
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.4 }}
                 >
-                  {/* Back button */}
-                  <button
-                    onClick={handleBack}
-                    className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg text-sm font-semibold text-primary hover:bg-primary/5 transition-colors"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                    전국 지도로 돌아가기
-                  </button>
+                  {muniLoading ? (
+                    <LoadingSpinner />
+                  ) : (
+                    <MapSVG
+                      features={municipalities}
+                      colors={MUNI_COLORS}
+                      hoverColors={MUNI_HOVER_COLORS}
+                      hoveredName={hoveredMuni}
+                      selectedName={null}
+                      onHover={setHoveredMuni}
+                      onLeave={() => setHoveredMuni(null)}
+                      onClick={handleMuniClick}
+                    />
+                  )}
+                </motion.div>
+              )}
 
-                  {loading ? (
+              {drillLevel === "submuni" && (
+                <motion.div
+                  key={`submuni-${selectedMuni?.code}`}
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  {subMuniLoading ? (
+                    <LoadingSpinner />
+                  ) : subMunicipalities.length === 0 ? (
                     <div className="flex items-center justify-center h-[400px]">
-                      <div className="flex flex-col items-center gap-3">
-                        <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
-                        <p className="text-sm text-muted-foreground">지도 로딩 중...</p>
-                      </div>
+                      <p className="text-sm text-muted-foreground">읍면동 데이터가 없습니다</p>
                     </div>
                   ) : (
-                    <svg
-                      viewBox="0 0 400 400"
-                      className="w-full h-auto drop-shadow-sm"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      {municipalities.map((muni, i) => {
-                        const isHovered = hoveredMuni === muni.name;
-                        const isSelected = selectedMuni === muni.name;
-                        const colorIdx = i % MUNI_COLORS.length;
-                        return (
-                          <g key={muni.name + i}>
-                            <path
-                              d={muni.path}
-                              fill={
-                                isSelected || isHovered
-                                  ? MUNI_HOVER_COLORS[colorIdx]
-                                  : MUNI_COLORS[colorIdx]
-                              }
-                              stroke="white"
-                              strokeWidth={isSelected ? 1.5 : 0.8}
-                              className="cursor-pointer transition-all duration-200"
-                              onMouseEnter={() => setHoveredMuni(muni.name)}
-                              onMouseLeave={() => setHoveredMuni(null)}
-                              onClick={() =>
-                                setSelectedMuni(
-                                  selectedMuni === muni.name ? null : muni.name
-                                )
-                              }
-                            />
-                            <text
-                              x={muni.centroidX}
-                              y={muni.centroidY}
-                              textAnchor="middle"
-                              dominantBaseline="central"
-                              className="pointer-events-none select-none"
-                              style={{
-                                fontSize: municipalities.length > 20 ? "7px" : "9px",
-                                fontWeight: isHovered || isSelected ? 700 : 500,
-                                fill: isHovered || isSelected ? "hsl(222, 47%, 11%)" : "hsl(215, 16%, 30%)",
-                                fontFamily: "'Noto Sans KR', sans-serif",
-                              }}
-                            >
-                              {muni.name}
-                            </text>
-                          </g>
-                        );
-                      })}
-                    </svg>
+                    <MapSVG
+                      features={subMunicipalities}
+                      colors={SUBMUNI_COLORS}
+                      hoverColors={SUBMUNI_HOVER_COLORS}
+                      hoveredName={hoveredSubMuni}
+                      selectedName={selectedSubMuni}
+                      onHover={setHoveredSubMuni}
+                      onLeave={() => setHoveredSubMuni(null)}
+                      onClick={(f) => setSelectedSubMuni(selectedSubMuni === f.name ? null : f.name)}
+                      fontSize={subMunicipalities.length > 30 ? 6 : subMunicipalities.length > 15 ? 7 : 9}
+                    />
                   )}
                 </motion.div>
               )}
@@ -448,48 +572,88 @@ const KoreaMap = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="space-y-3"
           >
-            {selectedProvince ? (
+            {drillLevel === "submuni" && selectedMuni ? (
               <>
-                {/* Province header card */}
+                <div className="gov-card p-5">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-2 h-2 rounded-full bg-accent" />
+                    <span className="text-xs text-muted-foreground">{PROVINCE_MAP[selectedProvince!]}</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-foreground mb-1">{selectedMuni.name}</h3>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    읍면동을 클릭하면 상세 정보를 확인합니다
+                  </p>
+
+                  {selectedSubMuni ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 pb-3 border-b border-border">
+                        <div className="w-3 h-3 rounded-full bg-primary" />
+                        <span className="text-base font-bold text-foreground">{selectedSubMuni}</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-border">
+                        <span className="text-sm text-muted-foreground">인구수</span>
+                        <span className="text-sm font-bold text-foreground">{(Math.random() * 50000 + 5000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-border">
+                        <span className="text-sm text-muted-foreground">세대수</span>
+                        <span className="text-sm font-bold text-foreground">{(Math.random() * 20000 + 2000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}세대</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-border">
+                        <span className="text-sm text-muted-foreground">면적</span>
+                        <span className="text-sm font-bold text-foreground">{(Math.random() * 50 + 1).toFixed(2)}km²</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2">
+                        <span className="text-sm text-muted-foreground">행정구분</span>
+                        <span className="text-sm font-bold text-primary">
+                          {selectedSubMuni.endsWith("읍") ? "읍" : selectedSubMuni.endsWith("면") ? "면" : "동"}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground text-center py-6">
+                      읍면동을 선택해주세요
+                    </p>
+                  )}
+                </div>
+
+                {/* Sub-municipality list */}
+                <div className="gov-card p-4 max-h-[300px] overflow-y-auto">
+                  <h4 className="text-xs font-semibold text-muted-foreground mb-3">
+                    읍면동 목록 ({subMunicipalities.length}개)
+                  </h4>
+                  <div className="grid grid-cols-2 gap-1">
+                    {subMunicipalities.map((m, i) => (
+                      <button
+                        key={m.code + i}
+                        onClick={() => setSelectedSubMuni(selectedSubMuni === m.name ? null : m.name)}
+                        onMouseEnter={() => setHoveredSubMuni(m.name)}
+                        onMouseLeave={() => setHoveredSubMuni(null)}
+                        className={`text-left px-2 py-1.5 rounded-md text-xs font-medium transition-all ${
+                          selectedSubMuni === m.name
+                            ? "bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                        }`}
+                      >
+                        {m.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            ) : drillLevel === "municipality" && selectedProvince ? (
+              <>
                 <div className="gov-card p-5">
                   <h3 className="text-lg font-bold text-foreground mb-1">
                     {PROVINCE_MAP[selectedProvince]}
                   </h3>
                   <p className="text-xs text-muted-foreground mb-4">
-                    시군구를 클릭하면 상세 정보를 확인합니다
+                    시군구를 클릭하면 읍면동 지도로 이동합니다
                   </p>
-
-                  {selectedMuni ? (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 pb-3 border-b border-border">
-                        <div className="w-3 h-3 rounded-full bg-primary" />
-                        <span className="text-base font-bold text-foreground">{selectedMuni}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-border">
-                        <span className="text-sm text-muted-foreground">총예산</span>
-                        <span className="text-sm font-bold text-foreground">2.1조원</span>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-border">
-                        <span className="text-sm text-muted-foreground">세입</span>
-                        <span className="text-sm font-bold text-foreground">1.4조원</span>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-border">
-                        <span className="text-sm text-muted-foreground">세출</span>
-                        <span className="text-sm font-bold text-foreground">1.2조원</span>
-                      </div>
-                      <div className="flex justify-between items-center py-2">
-                        <span className="text-sm text-muted-foreground">재정자립도</span>
-                        <span className="text-sm font-bold text-primary">38.5%</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground text-center py-6">
-                      시군구를 선택해주세요
-                    </p>
-                  )}
+                  <p className="text-sm text-muted-foreground text-center py-6">
+                    시군구를 선택해주세요
+                  </p>
                 </div>
 
-                {/* Municipality list */}
                 <div className="gov-card p-4 max-h-[300px] overflow-y-auto">
                   <h4 className="text-xs font-semibold text-muted-foreground mb-3">
                     시군구 목록 ({municipalities.length}개)
@@ -497,15 +661,11 @@ const KoreaMap = () => {
                   <div className="grid grid-cols-2 gap-1">
                     {municipalities.map((m, i) => (
                       <button
-                        key={m.name + i}
-                        onClick={() => setSelectedMuni(selectedMuni === m.name ? null : m.name)}
+                        key={m.code + i}
+                        onClick={() => handleMuniClick(m)}
                         onMouseEnter={() => setHoveredMuni(m.name)}
                         onMouseLeave={() => setHoveredMuni(null)}
-                        className={`text-left px-2 py-1.5 rounded-md text-xs font-medium transition-all ${
-                          selectedMuni === m.name
-                            ? "bg-primary/10 text-primary"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                        }`}
+                        className="text-left px-2 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
                       >
                         {m.name}
                       </button>
@@ -527,12 +687,11 @@ const KoreaMap = () => {
                       시도를 선택해주세요
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      지도에서 시도를 클릭하면<br />시군구 지도로 이동합니다
+                      지도에서 시도를 클릭하면<br />시군구 → 읍면동 순으로 탐색합니다
                     </p>
                   </div>
                 </div>
 
-                {/* Province list */}
                 <div className="gov-card p-4">
                   <h4 className="text-xs font-semibold text-muted-foreground mb-3">시도 목록</h4>
                   <div className="grid grid-cols-3 gap-1.5">
