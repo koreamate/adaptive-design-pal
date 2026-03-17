@@ -138,6 +138,7 @@ function useMunicipalityData(provinceCode: string | null) {
       return;
     }
 
+    const topoProvinceCode = TOPO_PROVINCE_CODE_MAP[provinceCode] ?? provinceCode;
     setLoading(true);
 
     fetch("/data/korea-municipalities-topo.json")
@@ -146,16 +147,18 @@ function useMunicipalityData(provinceCode: string | null) {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
 
-        // Filter features by province code
         const filtered = geoData.features.filter(
-          (f: any) => f.properties.code?.substring(0, 2) === provinceCode
+          (f: any) => f.properties.code?.substring(0, 2) === topoProvinceCode
         );
 
-        console.log(`Province ${provinceCode}: found ${filtered.length} municipalities out of ${geoData.features.length} total`);
+        console.log(
+          `Province ${provinceCode} → topo ${topoProvinceCode}: found ${filtered.length} municipalities out of ${geoData.features.length} total`
+        );
 
         if (filtered.length === 0) {
-          // Debug: log available codes
-          const codes = new Set(geoData.features.map((f: any) => f.properties.code?.substring(0, 2)));
+          const codes = new Set(
+            geoData.features.map((f: any) => f.properties.code?.substring(0, 2))
+          );
           console.log("Available province codes:", [...codes]);
           setFeatures([]);
           setLoading(false);
