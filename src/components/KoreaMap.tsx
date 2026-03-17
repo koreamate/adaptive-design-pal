@@ -102,9 +102,10 @@ function extractRings(geometry: any): number[][][] {
 /* ── GeoJSON → SVG path converter ── */
 function geoToSvgPath(
   rings: number[][][],
-  project: (coord: number[]) => [number, number]
+  project: (coord: number[]) => [number, number],
+  smoothing = 0
 ): string {
-  return rings
+  const linePath = rings
     .map((ring) =>
       ring
         .map((coord, i) => {
@@ -115,6 +116,67 @@ function geoToSvgPath(
         .join("") + "Z"
     )
     .join("");
+
+  if (smoothing <= 0) return linePath;
+
+  const smoothRingPath = (ring: number[][]): string => {
+    const pts = ring
+      .map(project)
+      .filter(([x, y]) => !isNaN(x) && !isNaN(y));
+
+    if (pts.length < 4) {
+      return pts
+        .map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`)
+        .join("") + "Z";
+    }
+
+    const closedPts = [...pts];
+    const commands: string[] = [];
+
+    const getDistance = (a: [number, number], b: [number, number]) => Math.hypot(b[0] - a[0], b[1] - a[1]);
+    const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+    for (let i = 0; i < closedPts.length; i++) {
+      const prev = closedPts[(i - 1 + closedPts.length) % closedPts.length];
+      const curr = closedPts[i];
+      const next = closedPts[(i + 1) % closedPts.length];
+
+      const prevDist = getDistance(prev, curr);
+      const nextDist = getDistance(curr, next);
+      const localRadius = clamp(Math.min(prevDist, nextDist) * smoothing, 0.18, 1.8);
+
+      const startX = curr[0] - ((curr[0] - prev[0]) / (prevDist || 1)) * localRadius;
+      const startY = curr[1] - ((curr[1] - prev[1]) / (prevDist || 1)) * localRadius;
+      const endX = curr[0] + ((next[0] - curr[0]) / (nextDist || 1)) * localRadius;
+      const endY = curr[1] + ((next[1] - curr[1]) / (nextDist || 1)) * localRadius;
+
+      if (i === 0) {
+        commands.push(`M${endX.toFixed(2)},${endY.toFixed(2)}`);
+      } else {
+        commands.push(`L${startX.toFixed(2)},${startY.toFixed(2)}`);
+        commands.push(`Q${curr[0].toFixed(2)},${curr[1].toFixed(2)} ${endX.toFixed(2)},${endY.toFixed(2)}`);
+      }
+
+      if (i === closedPts.length - 1) {
+        const first = closedPts[0];
+        const firstNext = closedPts[1 % closedPts.length];
+        const firstPrevDist = getDistance(curr, first);
+        const firstNextDist = getDistance(first, firstNext);
+        const firstRadius = clamp(Math.min(firstPrevDist, firstNextDist) * smoothing, 0.18, 1.8);
+        const firstStartX = first[0] - ((first[0] - curr[0]) / (firstPrevDist || 1)) * firstRadius;
+        const firstStartY = first[1] - ((first[1] - curr[1]) / (firstPrevDist || 1)) * firstRadius;
+        const firstEndX = first[0] + ((firstNext[0] - first[0]) / (firstNextDist || 1)) * firstRadius;
+        const firstEndY = first[1] + ((firstNext[1] - first[1]) / (firstNextDist || 1)) * firstRadius;
+
+        commands.push(`L${firstStartX.toFixed(2)},${firstStartY.toFixed(2)}`);
+        commands.push(`Q${first[0].toFixed(2)},${first[1].toFixed(2)} ${firstEndX.toFixed(2)},${firstEndY.toFixed(2)}Z`);
+      }
+    }
+
+    return commands.join("");
+  };
+
+  return rings.map(smoothRingPath).join("");
 }
 
 /* ── Shared feature interface ── */
@@ -139,7 +201,13 @@ function filterRemoteIslands(rings: number[][][]): number[][][] {
 }
 
 /* ── Process GeoJSON features into MapFeature[] ── */
-function processFeatures(filtered: any[], svgW = 400, svgH = 400, padding = 20): MapFeature[] {
+function processFeatures(
+  filtered: any[],
+  svgW = 400,
+  svgH = 400,
+  padding = 20,
+  options?: { pathSmoothing?: number }
+): MapFeature[] {
   let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
   for (const f of filtered) {
     const rings = filterRemoteIslands(extractRings(f.geometry));
@@ -194,8 +262,8 @@ function processFeatures(filtered: any[], svgW = 400, svgH = 400, padding = 20):
     try {
       const rings = filterRemoteIslands(extractRings(f.geometry));
       if (rings.length === 0) continue;
-      const pathStr = geoToSvgPath(rings, project);
-      
+      const pathStr = geoToSvgPath(rings, project, options?.pathSmoothing ?? 0);
+
       // Find centroid of the largest ring (main polygon)
       let bestCx = 0, bestCy = 0, bestArea = 0;
       for (const ring of rings) {
@@ -215,7 +283,7 @@ function processFeatures(filtered: any[], svgW = 400, svgH = 400, padding = 20):
         }
         if (sn > 0) { bestCx = sx / sn; bestCy = sy / sn; }
       }
-      
+
       result.push({ name: f.properties.name || f.properties.name_eng || "", code: f.properties.code || "", path: pathStr, centroidX: bestCx, centroidY: bestCy, area: bestArea });
     } catch (err) {
       console.error("Error processing feature:", f.properties.name, err);
@@ -263,7 +331,7 @@ function useSubMunicipalityData(muniCode: string | null) {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
         const filtered = geoData.features.filter((f: any) => f.properties.code?.substring(0, 4) === prefix);
-        setFeatures(processFeatures(filtered));
+        setFeatures(processFeatures(filtered, 400, 400, 20, { pathSmoothing: 0.22 }));
         setLoading(false);
       })
       .catch((err) => { console.error("Failed to load sub-municipality data:", err); setLoading(false); });
