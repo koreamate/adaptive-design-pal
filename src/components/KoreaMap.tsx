@@ -376,12 +376,7 @@ function ProvinceMapSVG({
   const activeProvince = provinces.find((p) => p.id === hoveredRegion);
 
   return (
-    <div
-      className="relative rounded-2xl overflow-hidden"
-      style={{
-        background: `linear-gradient(135deg, ${MAP_COLORS.gradientStart} 0%, ${MAP_COLORS.gradientMid} 50%, ${MAP_COLORS.gradientEnd} 100%)`,
-      }}
-    >
+    <div className="relative rounded-2xl overflow-hidden bg-card border border-border">
       <svg viewBox="-2 -2 140 215" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="provinceGlow" x="-10%" y="-10%" width="120%" height="120%">
@@ -395,9 +390,9 @@ function ProvinceMapSVG({
             <path
               key={region.id}
               d={region.path}
-              fill={isHovered ? MAP_COLORS.regionSelected : "hsla(0, 0%, 100%, 0.85)"}
-              stroke="hsla(0, 0%, 100%, 0.5)"
-              strokeWidth={isHovered ? 0.5 : 0.2}
+              fill={isHovered ? MAP_COLORS.regionSelected : MAP_COLORS.regionFill}
+              stroke="hsl(210, 15%, 80%)"
+              strokeWidth={isHovered ? 0.6 : 0.35}
               filter={isHovered ? "url(#provinceGlow)" : undefined}
               className="cursor-pointer transition-all duration-200"
               onMouseEnter={() => onHover(region.id)}
