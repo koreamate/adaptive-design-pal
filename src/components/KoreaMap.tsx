@@ -851,7 +851,7 @@ const KoreaMap = () => {
                       onLeave={() => setHoveredSubMuni(null)}
                       onClick={(f) => setSelectedSubMuni(selectedSubMuni === f.name ? null : f.name)}
                       fontSize={subMunicipalities.length > 30 ? 5.5 : subMunicipalities.length > 15 ? 6.5 : 8}
-                      edgeSoftness="soft"
+                      edgeSoftness="default"
                     />
                   </div>
                 )}
