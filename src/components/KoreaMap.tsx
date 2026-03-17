@@ -463,11 +463,6 @@ function ProvinceMapSVG({
         )}
       </svg>
 
-      {/* Bottom caption */}
-      <div className="absolute bottom-4 left-0 right-0 text-center">
-        <p className="text-[11px] text-white/70">17개 시도와 전국 시군구·읍면동</p>
-        <p className="text-lg font-bold text-white tracking-wider mt-0.5">KOREA</p>
-      </div>
     </div>
   );
 }
