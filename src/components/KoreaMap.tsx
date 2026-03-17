@@ -338,7 +338,11 @@ function useMunicipalityData(provinceCode: string | null) {
       .then((topoData) => {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
-        const filtered = geoData.features.filter((f: any) => f.properties.code?.substring(0, 2) === topoProvinceCode);
+        let filtered = geoData.features.filter((f: any) => f.properties.code?.substring(0, 2) === topoProvinceCode);
+        // 경상북도(37): shift 울릉도 closer to mainland
+        if (topoProvinceCode === "37") {
+          filtered = shiftUlleungdo(filtered);
+        }
         setFeatures(processFeatures(filtered));
         setLoading(false);
       })
