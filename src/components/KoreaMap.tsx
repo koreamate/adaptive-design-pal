@@ -352,7 +352,7 @@ function MapSVG({
             <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="hsl(178, 60%, 52%)" floodOpacity="0.4" />
           </filter>
           <filter id="smoothEdge" x="-2%" y="-2%" width="104%" height="104%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="0.6" result="smoothed" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="smoothed" />
             <feComposite in="smoothed" in2="SourceGraphic" operator="atop" />
           </filter>
           {!hasAnimated && (
