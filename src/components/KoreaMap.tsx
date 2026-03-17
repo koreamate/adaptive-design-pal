@@ -143,7 +143,7 @@ function geoToSvgPath(
 
       const prevDist = getDistance(prev, curr);
       const nextDist = getDistance(curr, next);
-      const localRadius = clamp(Math.min(prevDist, nextDist) * smoothing, 0.18, 1.8);
+      const localRadius = clamp(Math.min(prevDist, nextDist) * smoothing, 0.24, 2.35);
 
       const startX = curr[0] - ((curr[0] - prev[0]) / (prevDist || 1)) * localRadius;
       const startY = curr[1] - ((curr[1] - prev[1]) / (prevDist || 1)) * localRadius;
@@ -162,7 +162,7 @@ function geoToSvgPath(
         const firstNext = closedPts[1 % closedPts.length];
         const firstPrevDist = getDistance(curr, first);
         const firstNextDist = getDistance(first, firstNext);
-        const firstRadius = clamp(Math.min(firstPrevDist, firstNextDist) * smoothing, 0.18, 1.8);
+        const firstRadius = clamp(Math.min(firstPrevDist, firstNextDist) * smoothing, 0.24, 2.35);
         const firstStartX = first[0] - ((first[0] - curr[0]) / (firstPrevDist || 1)) * firstRadius;
         const firstStartY = first[1] - ((first[1] - curr[1]) / (firstPrevDist || 1)) * firstRadius;
         const firstEndX = first[0] + ((firstNext[0] - first[0]) / (firstNextDist || 1)) * firstRadius;
@@ -331,7 +331,7 @@ function useSubMunicipalityData(muniCode: string | null) {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
         const filtered = geoData.features.filter((f: any) => f.properties.code?.substring(0, 4) === prefix);
-        setFeatures(processFeatures(filtered, 400, 400, 20, { pathSmoothing: 0.22 }));
+        setFeatures(processFeatures(filtered, 400, 400, 20, { pathSmoothing: 0.3 }));
         setLoading(false);
       })
       .catch((err) => { console.error("Failed to load sub-municipality data:", err); setLoading(false); });
@@ -425,8 +425,8 @@ function MapSVG({
             <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="smoothed" />
             <feComposite in="smoothed" in2="SourceGraphic" operator="atop" />
           </filter>
-          <filter id="smoothEdgeSoft" x="-3%" y="-3%" width="106%" height="106%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="1.05" result="smoothed" />
+          <filter id="smoothEdgeSoft" x="-3.5%" y="-3.5%" width="107%" height="107%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="smoothed" />
             <feComposite in="smoothed" in2="SourceGraphic" operator="atop" />
           </filter>
           {!hasAnimated && (
