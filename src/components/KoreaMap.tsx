@@ -460,7 +460,7 @@ function ProvinceMapSVG({
 /* ── Loading Spinner ── */
 function LoadingSpinner() {
   return (
-    <div className="flex items-center justify-center h-[400px] bg-card rounded-2xl border border-border">
+    <div className="flex items-center justify-center h-[400px]">
       <div className="flex flex-col items-center gap-3">
         <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
         <p className="text-sm text-muted-foreground">지도 로딩 중...</p>
