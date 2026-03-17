@@ -73,7 +73,7 @@ const provinces: ProvinceRegion[] = [
 
 /* ── Design tokens (rMate-style) ── */
 const MAP_COLORS = {
-  regionFill: "hsl(210, 18%, 93%)",
+  regionFill: "hsl(210, 18%, 82%)",
   regionStroke: "hsl(0, 0%, 100%)",
   regionHover: "hsl(178, 55%, 65%)",
   regionSelected: "hsl(178, 60%, 52%)",
@@ -354,7 +354,7 @@ function MapSVG({
               d={f.path}
               fill={isActive ? MAP_COLORS.regionSelected : MAP_COLORS.regionFill}
               stroke={MAP_COLORS.regionStroke}
-              strokeWidth={isActive ? 1.2 : 0.8}
+              strokeWidth={isActive ? 1.5 : 1.2}
               filter={isActive ? "url(#hoverGlow)" : undefined}
               className="cursor-pointer transition-all duration-200"
               style={{ opacity: isActive ? 1 : 0.95 }}
