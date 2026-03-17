@@ -429,6 +429,10 @@ function ProvinceMapSVG({
         {/* Active tooltip pill */}
         {activeProvince && (
           <g className="pointer-events-none">
+            {/* Shadow */}
+            <rect x={activeProvince.labelX - 18} y={activeProvince.labelY - 8} width={36} height={14} rx={7} fill="rgba(0,0,0,0.08)" />
+            {/* Border */}
+            <rect x={activeProvince.labelX - 18} y={activeProvince.labelY - 9} width={36} height={14} rx={7} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.3" />
             <rect
               x={activeProvince.labelX - 18}
               y={activeProvince.labelY - 9}
