@@ -354,7 +354,7 @@ function MapSVG({
               d={f.path}
               fill={isActive ? MAP_COLORS.regionSelected : MAP_COLORS.regionFill}
               stroke={MAP_COLORS.regionStroke}
-              strokeWidth={isActive ? 2.5 : 2}
+              strokeWidth={isActive ? 5 : 4}
               filter={isActive ? "url(#hoverGlow)" : undefined}
               className="cursor-pointer transition-all duration-200"
               style={{ opacity: isActive ? 1 : 0.95 }}
