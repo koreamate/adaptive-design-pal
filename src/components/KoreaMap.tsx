@@ -775,7 +775,6 @@ const KoreaMap = () => {
                 </div>
               </>
             ) : null}
-            )}
           </motion.div>
         </div>
       </div>
