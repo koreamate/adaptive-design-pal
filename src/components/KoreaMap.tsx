@@ -624,89 +624,84 @@ const KoreaMap = () => {
               </div>
             )}
 
-            <AnimatePresence mode="wait">
-              {drillLevel === "province" && (
-                <motion.div
-                  key="provinces"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  <ProvinceMapSVG
-                    hoveredRegion={hoveredRegion}
-                    onHover={setHoveredRegion}
-                    onLeave={() => setHoveredRegion(null)}
-                    onClick={handleProvinceClick}
-                  />
-                </motion.div>
-              )}
+            {drillLevel === "province" && (
+              <motion.div
+                key="provinces"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ProvinceMapSVG
+                  hoveredRegion={hoveredRegion}
+                  onHover={setHoveredRegion}
+                  onLeave={() => setHoveredRegion(null)}
+                  onClick={handleProvinceClick}
+                />
+              </motion.div>
+            )}
 
-              {drillLevel === "municipality" && (
-                <motion.div
-                  key={`muni-${selectedProvince}`}
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  {muniLoading ? (
-                    <LoadingSpinner />
-                  ) : (
-                    <div>
-                      {/* Title badge */}
-                      <div className="absolute top-2 left-3 z-10 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border">
-                        <span className="text-sm font-bold text-foreground">
-                          {PROVINCE_SHORT[selectedProvince!] || PROVINCE_MAP[selectedProvince!]}
-                        </span>
-                      </div>
-                      <MapSVG
-                        features={municipalities}
-                        hoveredName={hoveredMuni}
-                        selectedName={null}
-                        onHover={setHoveredMuni}
-                        onLeave={() => setHoveredMuni(null)}
-                        onClick={handleMuniClick}
-                      />
+            {drillLevel === "municipality" && (
+              <motion.div
+                key={`muni-${selectedProvince}`}
+                initial={{ opacity: 0, scale: 1.02 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                {muniLoading ? (
+                  <LoadingSpinner />
+                ) : (
+                  <div>
+                    {/* Title badge */}
+                    <div className="absolute top-2 left-3 z-10 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border">
+                      <span className="text-sm font-bold text-foreground">
+                        {PROVINCE_SHORT[selectedProvince!] || PROVINCE_MAP[selectedProvince!]}
+                      </span>
                     </div>
-                  )}
-                </motion.div>
-              )}
+                    <MapSVG
+                      features={municipalities}
+                      hoveredName={hoveredMuni}
+                      selectedName={null}
+                      onHover={setHoveredMuni}
+                      onLeave={() => setHoveredMuni(null)}
+                      onClick={handleMuniClick}
+                    />
+                  </div>
+                )}
+              </motion.div>
+            )}
 
-              {drillLevel === "submuni" && (
-                <motion.div
-                  key={`submuni-${selectedMuni?.code}`}
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  {subMuniLoading ? (
-                    <LoadingSpinner />
-                  ) : subMunicipalities.length === 0 ? (
-                    <div className="flex items-center justify-center h-[400px]">
-                      <p className="text-sm text-muted-foreground">읍면동 데이터가 없습니다</p>
+            {drillLevel === "submuni" && (
+              <motion.div
+                key={`submuni-${selectedMuni?.code}`}
+                initial={{ opacity: 0, scale: 1.02 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                {subMuniLoading ? (
+                  <LoadingSpinner />
+                ) : subMunicipalities.length === 0 ? (
+                  <div className="flex items-center justify-center h-[400px]">
+                    <p className="text-sm text-muted-foreground">읍면동 데이터가 없습니다</p>
+                  </div>
+                ) : (
+                  <div>
+                    {/* Title badge */}
+                    <div className="absolute top-2 left-3 z-10 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border">
+                      <span className="text-sm font-bold text-foreground">{selectedMuni?.name}</span>
                     </div>
-                  ) : (
-                    <div>
-                      {/* Title badge */}
-                      <div className="absolute top-2 left-3 z-10 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border">
-                        <span className="text-sm font-bold text-foreground">{selectedMuni?.name}</span>
-                      </div>
-                      <MapSVG
-                        features={subMunicipalities}
-                        hoveredName={hoveredSubMuni}
-                        selectedName={selectedSubMuni}
-                        onHover={setHoveredSubMuni}
-                        onLeave={() => setHoveredSubMuni(null)}
-                        onClick={(f) => setSelectedSubMuni(selectedSubMuni === f.name ? null : f.name)}
-                        fontSize={subMunicipalities.length > 30 ? 5.5 : subMunicipalities.length > 15 ? 6.5 : 8}
-                      />
-                    </div>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                    <MapSVG
+                      features={subMunicipalities}
+                      hoveredName={hoveredSubMuni}
+                      selectedName={selectedSubMuni}
+                      onHover={setHoveredSubMuni}
+                      onLeave={() => setHoveredSubMuni(null)}
+                      onClick={(f) => setSelectedSubMuni(selectedSubMuni === f.name ? null : f.name)}
+                      fontSize={subMunicipalities.length > 30 ? 5.5 : subMunicipalities.length > 15 ? 6.5 : 8}
+                    />
+                  </div>
+                )}
+              </motion.div>
+            )}
           </div>
 
         </div>
