@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MapPin } from "lucide-react";
 import * as topojson from "topojson-client";
 
 /* ── Province code → Korean name mapping ── */
@@ -24,25 +24,21 @@ const PROVINCE_MAP: Record<string, string> = {
   "50": "제주특별자치도",
 };
 
+/* ── Short names for breadcrumb ── */
+const PROVINCE_SHORT: Record<string, string> = {
+  "11": "서울", "26": "부산", "27": "대구", "28": "인천",
+  "29": "광주", "30": "대전", "31": "울산", "36": "세종",
+  "41": "경기도", "42": "강원도", "43": "충청북도", "44": "충청남도",
+  "45": "전라북도", "46": "전라남도", "47": "경상북도", "48": "경상남도",
+  "50": "제주도",
+};
+
 /* ── UI 시도 코드 → TopoJSON 시도 코드 매핑 ── */
 const TOPO_PROVINCE_CODE_MAP: Record<string, string> = {
-  "11": "11",
-  "26": "21",
-  "27": "22",
-  "28": "23",
-  "29": "24",
-  "30": "25",
-  "31": "26",
-  "36": "29",
-  "41": "31",
-  "42": "32",
-  "43": "33",
-  "44": "34",
-  "45": "35",
-  "46": "36",
-  "47": "37",
-  "48": "38",
-  "50": "39",
+  "11": "11", "26": "21", "27": "22", "28": "23", "29": "24",
+  "30": "25", "31": "26", "36": "29", "41": "31", "42": "32",
+  "43": "33", "44": "34", "45": "35", "46": "36", "47": "37",
+  "48": "38", "50": "39",
 };
 
 /* ── Static 시도 SVG data ── */
@@ -56,15 +52,15 @@ interface ProvinceRegion {
 }
 
 const provinces: ProvinceRegion[] = [
-  { id: "gangwon", code: "42", name: "강원", path: "M119.7,56.3c0,0-2.8,4.9-5.1,4.8c-2.3-0.1-5.2-1.2-5.7-1.2c-0.5,0-1.4,0.3-1.8,1.2c-0.4,0.9-2.3,0.7-3.5,0c-1.5-0.9-1.8,0.2-3.7,0.3c-4.1,0.3-5.6,1.2-5.6,1.2c-0.7-3.7-3.5-3.4-3.5-3.4c-5.8-1.4-4.5-0.6-6.4-3.7c-1.9-3.1-3.7-1.4-3.7-1.4s-3.2,3.9-4,0.8c-0.8-3.1-1.9-0.5-1.9-0.5c-1.5,4.9-7.1,3.2-7.1,3.2l0-0.3c0,0,0.4-5.1,0.8-6.6c0.4-1.5,0.1-3.9-0.3-4.8c-0.3-0.8,0.1-1.5,0.1-1.5c2.8-6.1-1.8-4.4-3.4-4.8c-0.9-0.2-3.4-0.8-3.7-2c-0.3-1.3-1.1-3.8-1.1-5.8s1-2.7,1-3.7c0-1,1.4-4.4-7.1-8.9c-8.5-4.4-6.1-7.4-6.1-7.4c2.4-1.3,3.8-2.8,4.7-1.6c0.8,1.2,2.7,2.4,4.7,0.5c2-1.9,5.1-1.8,5.2-0.8c0.2,1,0.8,2.2,3.5,2c2.7-0.2,11.3,0.4,11.3-2.7c0-3.1,4.7-3.2,5.6-2.4c0.8,0.8,1.3,4.5,2-0.4c0.7-5,2.7-8.2,5.1-2.4c2.4,5.7,1.7,6.2,2.9,7.4c1.2,1.2,1.9,3.2,1.9,5.2c0,2,4.6,6.1,6.2,8.6c1.7,2.5,6.4,7.1,7.8,8.8c1,1.2,2.2,7.4,4.2,10.3c2,2.9,4.3,3.4,5.9,9.1c0.7,2.6,0.8,2.9,0.8,2.9", labelX: 83, labelY: 37 },
-  { id: "gyeongbuk", code: "47", name: "경북", path: "M95.4,121.7c0.9,1.1,6.4,1.9,9,1.5c2.6-0.3,2.9-1.8,4.7-2.3c1.9-0.5,3.1-3.2,5.1-3.6c1.9-0.4,3.2,0.4,4.6,1.3c1.3,0.8,7.2,0,7.2-1.2c0-0.2-0.2-0.6-0.2-0.6c-1-1.9-0.2-1.3,0.8-3.2c1-1.9,0.7-3,1.9-5.4c1.2-2.4-0.4-3.4,0-5.7c0.3-2.4-2-2.2-2.2-1c-0.2,1.2-2.9,2.7-3.4,1.7c-0.5-1,0-2.4-0.3-3.7c-0.3-1.3-0.8-3-1.2-7.6c-0.3-4.6,1-2.2,2-4c1-1.9-1-5.9-0.7-8.6c0.3-2.7,1.5-7.6,0-8.9c-1.2-1.1-0.4-2.1-0.2-2.7c0.1-0.6,1.2-5.8,0-6.9c-1.3-1.1-2.7-4.2-2.7-4.2s-2.8,4.9-5.1,4.8c-2.3-0.1-5.2-1.2-5.7-1.2c-0.5,0-1.4,0.3-1.8,1.2c-0.4,0.9-2.4,0.8-3.5,0c-1.2-0.8-1.8-0.1-3.5,0.3c-1.7,0.3-6.1,0.3-7.8,3c-1.1,1.8-0.7,4.1-0.7,4.1s1.4,5.6-4.8,3.1c-6.2-2.4-5.2,0-7.1,0.6c-1.9,0.6-3.6,3.5-5.4,5c-1.8,1.5-5.2,2.4-3.8,4.1c1.4,1.8,2.5,3.4,2,5.3c-0.4,1.9-3.1,3.5-2.4,5.1c0.8,1.6,2.8,2,5,2c2.2-0.1,2.6,1.8,0.9,4.4s-1.9,5.7-2.5,6.2c-1,0.9-1.9,1.8-1.9,1.8s0.8,2.8,0.8,4.4c0,0,8.4,3,9.2,3.5c0.8,0.5,2.3,2.4,1.5,4.1c0,0-0.4,2.2,4,1.9c0,0,3.6-4.7,1.1-7.8c0,0-2.3-2.2,1-3.5c3.3-1.4,2-3.4,4.7-3.5c2.7-0.2,4.9-1.5,5.7-0.8c0.8,0.8,4.6,4.2,3.1,5.7c-1.5,1.5-4.7,6.8-5.8,7.4c-1.1,0.6-2.7,0.5-2.6,1.5c0,0.2,0.5,2.1,0.5,2.1L95.4,121.7z", labelX: 100, labelY: 91 },
-  { id: "gyeongnam", code: "48", name: "경남", path: "M106.3,136.8c-2.1,0.9-1.9,2.7-1.9,2.7c-1.5,4.1-3.7,2.6-4.8,1.8c-1.1-0.8-2.7-1.8-2.9-0.6c-0.2,1.2-3.3,2.7-3.3,2.7c-3.9,1.7-1.1,3.7-1.1,3.7c3.4,3.7,3.6,1.6,6-1.3c2.4-2.8,4.9,1.6,4.9,1.6c-0.6,0.6-0.7,3.5-0.7,3.5c-0.2,5.2-3.4,9.3-5.9,9.2c-2.5-0.1-7.2-0.1-7.8-3.7c-0.7-3.6-2.5-1.9-3.2-1.3c-0.8,0.6-3.9,1.2-4.8,1c-0.9-0.1-1.9,0.6-2.1,2.5c0,0,0.7,1.9-1.7,0.8c-2.4-1.1-4.1-1-5.8-0.6c0,0-0.4-0.8-0.4-4.2l0,0.1c0.4-4.6-0.8-3.3-1.3-4.5c-0.4-1.2-0.5-3.9-0.8-4.4c-0.3-0.5-3.8-2.3-4.5-5.1c-0.5-1.9-1.4-4.3-1.5-6.4l-0.1-0.3l0-0.5c-0.1-0.5,1.5-3.3,1.5-3.3c1-2.3-0.4-2.7-0.8-3.7c-0.4-1-1.1-4.1-0.2-4.8c0.9-0.7,1.3-2.3,1.3-2.3c0.6-7.4,8.4-8.6,8.4-8.6s8.4,3,9.2,3.5c0.8,0.5,2.3,2.4,1.5,4.1c0,0-0.4,2.2,4,1.9l0.3-0.1c0,0,5.3-0.4,7.4,1.2l0.4,0.4c0.9,1.1,6.4,1.9,9,1.5c2.6-0.3,2.9-1.8,4.7-2.3l1-0.5c0,0,0.4,2-0.9,3.2c-1.3,1.3,0.1,2,1.7,2.7c1.6,0.7,5.1,1.3,5.7,2.9C116.7,129.3,113.8,133.4,106.3,136.8z", labelX: 83, labelY: 137 },
-  { id: "jeonbuk", code: "45", name: "전북", path: "M27,105.6c-3.1,0.3,1.3,4.2,1.3,4.2c3.8,5-1.4,8.7-1.5,8.8c-0.1,0.1-3.2,2-2.8,4.1c0.5,2.3-0.5,2-0.9,2.5c-1.5,2.2-0.3,3.2-0.3,3.2s2.6,3.7,4.1,4.9c0,0,1.4,0.7,2.6,0.7c0,0,4.2-2.6,5.6-5.2c1.4-2.6,6.1,0.7,7.4,1.5c1.3,0.8,3.4,5.1,5.5,4.4c2.1-0.8,3.7-0.8,5.1-0.3c1.4,0.6,4.5-1.2,5.3-1.9c2.2-1.8,4.1,1.5,4,1c-0.1-0.5,1.5-3.3,1.5-3.3c1-2.3-0.4-2.7-0.8-3.7c-0.4-1-1.1-4.1-0.2-4.8c0.9-0.7,1.3-2.3,1.3-2.3c0.6-7.4,8.4-8.6,8.4-8.6c0-0.8-0.5-3.2-0.8-4.4c-0.3-1.2-6.8-1.9-6.8-1.9c0.6,2.5-6.2,2.1-7.9,1.6c-1.7-0.5-1.9-3.1-3.4-4.8c-1.4-1.7-4.1,1-5.5,2.1c-1.3,1.1-4,0.9-4-0.8c0.1-1.7-1.1-4.1-2.6-4.3c-1.5-0.3-2.9,1.7-4.3,5.1c-1.4,3.5-6.8,1.5-6.8,1.5L27,105.6z", labelX: 45, labelY: 118 },
-  { id: "jeonnam", code: "46", name: "전남", path: "M70.6,154.5c0.4-4.6-0.8-3.3-1.3-4.5c-0.4-1.2-0.5-3.9-0.8-4.4c-0.3-0.5-3.8-2.3-4.5-5.1c-0.5-1.9-1.4-4.3-1.5-6.4l-0.1-0.3c-0.2-1.5-2.8-2.7-3.9-1.5c-0.7,0.7-3.9,2.5-5.3,1.9c-1.4-0.6-3-0.5-5.1,0.3c-2.1,0.8-4.2-3.5-5.5-4.4c-1.3-0.8-6-4.1-7.4-1.5c-1.4,2.6-5.6,5.2-5.6,5.2c-1.1,0-2.6-0.7-2.6-0.7c-1.5-1.2-4.1-4.9-4.1-4.9s-0.5-1.1-1.3,0.2c-1,1.6,0.2,1.5,0,2.5c-0.2,1-3.5,2-2,5.2c1.5,3.2-1,3.7-3,4.2c-2,0.5-3.5-0.3-7.1,0c-3.5,0.3-2,2.9,0.7,4.4c2.7,1.5,2.1,3.5-0.7,4.2c-1.7,0.4-2.4,0.1-2.2,1.5c0.6,4.7-1.5,3.5-2.4,4.4c-0.9,0.8-1.3,1.7-0.7,3.2c0.7,1.5,1.5,1.2,1.5,3c0,1.9-2.5,2.5,1.7,3.9c4.2,1.4,1.3,2.8,0.5,3.2c-2.4,1.2-4.4,5.6-5.7,9.1c-1.3,3.5,1.8,1.7,1.9,2.5c0.4,1.8,1.9,4.6,6.8,0c9.1,0.8,2.5-5.6,3.7-5.6c1.2,0,5.1-1.2,6.1-1.3c1-0.2,4.4,1.5,4.4,1.5l5.4,2c0,0,5.4,0,8.9,0.2c3.5,0.2,4.6,0.3,6.1-0.5c1.5-0.8,0.8-3.4,1.3-4.2c0.5-0.8,3.4-0.5,5.1-0.5c1.7,0,0.2-3.4,3.7-2c3.5,1.3,4.7,0.2,4.9-2.4c0.2-2.5-4.2-6.7,2.7-4.6c6.9,2.2,6.8-1.6,7.6-3l0.2-1C70.9,158.6,70.5,157.7,70.6,154.5", labelX: 30, labelY: 164 },
-  { id: "jeju", code: "50", name: "제주", path: "M21.5,188.9c0,0-2.2,3.3-6.1,3.9c-3.9,0.6-2.5,5.8-0.3,7.2c2.2,1.4,3,3.7,6.1,1.6c1.6-1.1,4.8,0.1,8.8-0.3c1.6-0.1,11.5-4.8,10.8-8.9c-0.8-4.1-2.7-6.6-7-5.3c-4.3,1.3-7.5,1.1-8.7,1.1C23.8,188.4,22.8,188.1,21.5,188.9z", labelX: 24, labelY: 197 },
-  { id: "chungnam", code: "44", name: "충남", path: "M54,74.8c7.2-2.1,1.1-6.4,1.1-6.4l-0.2-0.1c0,0-0.8,0.1-5-1.4c-4.2-1.5-7,0-7,0c-7.4,2.4-9.1-2.7-9.5-2.5c-0.4,0.2-1.9-0.1-1.9-0.1c-0.3-0.1-1-0.3-4.4-1.7c-3.4-1.3-4.6-0.3-5.2,0c-0.7,0.3-7.2,5.8-7.9,6.4c-1.2,1.2-0.7,3.7-1,6.1c-0.3,2.4-0.3,5.7,2.2,4c2.5-1.7,4.6,1,3.2,4c-1.3,3,0.8,6.9,4.6,7.3c3.7,0.3,3.9,4.9,2.7,5.7c-1.2,0.8-2.7,1.3,1.2,4.9l3.5,3.7c0,0,5.4,2,6.8-1.5c1.4-3.5,2.8-5.4,4.3-5.1s2.7,2.6,2.6,4.3c-0.1,1.7,2.6,1.9,4,0.8c1.4-1.1,4-3.9,5.5-2.1c1.4,1.7,1.7,4.3,3.4,4.8c1.7,0.5,9.1,1.4,7.7-2.5c-1.4-4-1.8-6.4-2.1-7.2c-0.8-1.8-2.4-1.4-3-1.1l-0.3,0.4c-0.9,1.3-0.8,1.1-1.1,1.4s-1.5,1.1-2.7,0.4c-1.3-0.7-3.6-0.1-4.1-5.7c-0.1-1.3,0.4-3.3,0.4-3.3s0-0.1-1.5-0.4c-1.3-0.2-1.6-1.6-2-4.6c-0.4-2.9,0.5-2.8-0.5-2.9c-1-0.1-0.4-1.1-0.1-2.2c0.3-1-0.6-1.9-0.9-3.3c-0.3-1.4,1.6-2.4,2.3-1.1c0.6,1.3,2.2,2,3.2,1.8C52.7,75.5,53.5,74.9,54,74.8z", labelX: 33, labelY: 85 },
-  { id: "chungbuk", code: "43", name: "충북", path: "M92.3,64.4c-1.1,1.9-0.7,4.1-0.7,4.1s1.4,5.6-4.8,3.1c-6.2-2.4-5.2,0-7.1,0.6c-1.9,0.6-3.6,3.5-5.4,5c-1.8,1.5-5.2,2.4-3.8,4.1c1.4,1.8,2.5,3.4,2,5.3c-0.4,1.9-3.1,3.5-2.4,5.1c0.8,1.6,2.8,2,5,2c2.2-0.1,2.6,1.8,0.9,4.4c-1.7,2.6-1.9,5.7-2.5,6.2l-1.7,1.6c-2.9-1.5-7-1.6-7-1.6l-0.2-1.1c-1.4-4-1.7-6.4-2.1-7.2c-1-2-3-1.2-3-1.2l0.6-1.3c0.1-0.3,0.4-2.5,0.6-3.4c0.2-0.9,0.2-2.7-0.1-3.4c-0.3-0.7-0.8-0.6-1.5-0.8c-0.7-0.2-3.3-2.3-3.3-2.3s-1.6-2.9-2.6-4.2c-3.2-4,0.7-4.9,0.7-4.9s7.2-1.4,1-6.6c0,0,2.2-4.2,3.1-4.7c0.9-0.5,3.3-0.9,4.5-1.6c1.2-0.7,4.2-3.3,4.2-3.3l0.6-0.5l0.3-0.3c0,0,5.6,1.7,7.1-3.2c0,0,1.1-2.6,1.9,0.5c0.8,3.1,4-0.8,4-0.8s1.7-1.7,3.7,1.3c1.9,3.1,0.6,2.3,6.4,3.7c0,0,2.8-0.2,3.5,3.4C94.3,62.7,93,63.3,92.3,64.4z", labelX: 68, labelY: 73 },
-  { id: "gyeonggi", code: "41", name: "경기", path: "M67.7,57.8l0-0.3c0,0,0.4-5.1,0.8-6.6c0.4-1.5,0.1-3.9-0.3-4.8c-0.3-0.8,0.1-1.5,0.1-1.5c2.8-6.1-1.8-4.4-3.4-4.8c-0.9-0.2-3.4-0.8-3.7-2c-0.3-1.3-1.1-3.8-1.1-5.8s1-2.7,1-3.7c0-1,1.4-4.4-7.1-8.9c-8.5-4.4-6.1-7.4-6.1-7.4s-8.6,2.1-9.2,2.5s-3,2-3.9,2.2c-0.7,0.2-2.8,1,0,2.2s5.2,2.1,1.2,4.8c-4,2.7-4.5,0.9-2.9,2.7c1.6,1.8,1.2,3.5-3,5.5c0,0-4.1,3.3-1.9,4.9c0,0,0.8-0.3,0.8,3.1c0,0-0.3,0.8,1.9,0.2c2.3-0.6,4.4-0.6,5.1,0.5c0.7,1.1,2.5,3.9-2.2,7.6l-2.6,2.8c0,0,0.1,2.8-1.3,3.3c-1.5,0.5-2.1,1.9-0.9,3.6c1.2,1.7,4.5,5.4,4.6,5.8c0.1,0.5,2.3,5.4,9.4,3.1c0,0,2.7-1.6,7,0s5.1,1.3,5.1,1.3s2.2-4.2,3.1-4.7c0.9-0.5,3.3-0.9,4.5-1.6c1.2-0.7,4.2-3.3,4.2-3.3l0.6-0.5L67.7,57.8z", labelX: 42, labelY: 55 },
+  { id: "gangwon", code: "42", name: "강원도", path: "M119.7,56.3c0,0-2.8,4.9-5.1,4.8c-2.3-0.1-5.2-1.2-5.7-1.2c-0.5,0-1.4,0.3-1.8,1.2c-0.4,0.9-2.3,0.7-3.5,0c-1.5-0.9-1.8,0.2-3.7,0.3c-4.1,0.3-5.6,1.2-5.6,1.2c-0.7-3.7-3.5-3.4-3.5-3.4c-5.8-1.4-4.5-0.6-6.4-3.7c-1.9-3.1-3.7-1.4-3.7-1.4s-3.2,3.9-4,0.8c-0.8-3.1-1.9-0.5-1.9-0.5c-1.5,4.9-7.1,3.2-7.1,3.2l0-0.3c0,0,0.4-5.1,0.8-6.6c0.4-1.5,0.1-3.9-0.3-4.8c-0.3-0.8,0.1-1.5,0.1-1.5c2.8-6.1-1.8-4.4-3.4-4.8c-0.9-0.2-3.4-0.8-3.7-2c-0.3-1.3-1.1-3.8-1.1-5.8s1-2.7,1-3.7c0-1,1.4-4.4-7.1-8.9c-8.5-4.4-6.1-7.4-6.1-7.4c2.4-1.3,3.8-2.8,4.7-1.6c0.8,1.2,2.7,2.4,4.7,0.5c2-1.9,5.1-1.8,5.2-0.8c0.2,1,0.8,2.2,3.5,2c2.7-0.2,11.3,0.4,11.3-2.7c0-3.1,4.7-3.2,5.6-2.4c0.8,0.8,1.3,4.5,2-0.4c0.7-5,2.7-8.2,5.1-2.4c2.4,5.7,1.7,6.2,2.9,7.4c1.2,1.2,1.9,3.2,1.9,5.2c0,2,4.6,6.1,6.2,8.6c1.7,2.5,6.4,7.1,7.8,8.8c1,1.2,2.2,7.4,4.2,10.3c2,2.9,4.3,3.4,5.9,9.1c0.7,2.6,0.8,2.9,0.8,2.9", labelX: 83, labelY: 37 },
+  { id: "gyeongbuk", code: "47", name: "경상북도", path: "M95.4,121.7c0.9,1.1,6.4,1.9,9,1.5c2.6-0.3,2.9-1.8,4.7-2.3c1.9-0.5,3.1-3.2,5.1-3.6c1.9-0.4,3.2,0.4,4.6,1.3c1.3,0.8,7.2,0,7.2-1.2c0-0.2-0.2-0.6-0.2-0.6c-1-1.9-0.2-1.3,0.8-3.2c1-1.9,0.7-3,1.9-5.4c1.2-2.4-0.4-3.4,0-5.7c0.3-2.4-2-2.2-2.2-1c-0.2,1.2-2.9,2.7-3.4,1.7c-0.5-1,0-2.4-0.3-3.7c-0.3-1.3-0.8-3-1.2-7.6c-0.3-4.6,1-2.2,2-4c1-1.9-1-5.9-0.7-8.6c0.3-2.7,1.5-7.6,0-8.9c-1.2-1.1-0.4-2.1-0.2-2.7c0.1-0.6,1.2-5.8,0-6.9c-1.3-1.1-2.7-4.2-2.7-4.2s-2.8,4.9-5.1,4.8c-2.3-0.1-5.2-1.2-5.7-1.2c-0.5,0-1.4,0.3-1.8,1.2c-0.4,0.9-2.4,0.8-3.5,0c-1.2-0.8-1.8-0.1-3.5,0.3c-1.7,0.3-6.1,0.3-7.8,3c-1.1,1.8-0.7,4.1-0.7,4.1s1.4,5.6-4.8,3.1c-6.2-2.4-5.2,0-7.1,0.6c-1.9,0.6-3.6,3.5-5.4,5c-1.8,1.5-5.2,2.4-3.8,4.1c1.4,1.8,2.5,3.4,2,5.3c-0.4,1.9-3.1,3.5-2.4,5.1c0.8,1.6,2.8,2,5,2c2.2-0.1,2.6,1.8,0.9,4.4s-1.9,5.7-2.5,6.2c-1,0.9-1.9,1.8-1.9,1.8s0.8,2.8,0.8,4.4c0,0,8.4,3,9.2,3.5c0.8,0.5,2.3,2.4,1.5,4.1c0,0-0.4,2.2,4,1.9c0,0,3.6-4.7,1.1-7.8c0,0-2.3-2.2,1-3.5c3.3-1.4,2-3.4,4.7-3.5c2.7-0.2,4.9-1.5,5.7-0.8c0.8,0.8,4.6,4.2,3.1,5.7c-1.5,1.5-4.7,6.8-5.8,7.4c-1.1,0.6-2.7,0.5-2.6,1.5c0,0.2,0.5,2.1,0.5,2.1L95.4,121.7z", labelX: 100, labelY: 91 },
+  { id: "gyeongnam", code: "48", name: "경상남도", path: "M106.3,136.8c-2.1,0.9-1.9,2.7-1.9,2.7c-1.5,4.1-3.7,2.6-4.8,1.8c-1.1-0.8-2.7-1.8-2.9-0.6c-0.2,1.2-3.3,2.7-3.3,2.7c-3.9,1.7-1.1,3.7-1.1,3.7c3.4,3.7,3.6,1.6,6-1.3c2.4-2.8,4.9,1.6,4.9,1.6c-0.6,0.6-0.7,3.5-0.7,3.5c-0.2,5.2-3.4,9.3-5.9,9.2c-2.5-0.1-7.2-0.1-7.8-3.7c-0.7-3.6-2.5-1.9-3.2-1.3c-0.8,0.6-3.9,1.2-4.8,1c-0.9-0.1-1.9,0.6-2.1,2.5c0,0,0.7,1.9-1.7,0.8c-2.4-1.1-4.1-1-5.8-0.6c0,0-0.4-0.8-0.4-4.2l0,0.1c0.4-4.6-0.8-3.3-1.3-4.5c-0.4-1.2-0.5-3.9-0.8-4.4c-0.3-0.5-3.8-2.3-4.5-5.1c-0.5-1.9-1.4-4.3-1.5-6.4l-0.1-0.3l0-0.5c-0.1-0.5,1.5-3.3,1.5-3.3c1-2.3-0.4-2.7-0.8-3.7c-0.4-1-1.1-4.1-0.2-4.8c0.9-0.7,1.3-2.3,1.3-2.3c0.6-7.4,8.4-8.6,8.4-8.6s8.4,3,9.2,3.5c0.8,0.5,2.3,2.4,1.5,4.1c0,0-0.4,2.2,4,1.9l0.3-0.1c0,0,5.3-0.4,7.4,1.2l0.4,0.4c0.9,1.1,6.4,1.9,9,1.5c2.6-0.3,2.9-1.8,4.7-2.3l1-0.5c0,0,0.4,2-0.9,3.2c-1.3,1.3,0.1,2,1.7,2.7c1.6,0.7,5.1,1.3,5.7,2.9C116.7,129.3,113.8,133.4,106.3,136.8z", labelX: 83, labelY: 137 },
+  { id: "jeonbuk", code: "45", name: "전라북도", path: "M27,105.6c-3.1,0.3,1.3,4.2,1.3,4.2c3.8,5-1.4,8.7-1.5,8.8c-0.1,0.1-3.2,2-2.8,4.1c0.5,2.3-0.5,2-0.9,2.5c-1.5,2.2-0.3,3.2-0.3,3.2s2.6,3.7,4.1,4.9c0,0,1.4,0.7,2.6,0.7c0,0,4.2-2.6,5.6-5.2c1.4-2.6,6.1,0.7,7.4,1.5c1.3,0.8,3.4,5.1,5.5,4.4c2.1-0.8,3.7-0.8,5.1-0.3c1.4,0.6,4.5-1.2,5.3-1.9c2.2-1.8,4.1,1.5,4,1c-0.1-0.5,1.5-3.3,1.5-3.3c1-2.3-0.4-2.7-0.8-3.7c-0.4-1-1.1-4.1-0.2-4.8c0.9-0.7,1.3-2.3,1.3-2.3c0.6-7.4,8.4-8.6,8.4-8.6c0-0.8-0.5-3.2-0.8-4.4c-0.3-1.2-6.8-1.9-6.8-1.9c0.6,2.5-6.2,2.1-7.9,1.6c-1.7-0.5-1.9-3.1-3.4-4.8c-1.4-1.7-4.1,1-5.5,2.1c-1.3,1.1-4,0.9-4-0.8c0.1-1.7-1.1-4.1-2.6-4.3c-1.5-0.3-2.9,1.7-4.3,5.1c-1.4,3.5-6.8,1.5-6.8,1.5L27,105.6z", labelX: 45, labelY: 118 },
+  { id: "jeonnam", code: "46", name: "전라남도", path: "M70.6,154.5c0.4-4.6-0.8-3.3-1.3-4.5c-0.4-1.2-0.5-3.9-0.8-4.4c-0.3-0.5-3.8-2.3-4.5-5.1c-0.5-1.9-1.4-4.3-1.5-6.4l-0.1-0.3c-0.2-1.5-2.8-2.7-3.9-1.5c-0.7,0.7-3.9,2.5-5.3,1.9c-1.4-0.6-3-0.5-5.1,0.3c-2.1,0.8-4.2-3.5-5.5-4.4c-1.3-0.8-6-4.1-7.4-1.5c-1.4,2.6-5.6,5.2-5.6,5.2c-1.1,0-2.6-0.7-2.6-0.7c-1.5-1.2-4.1-4.9-4.1-4.9s-0.5-1.1-1.3,0.2c-1,1.6,0.2,1.5,0,2.5c-0.2,1-3.5,2-2,5.2c1.5,3.2-1,3.7-3,4.2c-2,0.5-3.5-0.3-7.1,0c-3.5,0.3-2,2.9,0.7,4.4c2.7,1.5,2.1,3.5-0.7,4.2c-1.7,0.4-2.4,0.1-2.2,1.5c0.6,4.7-1.5,3.5-2.4,4.4c-0.9,0.8-1.3,1.7-0.7,3.2c0.7,1.5,1.5,1.2,1.5,3c0,1.9-2.5,2.5,1.7,3.9c4.2,1.4,1.3,2.8,0.5,3.2c-2.4,1.2-4.4,5.6-5.7,9.1c-1.3,3.5,1.8,1.7,1.9,2.5c0.4,1.8,1.9,4.6,6.8,0c9.1,0.8,2.5-5.6,3.7-5.6c1.2,0,5.1-1.2,6.1-1.3c1-0.2,4.4,1.5,4.4,1.5l5.4,2c0,0,5.4,0,8.9,0.2c3.5,0.2,4.6,0.3,6.1-0.5c1.5-0.8,0.8-3.4,1.3-4.2c0.5-0.8,3.4-0.5,5.1-0.5c1.7,0,0.2-3.4,3.7-2c3.5,1.3,4.7,0.2,4.9-2.4c0.2-2.5-4.2-6.7,2.7-4.6c6.9,2.2,6.8-1.6,7.6-3l0.2-1C70.9,158.6,70.5,157.7,70.6,154.5", labelX: 30, labelY: 164 },
+  { id: "jeju", code: "50", name: "제주도", path: "M21.5,188.9c0,0-2.2,3.3-6.1,3.9c-3.9,0.6-2.5,5.8-0.3,7.2c2.2,1.4,3,3.7,6.1,1.6c1.6-1.1,4.8,0.1,8.8-0.3c1.6-0.1,11.5-4.8,10.8-8.9c-0.8-4.1-2.7-6.6-7-5.3c-4.3,1.3-7.5,1.1-8.7,1.1C23.8,188.4,22.8,188.1,21.5,188.9z", labelX: 24, labelY: 197 },
+  { id: "chungnam", code: "44", name: "충청남도", path: "M54,74.8c7.2-2.1,1.1-6.4,1.1-6.4l-0.2-0.1c0,0-0.8,0.1-5-1.4c-4.2-1.5-7,0-7,0c-7.4,2.4-9.1-2.7-9.5-2.5c-0.4,0.2-1.9-0.1-1.9-0.1c-0.3-0.1-1-0.3-4.4-1.7c-3.4-1.3-4.6-0.3-5.2,0c-0.7,0.3-7.2,5.8-7.9,6.4c-1.2,1.2-0.7,3.7-1,6.1c-0.3,2.4-0.3,5.7,2.2,4c2.5-1.7,4.6,1,3.2,4c-1.3,3,0.8,6.9,4.6,7.3c3.7,0.3,3.9,4.9,2.7,5.7c-1.2,0.8-2.7,1.3,1.2,4.9l3.5,3.7c0,0,5.4,2,6.8-1.5c1.4-3.5,2.8-5.4,4.3-5.1s2.7,2.6,2.6,4.3c-0.1,1.7,2.6,1.9,4,0.8c1.4-1.1,4-3.9,5.5-2.1c1.4,1.7,1.7,4.3,3.4,4.8c1.7,0.5,9.1,1.4,7.7-2.5c-1.4-4-1.8-6.4-2.1-7.2c-0.8-1.8-2.4-1.4-3-1.1l-0.3,0.4c-0.9,1.3-0.8,1.1-1.1,1.4s-1.5,1.1-2.7,0.4c-1.3-0.7-3.6-0.1-4.1-5.7c-0.1-1.3,0.4-3.3,0.4-3.3s0-0.1-1.5-0.4c-1.3-0.2-1.6-1.6-2-4.6c-0.4-2.9,0.5-2.8-0.5-2.9c-1-0.1-0.4-1.1-0.1-2.2c0.3-1-0.6-1.9-0.9-3.3c-0.3-1.4,1.6-2.4,2.3-1.1c0.6,1.3,2.2,2,3.2,1.8C52.7,75.5,53.5,74.9,54,74.8z", labelX: 33, labelY: 85 },
+  { id: "chungbuk", code: "43", name: "충청북도", path: "M92.3,64.4c-1.1,1.9-0.7,4.1-0.7,4.1s1.4,5.6-4.8,3.1c-6.2-2.4-5.2,0-7.1,0.6c-1.9,0.6-3.6,3.5-5.4,5c-1.8,1.5-5.2,2.4-3.8,4.1c1.4,1.8,2.5,3.4,2,5.3c-0.4,1.9-3.1,3.5-2.4,5.1c0.8,1.6,2.8,2,5,2c2.2-0.1,2.6,1.8,0.9,4.4c-1.7,2.6-1.9,5.7-2.5,6.2l-1.7,1.6c-2.9-1.5-7-1.6-7-1.6l-0.2-1.1c-1.4-4-1.7-6.4-2.1-7.2c-1-2-3-1.2-3-1.2l0.6-1.3c0.1-0.3,0.4-2.5,0.6-3.4c0.2-0.9,0.2-2.7-0.1-3.4c-0.3-0.7-0.8-0.6-1.5-0.8c-0.7-0.2-3.3-2.3-3.3-2.3s-1.6-2.9-2.6-4.2c-3.2-4,0.7-4.9,0.7-4.9s7.2-1.4,1-6.6c0,0,2.2-4.2,3.1-4.7c0.9-0.5,3.3-0.9,4.5-1.6c1.2-0.7,4.2-3.3,4.2-3.3l0.6-0.5l0.3-0.3c0,0,5.6,1.7,7.1-3.2c0,0,1.1-2.6,1.9,0.5c0.8,3.1,4-0.8,4-0.8s1.7-1.7,3.7,1.3c1.9,3.1,0.6,2.3,6.4,3.7c0,0,2.8-0.2,3.5,3.4C94.3,62.7,93,63.3,92.3,64.4z", labelX: 68, labelY: 73 },
+  { id: "gyeonggi", code: "41", name: "경기도", path: "M67.7,57.8l0-0.3c0,0,0.4-5.1,0.8-6.6c0.4-1.5,0.1-3.9-0.3-4.8c-0.3-0.8,0.1-1.5,0.1-1.5c2.8-6.1-1.8-4.4-3.4-4.8c-0.9-0.2-3.4-0.8-3.7-2c-0.3-1.3-1.1-3.8-1.1-5.8s1-2.7,1-3.7c0-1,1.4-4.4-7.1-8.9c-8.5-4.4-6.1-7.4-6.1-7.4s-8.6,2.1-9.2,2.5s-3,2-3.9,2.2c-0.7,0.2-2.8,1,0,2.2s5.2,2.1,1.2,4.8c-4,2.7-4.5,0.9-2.9,2.7c1.6,1.8,1.2,3.5-3,5.5c0,0-4.1,3.3-1.9,4.9c0,0,0.8-0.3,0.8,3.1c0,0-0.3,0.8,1.9,0.2c2.3-0.6,4.4-0.6,5.1,0.5c0.7,1.1,2.5,3.9-2.2,7.6l-2.6,2.8c0,0,0.1,2.8-1.3,3.3c-1.5,0.5-2.1,1.9-0.9,3.6c1.2,1.7,4.5,5.4,4.6,5.8c0.1,0.5,2.3,5.4,9.4,3.1c0,0,2.7-1.6,7,0s5.1,1.3,5.1,1.3s2.2-4.2,3.1-4.7c0.9-0.5,3.3-0.9,4.5-1.6c1.2-0.7,4.2-3.3,4.2-3.3l0.6-0.5L67.7,57.8z", labelX: 42, labelY: 55 },
   { id: "seoul", code: "11", name: "서울", path: "M36.5,45.3c0,0,4.6,0.6,5.5,1.3c0.9,0.7,3.3,0.3,3.7-1c0.4-1.3,2-0.5,2.8-1.3s0.8-1.9,0.4-2.9c-0.3-1-0.8-0.7-0.8-2.1c-0.1-1.3-1.3-3.1-2.6-4c-1.3-0.8-3,0-3.5,0.7c-0.6,0.7-5.6,5.2-5.6,5.2S37.3,42.6,36.5,45.3z", labelX: 41, labelY: 42 },
   { id: "daegu", code: "27", name: "대구", path: "M95,121.2c0,0-0.5-1.8-0.5-2.1c-0.1-1,1.5-0.9,2.6-1.5c1.1-0.6,4.3-5.9,5.8-7.4c1.5-1.5-2.4-5-3.1-5.7c-0.8-0.8-3,0.6-5.7,0.8c-2.7,0.2-1.4,2.2-4.7,3.5c-3.3,1.3-1,3.5-1,3.5c2.6,2.7-0.8,7.7-0.8,7.7S92.8,119.6,95,121.2z", labelX: 92, labelY: 113 },
   { id: "sejong", code: "36", name: "세종", path: "M52.4,75.8c-0.5,0.7-0.6,1.8,1,3.8c1,1.3,2.7,4.4,2.7,4.4l0,0c0.2,0.4-0.3,1.3-0.3,1.3C55.3,86.1,53,86,51.9,88l-0.3,0c0,0,0,0-1.3-0.3c-1.3-0.3-1.6-1.6-2-4.6c-0.4-2.9,0.5-2.8-0.5-2.9c-1-0.1-0.4-1.1-0.1-2.2c0.3-1-0.6-1.9-0.9-3.3c-0.3-1.4,1.7-2.4,2.3-1.1c0.8,1.8,3.4,1.9,3.4,1.9S52.5,75.8,52.4,75.8z", labelX: 49, labelY: 82 },
@@ -75,29 +71,31 @@ const provinces: ProvinceRegion[] = [
   { id: "busan", code: "26", name: "부산", path: "M118.5,138.1c-1.6,4.1-3.7,3.6-4,3.1c-0.4-0.5-3-0.7-3,0.6c0,1.3-1.6,2.2-1.6,2.2c-5.4,1.5-6.7,3.3-6.7,3.3s-2.5-4.4-4.9-1.6c-2.4,2.9-2.6,5-6,1.3c0,0-2.8-2,1.1-3.7c0,0,3.1-1.4,3.3-2.7c0.2-1.2,1.8-0.2,2.9,0.6c1.1,0.8,3.4,2.4,4.8-1.8c0,0-0.1-1.8,1.9-2.7c7.5-3.4,10.3-7.7,10.4-7.5c0.2,0.5-0.1,4.8,3.8,4C121.1,133.2,118.5,138.1,118.5,138.1z", labelX: 109, labelY: 140 },
 ];
 
-const PROVINCE_COLORS = [
-  "hsl(210, 60%, 75%)", "hsl(200, 55%, 70%)", "hsl(195, 50%, 72%)",
-  "hsl(170, 45%, 70%)", "hsl(160, 50%, 72%)", "hsl(35, 65%, 75%)",
-  "hsl(180, 45%, 72%)", "hsl(190, 50%, 68%)", "hsl(220, 55%, 78%)",
-  "hsl(0, 60%, 75%)", "hsl(340, 45%, 75%)", "hsl(280, 40%, 78%)",
-  "hsl(260, 45%, 78%)", "hsl(230, 50%, 78%)", "hsl(150, 50%, 72%)",
-  "hsl(25, 55%, 75%)", "hsl(350, 50%, 72%)",
-];
+/* ── Design tokens (rMate-style) ── */
+const MAP_COLORS = {
+  regionFill: "hsl(210, 18%, 93%)",
+  regionStroke: "hsl(0, 0%, 100%)",
+  regionHover: "hsl(178, 55%, 65%)",
+  regionSelected: "hsl(178, 60%, 52%)",
+  labelDefault: "hsl(210, 10%, 55%)",
+  labelHover: "hsl(210, 15%, 30%)",
+  tooltipBg: "hsl(178, 60%, 52%)",
+  tooltipText: "hsl(0, 0%, 100%)",
+  gradientStart: "hsl(230, 60%, 55%)",
+  gradientMid: "hsl(195, 55%, 55%)",
+  gradientEnd: "hsl(178, 55%, 60%)",
+};
 
 /* ── Extract all rings from any geometry ── */
 function extractRings(geometry: any): number[][][] {
   if (geometry.type === "MultiPolygon") {
     const rings: number[][][] = [];
     for (const polygon of geometry.coordinates) {
-      for (const ring of polygon) {
-        rings.push(ring);
-      }
+      for (const ring of polygon) rings.push(ring);
     }
     return rings;
   }
-  if (geometry.type === "Polygon") {
-    return geometry.coordinates;
-  }
+  if (geometry.type === "Polygon") return geometry.coordinates;
   return [];
 }
 
@@ -129,12 +127,7 @@ interface MapFeature {
 }
 
 /* ── Process GeoJSON features into MapFeature[] ── */
-function processFeatures(
-  filtered: any[],
-  svgW = 400,
-  svgH = 400,
-  padding = 20
-): MapFeature[] {
+function processFeatures(filtered: any[], svgW = 400, svgH = 400, padding = 20): MapFeature[] {
   let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
   for (const f of filtered) {
     const rings = extractRings(f.geometry);
@@ -149,7 +142,6 @@ function processFeatures(
       }
     }
   }
-
   if (!isFinite(minLon) || !isFinite(maxLon)) return [];
 
   const geoW = maxLon - minLon || 0.01;
@@ -177,13 +169,7 @@ function processFeatures(
         }
       }
       if (n > 0) { cx /= n; cy /= n; }
-      result.push({
-        name: f.properties.name || f.properties.name_eng || "",
-        code: f.properties.code || "",
-        path: pathStr,
-        centroidX: cx,
-        centroidY: cy,
-      });
+      result.push({ name: f.properties.name || f.properties.name_eng || "", code: f.properties.code || "", path: pathStr, centroidX: cx, centroidY: cy });
     } catch (err) {
       console.error("Error processing feature:", f.properties.name, err);
     }
@@ -200,16 +186,12 @@ function useMunicipalityData(provinceCode: string | null) {
     if (!provinceCode) { setFeatures([]); return; }
     const topoProvinceCode = TOPO_PROVINCE_CODE_MAP[provinceCode] ?? provinceCode;
     setLoading(true);
-
     fetch("/data/korea-municipalities-topo.json")
       .then((r) => r.json())
       .then((topoData) => {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
-        const filtered = geoData.features.filter(
-          (f: any) => f.properties.code?.substring(0, 2) === topoProvinceCode
-        );
-        console.log(`Province ${provinceCode} → topo ${topoProvinceCode}: found ${filtered.length} municipalities`);
+        const filtered = geoData.features.filter((f: any) => f.properties.code?.substring(0, 2) === topoProvinceCode);
         setFeatures(processFeatures(filtered));
         setLoading(false);
       })
@@ -227,23 +209,13 @@ function useSubMunicipalityData(muniCode: string | null) {
   useEffect(() => {
     if (!muniCode) { setFeatures([]); return; }
     setLoading(true);
-    // muniCode is 4-digit prefix from municipality topo data (e.g., "1101", "3902")
     const prefix = muniCode.substring(0, 4);
-
     fetch("/data/korea-submunicipalities-topo.json")
       .then((r) => r.json())
       .then((topoData) => {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
-        const filtered = geoData.features.filter(
-          (f: any) => f.properties.code?.substring(0, 4) === prefix
-        );
-        console.log(`Municipality ${muniCode} → prefix ${prefix}: found ${filtered.length} sub-municipalities`);
-        if (filtered.length === 0) {
-          // Try with full code prefix (some codes may need different length)
-          const codes = new Set(geoData.features.map((f: any) => f.properties.code?.substring(0, 4)));
-          console.log("Available 4-digit prefixes sample:", [...codes].slice(0, 20));
-        }
+        const filtered = geoData.features.filter((f: any) => f.properties.code?.substring(0, 4) === prefix);
         setFeatures(processFeatures(filtered));
         setLoading(false);
       })
@@ -253,78 +225,110 @@ function useSubMunicipalityData(muniCode: string | null) {
   return { features, loading };
 }
 
-/* ── Color palettes ── */
-const MUNI_COLORS = [
-  "hsl(210, 50%, 78%)", "hsl(200, 45%, 75%)", "hsl(220, 48%, 80%)",
-  "hsl(190, 42%, 76%)", "hsl(215, 52%, 77%)", "hsl(205, 46%, 79%)",
-  "hsl(195, 40%, 74%)", "hsl(225, 44%, 81%)", "hsl(185, 48%, 76%)",
-  "hsl(210, 55%, 73%)", "hsl(200, 50%, 80%)", "hsl(230, 42%, 82%)",
-  "hsl(180, 50%, 74%)", "hsl(215, 45%, 76%)", "hsl(205, 55%, 72%)",
-];
-const MUNI_HOVER_COLORS = [
-  "hsl(210, 60%, 62%)", "hsl(200, 55%, 60%)", "hsl(220, 58%, 65%)",
-  "hsl(190, 52%, 61%)", "hsl(215, 62%, 62%)", "hsl(205, 56%, 64%)",
-  "hsl(195, 50%, 59%)", "hsl(225, 54%, 66%)", "hsl(185, 58%, 61%)",
-  "hsl(210, 65%, 58%)", "hsl(200, 60%, 65%)", "hsl(230, 52%, 67%)",
-  "hsl(180, 60%, 59%)", "hsl(215, 55%, 61%)", "hsl(205, 65%, 57%)",
-];
-const SUBMUNI_COLORS = [
-  "hsl(140, 45%, 76%)", "hsl(150, 40%, 74%)", "hsl(160, 42%, 78%)",
-  "hsl(130, 38%, 75%)", "hsl(145, 48%, 72%)", "hsl(155, 44%, 77%)",
-  "hsl(135, 40%, 73%)", "hsl(165, 42%, 79%)", "hsl(125, 46%, 74%)",
-  "hsl(140, 50%, 70%)", "hsl(150, 45%, 78%)", "hsl(170, 38%, 80%)",
-  "hsl(120, 44%, 72%)", "hsl(145, 42%, 75%)", "hsl(155, 50%, 70%)",
-];
-const SUBMUNI_HOVER_COLORS = [
-  "hsl(140, 55%, 58%)", "hsl(150, 50%, 56%)", "hsl(160, 52%, 60%)",
-  "hsl(130, 48%, 57%)", "hsl(145, 58%, 55%)", "hsl(155, 54%, 59%)",
-  "hsl(135, 50%, 55%)", "hsl(165, 52%, 61%)", "hsl(125, 56%, 56%)",
-  "hsl(140, 60%, 52%)", "hsl(150, 55%, 60%)", "hsl(170, 48%, 62%)",
-  "hsl(120, 54%, 54%)", "hsl(145, 52%, 57%)", "hsl(155, 60%, 52%)",
-];
+/* ── Pill Tooltip Label ── */
+function PillTooltip({ x, y, text }: { x: number; y: number; text: string }) {
+  const textLen = text.length;
+  const w = Math.max(textLen * 7 + 16, 40);
+  const h = 20;
+  return (
+    <g className="pointer-events-none">
+      {/* Shadow */}
+      <rect x={x - w / 2} y={y - h / 2 - 2} width={w} height={h} rx={h / 2} fill="rgba(0,0,0,0.12)" />
+      {/* Pill bg */}
+      <rect x={x - w / 2} y={y - h / 2 - 3} width={w} height={h} rx={h / 2} fill={MAP_COLORS.tooltipBg} />
+      {/* Arrow */}
+      <polygon
+        points={`${x - 4},${y + h / 2 - 3} ${x + 4},${y + h / 2 - 3} ${x},${y + h / 2 + 3}`}
+        fill={MAP_COLORS.tooltipBg}
+      />
+      <text
+        x={x}
+        y={y - 1}
+        textAnchor="middle"
+        dominantBaseline="central"
+        style={{
+          fontSize: "8px",
+          fontWeight: 700,
+          fill: MAP_COLORS.tooltipText,
+          fontFamily: "'Noto Sans KR', sans-serif",
+        }}
+      >
+        {text}
+      </text>
+    </g>
+  );
+}
 
-/* ── Shared SVG Map Renderer ── */
+/* ── Shared SVG Map Renderer (rMate-style) ── */
 function MapSVG({
   features,
-  colors,
-  hoverColors,
   hoveredName,
   selectedName,
   onHover,
   onLeave,
   onClick,
   fontSize,
+  showGradientBg,
 }: {
   features: MapFeature[];
-  colors: string[];
-  hoverColors: string[];
   hoveredName: string | null;
   selectedName: string | null;
   onHover: (name: string) => void;
   onLeave: () => void;
   onClick: (feature: MapFeature) => void;
   fontSize?: number;
+  showGradientBg?: boolean;
 }) {
-  const fs = fontSize ?? (features.length > 20 ? 7 : 9);
+  const fs = fontSize ?? (features.length > 20 ? 6.5 : 8);
+  const activeFeature = features.find((f) => f.name === (hoveredName ?? selectedName));
+
   return (
-    <svg viewBox="0 0 400 400" className="w-full h-auto drop-shadow-sm" xmlns="http://www.w3.org/2000/svg">
-      {features.map((f, i) => {
-        const isHovered = hoveredName === f.name;
-        const isSelected = selectedName === f.name;
-        const colorIdx = i % colors.length;
-        return (
-          <g key={f.code + i}>
+    <div className={`relative rounded-2xl overflow-hidden ${showGradientBg ? "" : "bg-card border border-border"}`}
+      style={showGradientBg ? {
+        background: `linear-gradient(135deg, ${MAP_COLORS.gradientStart}, ${MAP_COLORS.gradientMid}, ${MAP_COLORS.gradientEnd})`,
+      } : undefined}
+    >
+      <svg viewBox="0 0 400 400" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+        {/* Definitions for drop shadow */}
+        <defs>
+          <filter id="mapShadow" x="-5%" y="-5%" width="110%" height="110%">
+            <feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="rgba(0,0,0,0.08)" />
+          </filter>
+          <filter id="hoverGlow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="hsl(178, 60%, 52%)" floodOpacity="0.4" />
+          </filter>
+        </defs>
+
+        {/* Map regions */}
+        {features.map((f, i) => {
+          const isHovered = hoveredName === f.name;
+          const isSelected = selectedName === f.name;
+          const isActive = isHovered || isSelected;
+          return (
             <path
+              key={f.code + i}
               d={f.path}
-              fill={isSelected || isHovered ? hoverColors[colorIdx] : colors[colorIdx]}
-              stroke="white"
-              strokeWidth={isSelected ? 1.5 : 0.8}
+              fill={isActive ? MAP_COLORS.regionSelected : MAP_COLORS.regionFill}
+              stroke={MAP_COLORS.regionStroke}
+              strokeWidth={isActive ? 1.5 : 0.8}
+              filter={isActive ? "url(#hoverGlow)" : undefined}
               className="cursor-pointer transition-all duration-200"
+              style={{ opacity: isActive ? 1 : 0.95 }}
               onMouseEnter={() => onHover(f.name)}
               onMouseLeave={onLeave}
               onClick={() => onClick(f)}
             />
+          );
+        })}
+
+        {/* Region labels (non-active only) */}
+        {features.map((f, i) => {
+          const isHovered = hoveredName === f.name;
+          const isSelected = selectedName === f.name;
+          if (isHovered || isSelected) return null;
+          return (
             <text
+              key={`label-${f.code}-${i}`}
               x={f.centroidX}
               y={f.centroidY}
               textAnchor="middle"
@@ -332,24 +336,145 @@ function MapSVG({
               className="pointer-events-none select-none"
               style={{
                 fontSize: `${fs}px`,
-                fontWeight: isHovered || isSelected ? 700 : 500,
-                fill: isHovered || isSelected ? "hsl(222, 47%, 11%)" : "hsl(215, 16%, 30%)",
+                fontWeight: 400,
+                fill: MAP_COLORS.labelDefault,
                 fontFamily: "'Noto Sans KR', sans-serif",
               }}
             >
               {f.name}
             </text>
+          );
+        })}
+
+        {/* Active tooltip pill */}
+        {activeFeature && (
+          <PillTooltip
+            x={activeFeature.centroidX}
+            y={activeFeature.centroidY - 8}
+            text={activeFeature.name}
+          />
+        )}
+      </svg>
+    </div>
+  );
+}
+
+/* ── Province Map (special SVG with gradient bg) ── */
+function ProvinceMapSVG({
+  hoveredRegion,
+  onHover,
+  onLeave,
+  onClick,
+}: {
+  hoveredRegion: string | null;
+  onHover: (id: string) => void;
+  onLeave: () => void;
+  onClick: (code: string) => void;
+}) {
+  const activeProvince = provinces.find((p) => p.id === hoveredRegion);
+
+  return (
+    <div
+      className="relative rounded-2xl overflow-hidden"
+      style={{
+        background: `linear-gradient(135deg, ${MAP_COLORS.gradientStart} 0%, ${MAP_COLORS.gradientMid} 50%, ${MAP_COLORS.gradientEnd} 100%)`,
+      }}
+    >
+      <svg viewBox="-2 -2 140 215" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="provinceGlow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="hsl(178, 60%, 52%)" floodOpacity="0.5" />
+          </filter>
+        </defs>
+
+        {provinces.map((region) => {
+          const isHovered = hoveredRegion === region.id;
+          return (
+            <path
+              key={region.id}
+              d={region.path}
+              fill={isHovered ? MAP_COLORS.regionSelected : "hsla(0, 0%, 100%, 0.85)"}
+              stroke="hsla(0, 0%, 100%, 0.5)"
+              strokeWidth={isHovered ? 1 : 0.4}
+              filter={isHovered ? "url(#provinceGlow)" : undefined}
+              className="cursor-pointer transition-all duration-200"
+              onMouseEnter={() => onHover(region.id)}
+              onMouseLeave={onLeave}
+              onClick={() => onClick(region.code)}
+            />
+          );
+        })}
+
+        {/* Non-active labels */}
+        {provinces.map((region) => {
+          const isHovered = hoveredRegion === region.id;
+          if (isHovered) return null;
+          const isSmall = ["seoul", "sejong", "daejeon", "gwangju"].includes(region.id);
+          return (
+            <text
+              key={`lbl-${region.id}`}
+              x={region.labelX}
+              y={region.labelY}
+              textAnchor="middle"
+              className="pointer-events-none select-none"
+              style={{
+                fontSize: isSmall ? "3px" : "4px",
+                fontWeight: 400,
+                fill: "hsla(210, 15%, 45%, 0.8)",
+                fontFamily: "'Noto Sans KR', sans-serif",
+              }}
+            >
+              {region.name}
+            </text>
+          );
+        })}
+
+        {/* Active tooltip pill */}
+        {activeProvince && (
+          <g className="pointer-events-none">
+            <rect
+              x={activeProvince.labelX - 18}
+              y={activeProvince.labelY - 9}
+              width={36}
+              height={14}
+              rx={7}
+              fill={MAP_COLORS.tooltipBg}
+            />
+            <polygon
+              points={`${activeProvince.labelX - 3},${activeProvince.labelY + 5} ${activeProvince.labelX + 3},${activeProvince.labelY + 5} ${activeProvince.labelX},${activeProvince.labelY + 9}`}
+              fill={MAP_COLORS.tooltipBg}
+            />
+            <text
+              x={activeProvince.labelX}
+              y={activeProvince.labelY - 1}
+              textAnchor="middle"
+              dominantBaseline="central"
+              style={{
+                fontSize: "5px",
+                fontWeight: 700,
+                fill: MAP_COLORS.tooltipText,
+                fontFamily: "'Noto Sans KR', sans-serif",
+              }}
+            >
+              {activeProvince.name}
+            </text>
           </g>
-        );
-      })}
-    </svg>
+        )}
+      </svg>
+
+      {/* Bottom caption */}
+      <div className="absolute bottom-4 left-0 right-0 text-center">
+        <p className="text-[11px] text-white/70">17개 시도와 전국 시군구·읍면동</p>
+        <p className="text-lg font-bold text-white tracking-wider mt-0.5">KOREA</p>
+      </div>
+    </div>
   );
 }
 
 /* ── Loading Spinner ── */
 function LoadingSpinner() {
   return (
-    <div className="flex items-center justify-center h-[400px]">
+    <div className="flex items-center justify-center h-[400px] bg-card rounded-2xl border border-border">
       <div className="flex flex-col items-center gap-3">
         <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
         <p className="text-sm text-muted-foreground">지도 로딩 중...</p>
@@ -405,7 +530,7 @@ const KoreaMap = () => {
     ];
     if (selectedProvince) {
       parts.push({
-        label: PROVINCE_MAP[selectedProvince] || selectedProvince,
+        label: PROVINCE_SHORT[selectedProvince] || PROVINCE_MAP[selectedProvince] || selectedProvince,
         onClick: drillLevel === "submuni" ? handleBackToMunicipalities : undefined,
       });
     }
@@ -436,7 +561,8 @@ const KoreaMap = () => {
               <div className="flex items-center gap-1 mb-4 flex-wrap">
                 <button
                   onClick={drillLevel === "submuni" ? handleBackToMunicipalities : handleBackToProvinces}
-                  className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-sm font-semibold text-primary hover:bg-primary/5 transition-colors"
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-sm font-semibold transition-colors"
+                  style={{ color: MAP_COLORS.regionSelected }}
                 >
                   <ArrowLeft className="w-4 h-4" />
                   뒤로
@@ -467,43 +593,12 @@ const KoreaMap = () => {
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <svg
-                    viewBox="-2 -2 134 210"
-                    className="w-full h-auto drop-shadow-sm"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    {provinces.map((region, i) => {
-                      const isHovered = hoveredRegion === region.id;
-                      return (
-                        <g key={region.id}>
-                          <path
-                            d={region.path}
-                            fill={isHovered ? `hsl(${(i * 22) % 360}, 65%, 58%)` : PROVINCE_COLORS[i % PROVINCE_COLORS.length]}
-                            stroke="white"
-                            strokeWidth={0.6}
-                            className="cursor-pointer transition-all duration-200"
-                            onMouseEnter={() => setHoveredRegion(region.id)}
-                            onMouseLeave={() => setHoveredRegion(null)}
-                            onClick={() => handleProvinceClick(region.code)}
-                          />
-                          <text
-                            x={region.labelX}
-                            y={region.labelY}
-                            textAnchor="middle"
-                            className="pointer-events-none select-none"
-                            style={{
-                              fontSize: ["seoul", "sejong", "daejeon", "gwangju"].includes(region.id) ? "3.5px" : "4.5px",
-                              fontWeight: isHovered ? 700 : 500,
-                              fill: isHovered ? "hsl(222, 47%, 11%)" : "hsl(215, 16%, 37%)",
-                              fontFamily: "'Noto Sans KR', sans-serif",
-                            }}
-                          >
-                            {region.name}
-                          </text>
-                        </g>
-                      );
-                    })}
-                  </svg>
+                  <ProvinceMapSVG
+                    hoveredRegion={hoveredRegion}
+                    onHover={setHoveredRegion}
+                    onLeave={() => setHoveredRegion(null)}
+                    onClick={handleProvinceClick}
+                  />
                 </motion.div>
               )}
 
@@ -518,16 +613,22 @@ const KoreaMap = () => {
                   {muniLoading ? (
                     <LoadingSpinner />
                   ) : (
-                    <MapSVG
-                      features={municipalities}
-                      colors={MUNI_COLORS}
-                      hoverColors={MUNI_HOVER_COLORS}
-                      hoveredName={hoveredMuni}
-                      selectedName={null}
-                      onHover={setHoveredMuni}
-                      onLeave={() => setHoveredMuni(null)}
-                      onClick={handleMuniClick}
-                    />
+                    <div>
+                      {/* Title badge */}
+                      <div className="absolute top-2 left-3 z-10 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border">
+                        <span className="text-sm font-bold text-foreground">
+                          {PROVINCE_SHORT[selectedProvince!] || PROVINCE_MAP[selectedProvince!]}
+                        </span>
+                      </div>
+                      <MapSVG
+                        features={municipalities}
+                        hoveredName={hoveredMuni}
+                        selectedName={null}
+                        onHover={setHoveredMuni}
+                        onLeave={() => setHoveredMuni(null)}
+                        onClick={handleMuniClick}
+                      />
+                    </div>
                   )}
                 </motion.div>
               )}
@@ -543,21 +644,25 @@ const KoreaMap = () => {
                   {subMuniLoading ? (
                     <LoadingSpinner />
                   ) : subMunicipalities.length === 0 ? (
-                    <div className="flex items-center justify-center h-[400px]">
+                    <div className="flex items-center justify-center h-[400px] bg-card rounded-2xl border border-border">
                       <p className="text-sm text-muted-foreground">읍면동 데이터가 없습니다</p>
                     </div>
                   ) : (
-                    <MapSVG
-                      features={subMunicipalities}
-                      colors={SUBMUNI_COLORS}
-                      hoverColors={SUBMUNI_HOVER_COLORS}
-                      hoveredName={hoveredSubMuni}
-                      selectedName={selectedSubMuni}
-                      onHover={setHoveredSubMuni}
-                      onLeave={() => setHoveredSubMuni(null)}
-                      onClick={(f) => setSelectedSubMuni(selectedSubMuni === f.name ? null : f.name)}
-                      fontSize={subMunicipalities.length > 30 ? 6 : subMunicipalities.length > 15 ? 7 : 9}
-                    />
+                    <div>
+                      {/* Title badge */}
+                      <div className="absolute top-2 left-3 z-10 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border">
+                        <span className="text-sm font-bold text-foreground">{selectedMuni?.name}</span>
+                      </div>
+                      <MapSVG
+                        features={subMunicipalities}
+                        hoveredName={hoveredSubMuni}
+                        selectedName={selectedSubMuni}
+                        onHover={setHoveredSubMuni}
+                        onLeave={() => setHoveredSubMuni(null)}
+                        onClick={(f) => setSelectedSubMuni(selectedSubMuni === f.name ? null : f.name)}
+                        fontSize={subMunicipalities.length > 30 ? 5.5 : subMunicipalities.length > 15 ? 6.5 : 8}
+                      />
+                    </div>
                   )}
                 </motion.div>
               )}
@@ -574,50 +679,43 @@ const KoreaMap = () => {
           >
             {drillLevel === "submuni" && selectedMuni ? (
               <>
-                <div className="gov-card p-5">
+                <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
                   <div className="flex items-center gap-2 mb-1">
-                    <div className="w-2 h-2 rounded-full bg-accent" />
+                    <div className="w-2 h-2 rounded-full" style={{ background: MAP_COLORS.regionSelected }} />
                     <span className="text-xs text-muted-foreground">{PROVINCE_MAP[selectedProvince!]}</span>
                   </div>
                   <h3 className="text-lg font-bold text-foreground mb-1">{selectedMuni.name}</h3>
-                  <p className="text-xs text-muted-foreground mb-4">
-                    읍면동을 클릭하면 상세 정보를 확인합니다
-                  </p>
+                  <p className="text-xs text-muted-foreground mb-4">읍면동을 클릭하면 상세 정보를 확인합니다</p>
 
                   {selectedSubMuni ? (
                     <div className="space-y-3">
                       <div className="flex items-center gap-2 pb-3 border-b border-border">
-                        <div className="w-3 h-3 rounded-full bg-primary" />
+                        <div className="w-3 h-3 rounded-full" style={{ background: MAP_COLORS.regionSelected }} />
                         <span className="text-base font-bold text-foreground">{selectedSubMuni}</span>
                       </div>
-                      <div className="flex justify-between items-center py-2 border-b border-border">
-                        <span className="text-sm text-muted-foreground">인구수</span>
-                        <span className="text-sm font-bold text-foreground">{(Math.random() * 50000 + 5000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명</span>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-border">
-                        <span className="text-sm text-muted-foreground">세대수</span>
-                        <span className="text-sm font-bold text-foreground">{(Math.random() * 20000 + 2000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}세대</span>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-border">
-                        <span className="text-sm text-muted-foreground">면적</span>
-                        <span className="text-sm font-bold text-foreground">{(Math.random() * 50 + 1).toFixed(2)}km²</span>
-                      </div>
-                      <div className="flex justify-between items-center py-2">
-                        <span className="text-sm text-muted-foreground">행정구분</span>
-                        <span className="text-sm font-bold text-primary">
-                          {selectedSubMuni.endsWith("읍") ? "읍" : selectedSubMuni.endsWith("면") ? "면" : "동"}
-                        </span>
-                      </div>
+                      {[
+                        { label: "인구수", value: `${(Math.random() * 50000 + 5000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명` },
+                        { label: "세대수", value: `${(Math.random() * 20000 + 2000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}세대` },
+                        { label: "면적", value: `${(Math.random() * 50 + 1).toFixed(2)}km²` },
+                        { label: "행정구분", value: selectedSubMuni.endsWith("읍") ? "읍" : selectedSubMuni.endsWith("면") ? "면" : "동", isAccent: true },
+                      ].map((item, idx) => (
+                        <div key={idx} className="flex justify-between items-center py-2 border-b border-border last:border-0">
+                          <span className="text-sm text-muted-foreground">{item.label}</span>
+                          <span className={`text-sm font-bold ${item.isAccent ? "" : "text-foreground"}`}
+                            style={item.isAccent ? { color: MAP_COLORS.regionSelected } : undefined}
+                          >
+                            {item.value}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-muted-foreground text-center py-6">
-                      읍면동을 선택해주세요
-                    </p>
+                    <p className="text-sm text-muted-foreground text-center py-6">읍면동을 선택해주세요</p>
                   )}
                 </div>
 
                 {/* Sub-municipality list */}
-                <div className="gov-card p-4 max-h-[300px] overflow-y-auto">
+                <div className="bg-card rounded-2xl border border-border p-4 max-h-[300px] overflow-y-auto shadow-sm">
                   <h4 className="text-xs font-semibold text-muted-foreground mb-3">
                     읍면동 목록 ({subMunicipalities.length}개)
                   </h4>
@@ -628,11 +726,12 @@ const KoreaMap = () => {
                         onClick={() => setSelectedSubMuni(selectedSubMuni === m.name ? null : m.name)}
                         onMouseEnter={() => setHoveredSubMuni(m.name)}
                         onMouseLeave={() => setHoveredSubMuni(null)}
-                        className={`text-left px-2 py-1.5 rounded-md text-xs font-medium transition-all ${
+                        className={`text-left px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
                           selectedSubMuni === m.name
-                            ? "bg-primary/10 text-primary"
+                            ? "text-white"
                             : "text-muted-foreground hover:bg-muted hover:text-foreground"
                         }`}
+                        style={selectedSubMuni === m.name ? { background: MAP_COLORS.regionSelected } : undefined}
                       >
                         {m.name}
                       </button>
@@ -642,19 +741,17 @@ const KoreaMap = () => {
               </>
             ) : drillLevel === "municipality" && selectedProvince ? (
               <>
-                <div className="gov-card p-5">
+                <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
                   <h3 className="text-lg font-bold text-foreground mb-1">
                     {PROVINCE_MAP[selectedProvince]}
                   </h3>
                   <p className="text-xs text-muted-foreground mb-4">
                     시군구를 클릭하면 읍면동 지도로 이동합니다
                   </p>
-                  <p className="text-sm text-muted-foreground text-center py-6">
-                    시군구를 선택해주세요
-                  </p>
+                  <p className="text-sm text-muted-foreground text-center py-6">시군구를 선택해주세요</p>
                 </div>
 
-                <div className="gov-card p-4 max-h-[300px] overflow-y-auto">
+                <div className="bg-card rounded-2xl border border-border p-4 max-h-[300px] overflow-y-auto shadow-sm">
                   <h4 className="text-xs font-semibold text-muted-foreground mb-3">
                     시군구 목록 ({municipalities.length}개)
                   </h4>
@@ -665,7 +762,14 @@ const KoreaMap = () => {
                         onClick={() => handleMuniClick(m)}
                         onMouseEnter={() => setHoveredMuni(m.name)}
                         onMouseLeave={() => setHoveredMuni(null)}
-                        className="text-left px-2 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+                        className="text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground transition-all"
+                        style={{ }}
+                        onMouseOver={(e) => {
+                          (e.currentTarget as HTMLElement).style.background = `${MAP_COLORS.regionSelected}15`;
+                        }}
+                        onMouseOut={(e) => {
+                          (e.currentTarget as HTMLElement).style.background = "transparent";
+                        }}
                       >
                         {m.name}
                       </button>
@@ -675,37 +779,41 @@ const KoreaMap = () => {
               </>
             ) : (
               <>
-                <div className="gov-card p-5 text-center">
+                <div className="bg-card rounded-2xl border border-border p-5 text-center shadow-sm">
                   <div className="py-8">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center">
-                      <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                      </svg>
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center"
+                      style={{ background: `${MAP_COLORS.regionSelected}15` }}
+                    >
+                      <MapPin className="w-6 h-6" style={{ color: MAP_COLORS.regionSelected }} />
                     </div>
-                    <p className="text-sm font-semibold text-foreground mb-1">
-                      시도를 선택해주세요
-                    </p>
+                    <p className="text-sm font-semibold text-foreground mb-1">시도를 선택해주세요</p>
                     <p className="text-xs text-muted-foreground">
                       지도에서 시도를 클릭하면<br />시군구 → 읍면동 순으로 탐색합니다
                     </p>
                   </div>
                 </div>
 
-                <div className="gov-card p-4">
+                <div className="bg-card rounded-2xl border border-border p-4 shadow-sm">
                   <h4 className="text-xs font-semibold text-muted-foreground mb-3">시도 목록</h4>
                   <div className="grid grid-cols-3 gap-1.5">
-                    {provinces.map((p, i) => (
+                    {provinces.map((p) => (
                       <button
                         key={p.id}
                         onClick={() => handleProvinceClick(p.code)}
                         onMouseEnter={() => setHoveredRegion(p.id)}
                         onMouseLeave={() => setHoveredRegion(null)}
-                        className="flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+                        className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground transition-all"
+                        style={{}}
+                        onMouseOver={(e) => {
+                          (e.currentTarget as HTMLElement).style.background = `${MAP_COLORS.regionSelected}15`;
+                        }}
+                        onMouseOut={(e) => {
+                          (e.currentTarget as HTMLElement).style.background = "transparent";
+                        }}
                       >
                         <span
-                          className="w-2.5 h-2.5 rounded-full shrink-0 border border-white shadow-sm"
-                          style={{ background: PROVINCE_COLORS[i % PROVINCE_COLORS.length] }}
+                          className="w-2.5 h-2.5 rounded-full shrink-0"
+                          style={{ background: MAP_COLORS.regionSelected, opacity: 0.6 }}
                         />
                         {p.name}
                       </button>
