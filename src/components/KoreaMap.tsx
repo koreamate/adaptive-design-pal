@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, useLayoutEffect } from "react";
+import { useState, useEffect, useCallback, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, MapPin } from "lucide-react";
 import * as topojson from "topojson-client";
