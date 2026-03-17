@@ -141,7 +141,7 @@ function filterRemoteIslands(rings: number[][][]): number[][][] {
 function processFeatures(filtered: any[], svgW = 400, svgH = 400, padding = 20): MapFeature[] {
   let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
   for (const f of filtered) {
-    const rings = extractRings(f.geometry);
+    const rings = filterRemoteIslands(extractRings(f.geometry));
     for (const ring of rings) {
       for (const coord of ring) {
         const lon = coord[0], lat = coord[1];
