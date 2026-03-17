@@ -367,7 +367,7 @@ function useSubMunicipalityData(muniCode: string | null) {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
         const filtered = geoData.features.filter((f: any) => f.properties.code?.substring(0, 4) === prefix);
-        setFeatures(processFeatures(filtered, 400, 400, 20, { pathSmoothing: 0.08 }));
+        setFeatures(processFeatures(filtered, 400, 400, 20, { pathSmoothing: 0 }));
         setLoading(false);
       })
       .catch((err) => { console.error("Failed to load sub-municipality data:", err); setLoading(false); });
