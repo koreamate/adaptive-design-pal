@@ -367,7 +367,7 @@ function useSubMunicipalityData(muniCode: string | null) {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
         const filtered = geoData.features.filter((f: any) => f.properties.code?.substring(0, 4) === prefix);
-        setFeatures(processFeatures(filtered, 400, 400, 20, { pathSmoothing: 0.3 }));
+        setFeatures(processFeatures(filtered, 400, 400, 20, { pathSmoothing: 0.08 }));
         setLoading(false);
       })
       .catch((err) => { console.error("Failed to load sub-municipality data:", err); setLoading(false); });
@@ -461,8 +461,8 @@ function MapSVG({
             <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="smoothed" />
             <feComposite in="smoothed" in2="SourceGraphic" operator="atop" />
           </filter>
-          <filter id="smoothEdgeSoft" x="-3.5%" y="-3.5%" width="107%" height="107%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="smoothed" />
+          <filter id="smoothEdgeSoft" x="-1.5%" y="-1.5%" width="103%" height="103%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="0.35" result="smoothed" />
             <feComposite in="smoothed" in2="SourceGraphic" operator="atop" />
           </filter>
           {!hasAnimated && (
