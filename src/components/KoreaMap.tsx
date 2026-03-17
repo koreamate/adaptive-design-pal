@@ -357,6 +357,10 @@ function MapSVG({
             <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="smoothed" />
             <feComposite in="smoothed" in2="SourceGraphic" operator="atop" />
           </filter>
+          <filter id="smoothEdgeSoft" x="-3%" y="-3%" width="106%" height="106%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.05" result="smoothed" />
+            <feComposite in="smoothed" in2="SourceGraphic" operator="atop" />
+          </filter>
           {!hasAnimated && (
             <style>{`
               @keyframes regionReveal {
