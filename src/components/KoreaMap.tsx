@@ -774,15 +774,7 @@ const KoreaMap = () => {
                   </div>
                 </div>
               </>
-            ) : (
-              <div className="bg-card rounded-2xl border border-border p-5 text-center shadow-sm">
-                  <div className="py-8">
-                    <p className="text-xs text-muted-foreground">
-                      지도에서 시도를 클릭하면<br />시군구 → 읍면동 순으로 탐색합니다
-                    </p>
-                  </div>
-                </div>
-            )}
+            ) : null}
           </motion.div>
         </div>
       </div>
