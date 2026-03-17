@@ -73,7 +73,7 @@ const provinces: ProvinceRegion[] = [
 
 /* ── Design tokens (rMate-style) ── */
 const MAP_COLORS = {
-  regionFill: "hsl(210, 18%, 93%)",
+  regionFill: "hsl(210, 18%, 82%)",
   regionStroke: "hsl(0, 0%, 100%)",
   regionHover: "hsl(178, 55%, 65%)",
   regionSelected: "hsl(178, 60%, 52%)",
