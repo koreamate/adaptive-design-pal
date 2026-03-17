@@ -143,7 +143,7 @@ function geoToSvgPath(
 
       const prevDist = getDistance(prev, curr);
       const nextDist = getDistance(curr, next);
-      const localRadius = clamp(Math.min(prevDist, nextDist) * smoothing, 0.18, 1.8);
+      const localRadius = clamp(Math.min(prevDist, nextDist) * smoothing, 0.24, 2.35);
 
       const startX = curr[0] - ((curr[0] - prev[0]) / (prevDist || 1)) * localRadius;
       const startY = curr[1] - ((curr[1] - prev[1]) / (prevDist || 1)) * localRadius;
