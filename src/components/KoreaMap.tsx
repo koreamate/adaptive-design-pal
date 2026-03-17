@@ -354,7 +354,7 @@ function MapSVG({
               d={f.path}
               fill={isActive ? MAP_COLORS.regionSelected : MAP_COLORS.regionFill}
               stroke={MAP_COLORS.regionStroke}
-              strokeWidth={isActive ? 2 : 1.5}
+              strokeWidth={isActive ? 1.5 : 1}
               filter={isActive ? "url(#hoverGlow)" : undefined}
               className="cursor-pointer transition-all duration-200"
               style={{ opacity: isActive ? 1 : 0.95 }}
@@ -434,7 +434,7 @@ function ProvinceMapSVG({
               d={region.path}
               fill={isHovered ? MAP_COLORS.regionSelected : MAP_COLORS.regionFill}
               stroke={MAP_COLORS.regionStroke}
-              strokeWidth={isHovered ? 2 : 1.5}
+              strokeWidth={isHovered ? 1.5 : 1}
               filter={isHovered ? "url(#provinceGlow)" : undefined}
               className="cursor-pointer transition-all duration-200"
               onMouseEnter={() => onHover(region.id)}
