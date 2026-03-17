@@ -580,7 +580,6 @@ const KoreaMap = () => {
         <div>
           {/* Map area */}
           <div className="relative w-full max-w-[520px] mx-auto">
-            {/* Breadcrumb navigation */}
             {drillLevel !== "province" && (
               <div className="flex items-center gap-1 mb-4 flex-wrap">
                 <button
@@ -591,20 +590,6 @@ const KoreaMap = () => {
                   <ArrowLeft className="w-4 h-4" />
                   뒤로
                 </button>
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  {breadcrumb.map((b, i) => (
-                    <span key={i} className="flex items-center gap-1">
-                      {i > 0 && <span className="text-muted-foreground/50">›</span>}
-                      {b.onClick ? (
-                        <button onClick={b.onClick} className="hover:text-primary transition-colors font-medium">
-                          {b.label}
-                        </button>
-                      ) : (
-                        <span className="font-bold text-foreground">{b.label}</span>
-                      )}
-                    </span>
-                  ))}
-                </div>
               </div>
             )}
 
