@@ -550,7 +550,7 @@ const KoreaMap = () => {
           시도 → 시군구 → 읍면동 순으로 클릭하여 탐색합니다
         </p>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8 items-start">
+        <div>
           {/* Map area */}
           <div className="relative w-full max-w-[520px] mx-auto">
             {/* Breadcrumb navigation */}
@@ -666,116 +666,6 @@ const KoreaMap = () => {
             </AnimatePresence>
           </div>
 
-          {/* Info Panel */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-3"
-          >
-            {drillLevel === "submuni" && selectedMuni ? (
-              <>
-                <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="w-2 h-2 rounded-full" style={{ background: MAP_COLORS.regionSelected }} />
-                    <span className="text-xs text-muted-foreground">{PROVINCE_MAP[selectedProvince!]}</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-foreground mb-1">{selectedMuni.name}</h3>
-                  <p className="text-xs text-muted-foreground mb-4">읍면동을 클릭하면 상세 정보를 확인합니다</p>
-
-                  {selectedSubMuni ? (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 pb-3 border-b border-border">
-                        <div className="w-3 h-3 rounded-full" style={{ background: MAP_COLORS.regionSelected }} />
-                        <span className="text-base font-bold text-foreground">{selectedSubMuni}</span>
-                      </div>
-                      {[
-                        { label: "인구수", value: `${(Math.random() * 50000 + 5000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}명` },
-                        { label: "세대수", value: `${(Math.random() * 20000 + 2000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}세대` },
-                        { label: "면적", value: `${(Math.random() * 50 + 1).toFixed(2)}km²` },
-                        { label: "행정구분", value: selectedSubMuni.endsWith("읍") ? "읍" : selectedSubMuni.endsWith("면") ? "면" : "동", isAccent: true },
-                      ].map((item, idx) => (
-                        <div key={idx} className="flex justify-between items-center py-2 border-b border-border last:border-0">
-                          <span className="text-sm text-muted-foreground">{item.label}</span>
-                          <span className={`text-sm font-bold ${item.isAccent ? "" : "text-foreground"}`}
-                            style={item.isAccent ? { color: MAP_COLORS.regionSelected } : undefined}
-                          >
-                            {item.value}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground text-center py-6">읍면동을 선택해주세요</p>
-                  )}
-                </div>
-
-                {/* Sub-municipality list */}
-                <div className="bg-card rounded-2xl border border-border p-4 max-h-[300px] overflow-y-auto shadow-sm">
-                  <h4 className="text-xs font-semibold text-muted-foreground mb-3">
-                    읍면동 목록 ({subMunicipalities.length}개)
-                  </h4>
-                  <div className="grid grid-cols-2 gap-1">
-                    {subMunicipalities.map((m, i) => (
-                      <button
-                        key={m.code + i}
-                        onClick={() => setSelectedSubMuni(selectedSubMuni === m.name ? null : m.name)}
-                        onMouseEnter={() => setHoveredSubMuni(m.name)}
-                        onMouseLeave={() => setHoveredSubMuni(null)}
-                        className={`text-left px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                          selectedSubMuni === m.name
-                            ? "text-white"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                        }`}
-                        style={selectedSubMuni === m.name ? { background: MAP_COLORS.regionSelected } : undefined}
-                      >
-                        {m.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            ) : drillLevel === "municipality" && selectedProvince ? (
-              <>
-                <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
-                  <h3 className="text-lg font-bold text-foreground mb-1">
-                    {PROVINCE_MAP[selectedProvince]}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mb-4">
-                    시군구를 클릭하면 읍면동 지도로 이동합니다
-                  </p>
-                  <p className="text-sm text-muted-foreground text-center py-6">시군구를 선택해주세요</p>
-                </div>
-
-                <div className="bg-card rounded-2xl border border-border p-4 max-h-[300px] overflow-y-auto shadow-sm">
-                  <h4 className="text-xs font-semibold text-muted-foreground mb-3">
-                    시군구 목록 ({municipalities.length}개)
-                  </h4>
-                  <div className="grid grid-cols-2 gap-1">
-                    {municipalities.map((m, i) => (
-                      <button
-                        key={m.code + i}
-                        onClick={() => handleMuniClick(m)}
-                        onMouseEnter={() => setHoveredMuni(m.name)}
-                        onMouseLeave={() => setHoveredMuni(null)}
-                        className="text-left px-2.5 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground transition-all"
-                        style={{ }}
-                        onMouseOver={(e) => {
-                          (e.currentTarget as HTMLElement).style.background = `${MAP_COLORS.regionSelected}15`;
-                        }}
-                        onMouseOut={(e) => {
-                          (e.currentTarget as HTMLElement).style.background = "transparent";
-                        }}
-                      >
-                        {m.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            ) : null}
-          </motion.div>
         </div>
       </div>
     </section>
