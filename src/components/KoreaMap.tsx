@@ -200,6 +200,38 @@ function filterRemoteIslands(rings: number[][][]): number[][][] {
   });
 }
 
+/* ── Shift 울릉도/독도 closer to mainland for 경상북도 ── */
+function shiftUlleungdo(features: any[]): any[] {
+  // 울릉도 is around lon 130.8~131.0, lat 37.4~37.55
+  // Mainland 경상북도 eastern edge is around lon 129.5
+  // Shift 울릉도 westward by ~1.0 degree to close the gap
+  const ULLEUNG_LON_THRESHOLD = 130.5;
+  const LON_SHIFT = -1.1;
+
+  return features.map((f) => {
+    const rings = extractRings(f.geometry);
+    const avgLon = rings.flat().reduce((s, c) => s + (c[0] || 0), 0) / Math.max(rings.flat().length, 1);
+
+    if (avgLon < ULLEUNG_LON_THRESHOLD) return f; // not 울릉도
+
+    // Deep clone and shift coordinates
+    const shiftCoords = (coords: any): any => {
+      if (typeof coords[0] === "number") {
+        return [coords[0] + LON_SHIFT, coords[1], ...coords.slice(2)];
+      }
+      return coords.map(shiftCoords);
+    };
+
+    return {
+      ...f,
+      geometry: {
+        ...f.geometry,
+        coordinates: shiftCoords(f.geometry.coordinates),
+      },
+    };
+  });
+}
+
 /* ── Process GeoJSON features into MapFeature[] ── */
 function processFeatures(
   filtered: any[],
