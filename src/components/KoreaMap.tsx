@@ -216,7 +216,7 @@ function processFeatures(filtered: any[], svgW = 400, svgH = 400, padding = 20):
         if (sn > 0) { bestCx = sx / sn; bestCy = sy / sn; }
       }
       
-      result.push({ name: f.properties.name || f.properties.name_eng || "", code: f.properties.code || "", path: pathStr, centroidX: bestCx, centroidY: bestCy });
+      result.push({ name: f.properties.name || f.properties.name_eng || "", code: f.properties.code || "", path: pathStr, centroidX: bestCx, centroidY: bestCy, area: bestArea });
     } catch (err) {
       console.error("Error processing feature:", f.properties.name, err);
     }
