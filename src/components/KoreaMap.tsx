@@ -534,7 +534,7 @@ const KoreaMap = () => {
   }, [selectedProvince, selectedMuni, drillLevel, handleBackToProvinces, handleBackToMunicipalities]);
 
   return (
-    <section className="py-10 md:py-16 px-5 md:px-8 bg-background">
+    <section className="py-10 md:py-16 px-5 md:px-8 bg-white">
         <div className="max-w-[1400px] mx-auto">
 
         <div>
