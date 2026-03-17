@@ -434,7 +434,7 @@ function ProvinceMapSVG({
               d={region.path}
               fill={isHovered ? MAP_COLORS.regionSelected : MAP_COLORS.regionFill}
               stroke={MAP_COLORS.regionStroke}
-              strokeWidth={isHovered ? 2 : 1.5}
+              strokeWidth={isHovered ? 1.5 : 1}
               filter={isHovered ? "url(#provinceGlow)" : undefined}
               className="cursor-pointer transition-all duration-200"
               onMouseEnter={() => onHover(region.id)}
