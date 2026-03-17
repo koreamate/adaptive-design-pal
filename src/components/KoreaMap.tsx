@@ -325,6 +325,7 @@ function MapSVG({
 }) {
   const fs = fontSize ?? (features.length > 20 ? 6.5 : 8);
   const activeFeature = features.find((f) => f.name === (hoveredName ?? selectedName));
+  const hasValidActiveFeature = !!activeFeature && Number.isFinite(activeFeature.centroidX) && Number.isFinite(activeFeature.centroidY) && activeFeature.centroidX > 0 && activeFeature.centroidY > 0;
 
   return (
     <div className="relative overflow-hidden">
