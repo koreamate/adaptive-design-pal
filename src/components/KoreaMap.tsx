@@ -348,7 +348,7 @@ function MapSVG({
         {activeFeature && (
           <PillTooltip
             x={activeFeature.centroidX}
-            y={activeFeature.centroidY - 8}
+            y={activeFeature.centroidY}
             text={activeFeature.name}
           />
         )}
