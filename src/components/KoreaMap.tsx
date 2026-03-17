@@ -365,11 +365,16 @@ function MapSVG({
           );
         })}
 
-        {/* Region labels (non-active only) */}
+        {/* Region labels – hide for small areas, show only via hover tooltip */}
         {features.map((f, i) => {
           const isHovered = hoveredName === f.name;
           const isSelected = selectedName === f.name;
           if (isHovered || isSelected) return null;
+
+          // Use path string length as a rough proxy for region area
+          const isTooSmall = f.path.length < 200;
+          if (isTooSmall) return null;
+
           return (
             <text
               key={`label-${f.code}-${i}`}
