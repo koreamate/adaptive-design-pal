@@ -281,11 +281,7 @@ function MapSVG({
   const activeFeature = features.find((f) => f.name === (hoveredName ?? selectedName));
 
   return (
-    <div className={`relative rounded-2xl overflow-hidden ${showGradientBg ? "" : "bg-card border border-border"}`}
-      style={showGradientBg ? {
-        background: `linear-gradient(135deg, ${MAP_COLORS.gradientStart}, ${MAP_COLORS.gradientMid}, ${MAP_COLORS.gradientEnd})`,
-      } : undefined}
-    >
+    <div className="relative overflow-hidden">
       <svg viewBox="0 0 400 400" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
         {/* Definitions for drop shadow */}
         <defs>
