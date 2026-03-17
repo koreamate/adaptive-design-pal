@@ -539,16 +539,7 @@ const KoreaMap = () => {
 
   return (
     <section className="py-10 md:py-16 px-5 md:px-8 bg-background">
-      <div className="max-w-[1400px] mx-auto">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="w-1 h-5 rounded-full bg-primary" />
-          <h2 className="text-xl font-semibold text-foreground tracking-tight">
-            전국 시도별 재정현황
-          </h2>
-        </div>
-        <p className="text-xs text-muted-foreground mb-8 ml-3">
-          시도 → 시군구 → 읍면동 순으로 클릭하여 탐색합니다
-        </p>
+        <div className="max-w-[1400px] mx-auto">
 
         <div>
           {/* Map area */}
