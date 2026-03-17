@@ -63,16 +63,35 @@ const PROVINCE_COLORS = [
   "hsl(25, 55%, 75%)", "hsl(350, 50%, 72%)",
 ];
 
+/* ── Extract all rings from any geometry ── */
+function extractRings(geometry: any): number[][][] {
+  if (geometry.type === "MultiPolygon") {
+    // coordinates: number[][][][] → flatten to number[][][]
+    const rings: number[][][] = [];
+    for (const polygon of geometry.coordinates) {
+      for (const ring of polygon) {
+        rings.push(ring);
+      }
+    }
+    return rings;
+  }
+  if (geometry.type === "Polygon") {
+    return geometry.coordinates; // number[][][]
+  }
+  return [];
+}
+
 /* ── GeoJSON → SVG path converter ── */
 function geoToSvgPath(
-  coordinates: number[][][],
+  rings: number[][][],
   project: (coord: number[]) => [number, number]
 ): string {
-  return coordinates
+  return rings
     .map((ring) =>
       ring
         .map((coord, i) => {
           const [x, y] = project(coord);
+          if (isNaN(x) || isNaN(y)) return "";
           return `${i === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`;
         })
         .join("") + "Z"
@@ -111,21 +130,25 @@ function useMunicipalityData(provinceCode: string | null) {
           (f: any) => f.properties.code?.substring(0, 2) === provinceCode
         );
 
+        console.log(`Province ${provinceCode}: found ${filtered.length} municipalities out of ${geoData.features.length} total`);
+
         if (filtered.length === 0) {
+          // Debug: log available codes
+          const codes = new Set(geoData.features.map((f: any) => f.properties.code?.substring(0, 2)));
+          console.log("Available province codes:", [...codes]);
           setFeatures([]);
           setLoading(false);
           return;
         }
 
-        // Calculate bounding box
+        // Calculate bounding box using extractRings
         let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
         for (const f of filtered) {
-          const coords =
-            f.geometry.type === "MultiPolygon"
-              ? f.geometry.coordinates.flat()
-              : f.geometry.coordinates;
-          for (const ring of coords) {
-            for (const [lon, lat] of ring) {
+          const rings = extractRings(f.geometry);
+          for (const ring of rings) {
+            for (const coord of ring) {
+              const lon = coord[0], lat = coord[1];
+              if (typeof lon !== "number" || typeof lat !== "number" || isNaN(lon) || isNaN(lat)) continue;
               if (lon < minLon) minLon = lon;
               if (lon > maxLon) maxLon = lon;
               if (lat < minLat) minLat = lat;
@@ -134,11 +157,18 @@ function useMunicipalityData(provinceCode: string | null) {
           }
         }
 
+        if (!isFinite(minLon) || !isFinite(maxLon)) {
+          console.error("Could not calculate bounding box");
+          setFeatures([]);
+          setLoading(false);
+          return;
+        }
+
         const padding = 20;
         const svgW = 400;
         const svgH = 400;
-        const geoW = maxLon - minLon || 1;
-        const geoH = maxLat - minLat || 1;
+        const geoW = maxLon - minLon || 0.01;
+        const geoH = maxLat - minLat || 0.01;
         const scale = Math.min(
           (svgW - padding * 2) / geoW,
           (svgH - padding * 2) / geoH
@@ -151,28 +181,57 @@ function useMunicipalityData(provinceCode: string | null) {
           svgH - offsetY - (coord[1] - minLat) * scale,
         ];
 
-        const result: MunicipalityFeature[] = filtered.map((f: any) => {
-          const rings =
-            f.geometry.type === "MultiPolygon"
-              ? f.geometry.coordinates.flat()
-              : f.geometry.coordinates;
+        const result: MunicipalityFeature[] = [];
+        for (const f of filtered) {
+          try {
+            const rings = extractRings(f.geometry);
+            if (rings.length === 0) continue;
 
-          const pathStr = geoToSvgPath(rings, project);
+            const pathStr = geoToSvgPath(rings, project);
 
-          // Calculate centroid (simple average)
-          let cx = 0, cy = 0, n = 0;
-          for (const ring of rings) {
-            for (const coord of ring) {
-              const [px, py] = project(coord);
-              cx += px;
-              cy += py;
-              n++;
+            // Calculate centroid (simple average)
+            let cx = 0, cy = 0, n = 0;
+            for (const ring of rings) {
+              for (const coord of ring) {
+                const [px, py] = project(coord);
+                if (!isNaN(px) && !isNaN(py)) {
+                  cx += px;
+                  cy += py;
+                  n++;
+                }
+              }
             }
-          }
-          cx /= n;
-          cy /= n;
+            if (n > 0) {
+              cx /= n;
+              cy /= n;
+            }
 
-          return {
+            result.push({
+              name: f.properties.name || f.properties.name_eng || "",
+              path: pathStr,
+              centroidX: cx,
+              centroidY: cy,
+            });
+          } catch (err) {
+            console.error("Error processing feature:", f.properties.name, err);
+          }
+        }
+
+        console.log(`Processed ${result.length} municipality features`);
+        setFeatures(result);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load municipality data:", err);
+        setLoading(false);
+      });
+  }, [provinceCode]);
+
+  return { features, loading };
+}
+
+/* ── Color palette for municipalities ── */
+const MUNI_COLORS = [
             name: f.properties.name || f.properties.name_eng || "",
             path: pathStr,
             centroidX: cx,
