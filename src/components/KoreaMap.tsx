@@ -155,21 +155,56 @@ function processFeatures(filtered: any[], svgW = 400, svgH = 400, padding = 20):
     svgH - offsetY - (coord[1] - minLat) * scale,
   ];
 
+  // Proper polygon centroid using signed area weighting
+  const polygonCentroid = (ring: number[][], proj: (c: number[]) => [number, number]): { cx: number; cy: number; area: number } => {
+    const pts = ring.map(proj);
+    let a = 0, cx = 0, cy = 0;
+    for (let i = 0, n = pts.length; i < n; i++) {
+      const j = (i + 1) % n;
+      const cross = pts[i][0] * pts[j][1] - pts[j][0] * pts[i][1];
+      a += cross;
+      cx += (pts[i][0] + pts[j][0]) * cross;
+      cy += (pts[i][1] + pts[j][1]) * cross;
+    }
+    a /= 2;
+    if (Math.abs(a) < 1e-10) {
+      // Fallback: simple average
+      const avg = pts.reduce((acc, p) => [acc[0] + p[0], acc[1] + p[1]], [0, 0]);
+      return { cx: avg[0] / pts.length, cy: avg[1] / pts.length, area: 0 };
+    }
+    cx /= (6 * a);
+    cy /= (6 * a);
+    return { cx, cy, area: Math.abs(a) };
+  };
+
   const result: MapFeature[] = [];
   for (const f of filtered) {
     try {
       const rings = extractRings(f.geometry);
       if (rings.length === 0) continue;
       const pathStr = geoToSvgPath(rings, project);
-      let cx = 0, cy = 0, n = 0;
+      
+      // Find centroid of the largest ring (main polygon)
+      let bestCx = 0, bestCy = 0, bestArea = 0;
       for (const ring of rings) {
-        for (const coord of ring) {
-          const [px, py] = project(coord);
-          if (!isNaN(px) && !isNaN(py)) { cx += px; cy += py; n++; }
+        const { cx, cy, area } = polygonCentroid(ring, project);
+        if (area > bestArea) {
+          bestCx = cx; bestCy = cy; bestArea = area;
         }
       }
-      if (n > 0) { cx /= n; cy /= n; }
-      result.push({ name: f.properties.name || f.properties.name_eng || "", code: f.properties.code || "", path: pathStr, centroidX: cx, centroidY: cy });
+      // Fallback if no valid area found
+      if (bestArea === 0 && rings.length > 0) {
+        let sx = 0, sy = 0, sn = 0;
+        for (const ring of rings) {
+          for (const coord of ring) {
+            const [px, py] = project(coord);
+            if (!isNaN(px) && !isNaN(py)) { sx += px; sy += py; sn++; }
+          }
+        }
+        if (sn > 0) { bestCx = sx / sn; bestCy = sy / sn; }
+      }
+      
+      result.push({ name: f.properties.name || f.properties.name_eng || "", code: f.properties.code || "", path: pathStr, centroidX: bestCx, centroidY: bestCy });
     } catch (err) {
       console.error("Error processing feature:", f.properties.name, err);
     }
