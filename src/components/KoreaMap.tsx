@@ -232,27 +232,6 @@ function useMunicipalityData(provinceCode: string | null) {
 
 /* ── Color palette for municipalities ── */
 const MUNI_COLORS = [
-            name: f.properties.name || f.properties.name_eng || "",
-            path: pathStr,
-            centroidX: cx,
-            centroidY: cy,
-          };
-        });
-
-        setFeatures(result);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to load municipality data:", err);
-        setLoading(false);
-      });
-  }, [provinceCode]);
-
-  return { features, loading };
-}
-
-/* ── Color palette for municipalities ── */
-const MUNI_COLORS = [
   "hsl(210, 50%, 78%)", "hsl(200, 45%, 75%)", "hsl(220, 48%, 80%)",
   "hsl(190, 42%, 76%)", "hsl(215, 52%, 77%)", "hsl(205, 46%, 79%)",
   "hsl(195, 40%, 74%)", "hsl(225, 44%, 81%)", "hsl(185, 48%, 76%)",
