@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useLayoutEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, MapPin } from "lucide-react";
 import * as topojson from "topojson-client";
@@ -325,6 +325,7 @@ function MapSVG({
 }) {
   const fs = fontSize ?? (features.length > 20 ? 6.5 : 8);
   const activeFeature = features.find((f) => f.name === (hoveredName ?? selectedName));
+  const hasValidActiveFeature = !!activeFeature && Number.isFinite(activeFeature.centroidX) && Number.isFinite(activeFeature.centroidY) && activeFeature.centroidX > 0 && activeFeature.centroidY > 0;
 
   return (
     <div className="relative overflow-hidden">
@@ -387,7 +388,7 @@ function MapSVG({
         })}
 
         {/* Active tooltip pill */}
-        {activeFeature && (
+        {hasValidActiveFeature && (
           <PillTooltip
             x={activeFeature.centroidX}
             y={activeFeature.centroidY}
@@ -534,12 +535,14 @@ const KoreaMap = () => {
   const handleProvinceClick = useCallback((code: string) => {
     setHoveredRegion(null);
     setHoveredMuni(null);
+    setHoveredSubMuni(null);
     setSelectedProvince(code);
     setSelectedMuni(null);
     setSelectedSubMuni(null);
   }, []);
 
   const handleMuniClick = useCallback((feature: MapFeature) => {
+    setHoveredRegion(null);
     setHoveredMuni(null);
     setHoveredSubMuni(null);
     setSelectedMuni(feature);
@@ -556,11 +559,18 @@ const KoreaMap = () => {
   }, []);
 
   const handleBackToMunicipalities = useCallback(() => {
+    setHoveredRegion(null);
     setHoveredMuni(null);
     setHoveredSubMuni(null);
     setSelectedMuni(null);
     setSelectedSubMuni(null);
   }, []);
+
+  useLayoutEffect(() => {
+    setHoveredRegion(null);
+    setHoveredMuni(null);
+    setHoveredSubMuni(null);
+  }, [drillLevel, selectedProvince, selectedMuni, municipalities.length, subMunicipalities.length]);
 
   /* ── Breadcrumb ── */
   const breadcrumb = useMemo(() => {
