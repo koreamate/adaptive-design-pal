@@ -388,7 +388,7 @@ function MapSVG({
         })}
 
         {/* Active tooltip pill */}
-        {activeFeature && (
+        {hasValidActiveFeature && (
           <PillTooltip
             x={activeFeature.centroidX}
             y={activeFeature.centroidY}
