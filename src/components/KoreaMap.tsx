@@ -367,7 +367,7 @@ function useSubMunicipalityData(muniCode: string | null) {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
         const filtered = geoData.features.filter((f: any) => f.properties.code?.substring(0, 4) === prefix);
-        setFeatures(processFeatures(filtered, 400, 400, 20, { pathSmoothing: 0.08 }));
+        setFeatures(processFeatures(filtered, 400, 400, 20, { pathSmoothing: 0 }));
         setLoading(false);
       })
       .catch((err) => { console.error("Failed to load sub-municipality data:", err); setLoading(false); });
@@ -494,7 +494,7 @@ function MapSVG({
               strokeWidth={isActive ? 1.5 : 1}
               strokeLinejoin="round"
               strokeLinecap="round"
-              filter={isActive ? "url(#hoverGlow)" : edgeSoftness === "soft" ? "url(#smoothEdgeSoft)" : "url(#smoothEdge)"}
+              filter={isActive ? "url(#hoverGlow)" : edgeSoftness === "soft" ? "url(#smoothEdgeSoft)" : undefined}
               className="cursor-pointer transition-all duration-200"
               style={{
                 opacity: isActive ? 1 : 0.95,
@@ -851,7 +851,7 @@ const KoreaMap = () => {
                       onLeave={() => setHoveredSubMuni(null)}
                       onClick={(f) => setSelectedSubMuni(selectedSubMuni === f.name ? null : f.name)}
                       fontSize={subMunicipalities.length > 30 ? 5.5 : subMunicipalities.length > 15 ? 6.5 : 8}
-                      edgeSoftness="soft"
+                      edgeSoftness="default"
                     />
                   </div>
                 )}
