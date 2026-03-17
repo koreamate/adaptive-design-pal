@@ -417,7 +417,7 @@ function ProvinceMapSVG({
               style={{
                 fontSize: isSmall ? "3px" : "4px",
                 fontWeight: 400,
-                fill: "hsla(210, 15%, 45%, 0.8)",
+                fill: MAP_COLORS.labelDefault,
                 fontFamily: "'Noto Sans KR', sans-serif",
               }}
             >
