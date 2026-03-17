@@ -461,8 +461,8 @@ function MapSVG({
             <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="smoothed" />
             <feComposite in="smoothed" in2="SourceGraphic" operator="atop" />
           </filter>
-          <filter id="smoothEdgeSoft" x="-3.5%" y="-3.5%" width="107%" height="107%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="smoothed" />
+          <filter id="smoothEdgeSoft" x="-1.5%" y="-1.5%" width="103%" height="103%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="0.35" result="smoothed" />
             <feComposite in="smoothed" in2="SourceGraphic" operator="atop" />
           </filter>
           {!hasAnimated && (
