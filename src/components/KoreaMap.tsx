@@ -24,6 +24,27 @@ const PROVINCE_MAP: Record<string, string> = {
   "50": "제주특별자치도",
 };
 
+/* ── UI 시도 코드 → TopoJSON 시도 코드 매핑 ── */
+const TOPO_PROVINCE_CODE_MAP: Record<string, string> = {
+  "11": "11",
+  "26": "21",
+  "27": "22",
+  "28": "23",
+  "29": "24",
+  "30": "25",
+  "31": "26",
+  "36": "29",
+  "41": "31",
+  "42": "32",
+  "43": "33",
+  "44": "34",
+  "45": "35",
+  "46": "36",
+  "47": "37",
+  "48": "38",
+  "50": "39",
+};
+
 /* ── Static 시도 SVG data (from previous version) ── */
 interface ProvinceRegion {
   id: string;
@@ -117,6 +138,7 @@ function useMunicipalityData(provinceCode: string | null) {
       return;
     }
 
+    const topoProvinceCode = TOPO_PROVINCE_CODE_MAP[provinceCode] ?? provinceCode;
     setLoading(true);
 
     fetch("/data/korea-municipalities-topo.json")
@@ -125,16 +147,18 @@ function useMunicipalityData(provinceCode: string | null) {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
 
-        // Filter features by province code
         const filtered = geoData.features.filter(
-          (f: any) => f.properties.code?.substring(0, 2) === provinceCode
+          (f: any) => f.properties.code?.substring(0, 2) === topoProvinceCode
         );
 
-        console.log(`Province ${provinceCode}: found ${filtered.length} municipalities out of ${geoData.features.length} total`);
+        console.log(
+          `Province ${provinceCode} → topo ${topoProvinceCode}: found ${filtered.length} municipalities out of ${geoData.features.length} total`
+        );
 
         if (filtered.length === 0) {
-          // Debug: log available codes
-          const codes = new Set(geoData.features.map((f: any) => f.properties.code?.substring(0, 2)));
+          const codes = new Set(
+            geoData.features.map((f: any) => f.properties.code?.substring(0, 2))
+          );
           console.log("Available province codes:", [...codes]);
           setFeatures([]);
           setLoading(false);
