@@ -317,6 +317,7 @@ function MapSVG({
   onClick,
   fontSize,
   showGradientBg,
+  edgeSoftness = "default",
 }: {
   features: MapFeature[];
   hoveredName: string | null;
@@ -326,6 +327,7 @@ function MapSVG({
   onClick: (feature: MapFeature) => void;
   fontSize?: number;
   showGradientBg?: boolean;
+  edgeSoftness?: "default" | "soft";
 }) {
   const fs = fontSize ?? (features.length > 20 ? 6.5 : 8);
   const activeFeature = features.find((f) => f.name === (hoveredName ?? selectedName));
@@ -353,6 +355,10 @@ function MapSVG({
           </filter>
           <filter id="smoothEdge" x="-2%" y="-2%" width="104%" height="104%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="smoothed" />
+            <feComposite in="smoothed" in2="SourceGraphic" operator="atop" />
+          </filter>
+          <filter id="smoothEdgeSoft" x="-3%" y="-3%" width="106%" height="106%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.05" result="smoothed" />
             <feComposite in="smoothed" in2="SourceGraphic" operator="atop" />
           </filter>
           {!hasAnimated && (
@@ -384,7 +390,7 @@ function MapSVG({
               strokeWidth={isActive ? 1.5 : 1}
               strokeLinejoin="round"
               strokeLinecap="round"
-              filter={isActive ? "url(#hoverGlow)" : "url(#smoothEdge)"}
+              filter={isActive ? "url(#hoverGlow)" : edgeSoftness === "soft" ? "url(#smoothEdgeSoft)" : "url(#smoothEdge)"}
               className="cursor-pointer transition-all duration-200"
               style={{
                 opacity: isActive ? 1 : 0.95,
@@ -741,6 +747,7 @@ const KoreaMap = () => {
                       onLeave={() => setHoveredSubMuni(null)}
                       onClick={(f) => setSelectedSubMuni(selectedSubMuni === f.name ? null : f.name)}
                       fontSize={subMunicipalities.length > 30 ? 5.5 : subMunicipalities.length > 15 ? 6.5 : 8}
+                      edgeSoftness="soft"
                     />
                   </div>
                 )}
