@@ -371,18 +371,9 @@ function MapSVG({
           const isSelected = selectedName === f.name;
           if (isHovered || isSelected) return null;
 
-          // Estimate area from path bounding box to decide label visibility
-          const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          pathEl.setAttribute("d", f.path);
-          let tooSmall = false;
-          try {
-            const bbox = pathEl.getBBox();
-            const area = bbox.width * bbox.height;
-            tooSmall = area < 600; // threshold for 400x400 viewBox
-          } catch {
-            tooSmall = false;
-          }
-          if (tooSmall) return null;
+          // Use path string length as a rough proxy for region area
+          const isTooSmall = f.path.length < 200;
+          if (isTooSmall) return null;
 
           return (
             <text
