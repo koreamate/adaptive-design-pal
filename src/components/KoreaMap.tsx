@@ -475,18 +475,22 @@ function ProvinceMapSVG({
           const nameLen = activeProvince.name.length;
           const pillW = Math.max(nameLen * 4 + 8, 20);
           const pillH = 9;
+          const offsetY = 3; // ~10px in screen space for this viewBox
+          const pillTop = py - offsetY - pillH;
           return (
             <g className="pointer-events-none">
               {/* Shadow */}
-              <rect x={px - pillW / 2} y={py - pillH / 2 + 1} width={pillW} height={pillH} rx={pillH / 2} fill="rgba(0,0,0,0.08)" />
+              <rect x={px - pillW / 2} y={pillTop + 0.5} width={pillW} height={pillH} rx={pillH / 2} fill="rgba(0,0,0,0.08)" />
               {/* Border */}
-              <rect x={px - pillW / 2} y={py - pillH / 2} width={pillW} height={pillH} rx={pillH / 2} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.2" />
+              <rect x={px - pillW / 2} y={pillTop} width={pillW} height={pillH} rx={pillH / 2} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.2" />
               {/* Pill */}
-              <rect x={px - pillW / 2} y={py - pillH / 2} width={pillW} height={pillH} rx={pillH / 2} fill={MAP_COLORS.tooltipBg} />
-              {/* Text - centered */}
+              <rect x={px - pillW / 2} y={pillTop} width={pillW} height={pillH} rx={pillH / 2} fill={MAP_COLORS.tooltipBg} />
+              {/* Arrow */}
+              <polygon points={`${px - 1.5},${pillTop + pillH} ${px + 1.5},${pillTop + pillH} ${px},${pillTop + pillH + 2}`} fill={MAP_COLORS.tooltipBg} />
+              {/* Text */}
               <text
                 x={px}
-                y={py}
+                y={pillTop + pillH / 2}
                 textAnchor="middle"
                 dominantBaseline="central"
                 style={{
