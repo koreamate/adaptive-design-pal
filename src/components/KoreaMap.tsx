@@ -535,12 +535,14 @@ const KoreaMap = () => {
   const handleProvinceClick = useCallback((code: string) => {
     setHoveredRegion(null);
     setHoveredMuni(null);
+    setHoveredSubMuni(null);
     setSelectedProvince(code);
     setSelectedMuni(null);
     setSelectedSubMuni(null);
   }, []);
 
   const handleMuniClick = useCallback((feature: MapFeature) => {
+    setHoveredRegion(null);
     setHoveredMuni(null);
     setHoveredSubMuni(null);
     setSelectedMuni(feature);
@@ -557,11 +559,18 @@ const KoreaMap = () => {
   }, []);
 
   const handleBackToMunicipalities = useCallback(() => {
+    setHoveredRegion(null);
     setHoveredMuni(null);
     setHoveredSubMuni(null);
     setSelectedMuni(null);
     setSelectedSubMuni(null);
   }, []);
+
+  useLayoutEffect(() => {
+    setHoveredRegion(null);
+    setHoveredMuni(null);
+    setHoveredSubMuni(null);
+  }, [drillLevel, selectedProvince, selectedMuni, municipalities.length, subMunicipalities.length]);
 
   /* ── Breadcrumb ── */
   const breadcrumb = useMemo(() => {
