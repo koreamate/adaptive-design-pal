@@ -628,7 +628,7 @@ const KoreaMap = () => {
                   {subMuniLoading ? (
                     <LoadingSpinner />
                   ) : subMunicipalities.length === 0 ? (
-                    <div className="flex items-center justify-center h-[400px] bg-card rounded-2xl border border-border">
+                    <div className="flex items-center justify-center h-[400px]">
                       <p className="text-sm text-muted-foreground">읍면동 데이터가 없습니다</p>
                     </div>
                   ) : (
