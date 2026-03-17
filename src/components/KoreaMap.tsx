@@ -126,11 +126,22 @@ interface MapFeature {
   centroidY: number;
 }
 
+/* ── Filter out remote islands like 추자도 ── */
+function filterRemoteIslands(rings: number[][][]): number[][][] {
+  return rings.filter((ring) => {
+    // 추자도: lat > 33.8, lon < 126.4 — skip these rings
+    const avgLat = ring.reduce((s, c) => s + (c[1] || 0), 0) / ring.length;
+    const avgLon = ring.reduce((s, c) => s + (c[0] || 0), 0) / ring.length;
+    if (avgLat > 33.8 && avgLon < 126.4) return false;
+    return true;
+  });
+}
+
 /* ── Process GeoJSON features into MapFeature[] ── */
 function processFeatures(filtered: any[], svgW = 400, svgH = 400, padding = 20): MapFeature[] {
   let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
   for (const f of filtered) {
-    const rings = extractRings(f.geometry);
+    const rings = filterRemoteIslands(extractRings(f.geometry));
     for (const ring of rings) {
       for (const coord of ring) {
         const lon = coord[0], lat = coord[1];
@@ -180,7 +191,7 @@ function processFeatures(filtered: any[], svgW = 400, svgH = 400, padding = 20):
   const result: MapFeature[] = [];
   for (const f of filtered) {
     try {
-      const rings = extractRings(f.geometry);
+      const rings = filterRemoteIslands(extractRings(f.geometry));
       if (rings.length === 0) continue;
       const pathStr = geoToSvgPath(rings, project);
       
