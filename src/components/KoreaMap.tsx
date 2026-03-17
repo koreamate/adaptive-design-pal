@@ -99,38 +99,21 @@ function extractRings(geometry: any): number[][][] {
   return [];
 }
 
-/* ── Chaikin's corner-cutting smoothing (1 iteration, very subtle) ── */
-function smoothRing(pts: [number, number][], iterations = 1): [number, number][] {
-  let result = pts;
-  for (let iter = 0; iter < iterations; iter++) {
-    const next: [number, number][] = [];
-    for (let i = 0; i < result.length; i++) {
-      const p0 = result[i];
-      const p1 = result[(i + 1) % result.length];
-      next.push([0.75 * p0[0] + 0.25 * p1[0], 0.75 * p0[1] + 0.25 * p1[1]]);
-      next.push([0.25 * p0[0] + 0.75 * p1[0], 0.25 * p0[1] + 0.75 * p1[1]]);
-    }
-    result = next;
-  }
-  return result;
-}
-
-/* ── GeoJSON → SVG path converter (with subtle smoothing) ── */
+/* ── GeoJSON → SVG path converter ── */
 function geoToSvgPath(
   rings: number[][][],
   project: (coord: number[]) => [number, number]
 ): string {
   return rings
-    .map((ring) => {
-      const projected = ring
-        .map((coord) => project(coord))
-        .filter(([x, y]) => !isNaN(x) && !isNaN(y));
-      if (projected.length === 0) return "";
-      const smoothed = smoothRing(projected, 1);
-      return smoothed
-        .map((pt, i) => `${i === 0 ? "M" : "L"}${pt[0].toFixed(2)},${pt[1].toFixed(2)}`)
-        .join("") + "Z";
-    })
+    .map((ring) =>
+      ring
+        .map((coord, i) => {
+          const [x, y] = project(coord);
+          if (isNaN(x) || isNaN(y)) return "";
+          return `${i === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`;
+        })
+        .join("") + "Z"
+    )
     .join("");
 }
 
