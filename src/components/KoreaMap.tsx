@@ -428,6 +428,13 @@ function ProvinceMapSVG({
   onClick: (code: string) => void;
 }) {
   const activeProvince = provinces.find((p) => p.id === hoveredRegion);
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  useEffect(() => {
+    // Mark animation as complete after all provinces finish animating
+    const timer = setTimeout(() => setHasAnimated(true), provinces.length * 80 + 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="relative overflow-hidden">
@@ -436,9 +443,22 @@ function ProvinceMapSVG({
           <filter id="provinceGlow" x="-10%" y="-10%" width="120%" height="120%">
             <feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="hsl(178, 60%, 52%)" floodOpacity="0.5" />
           </filter>
+          {!hasAnimated && (
+            <style>{`
+              @keyframes provinceReveal {
+                0% { opacity: 0; transform: scale(0.92); }
+                60% { opacity: 1; transform: scale(1.02); }
+                100% { opacity: 1; transform: scale(1); }
+              }
+              @keyframes labelFadeIn {
+                0% { opacity: 0; }
+                100% { opacity: 1; }
+              }
+            `}</style>
+          )}
         </defs>
 
-        {provinces.map((region) => {
+        {provinces.map((region, idx) => {
           const isHovered = hoveredRegion === region.id;
           return (
             <path
@@ -449,6 +469,13 @@ function ProvinceMapSVG({
               strokeWidth={isHovered ? 0.5 : 0.3}
               filter={isHovered ? "url(#provinceGlow)" : undefined}
               className="cursor-pointer transition-all duration-200"
+              style={{
+                transformOrigin: `${region.labelX}px ${region.labelY}px`,
+                ...(!hasAnimated ? {
+                  opacity: 0,
+                  animation: `provinceReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${idx * 80}ms forwards`,
+                } : {}),
+              }}
               onMouseEnter={() => onHover(region.id)}
               onMouseLeave={onLeave}
               onClick={() => onClick(region.code)}
@@ -457,7 +484,7 @@ function ProvinceMapSVG({
         })}
 
         {/* Non-active labels */}
-        {provinces.map((region) => {
+        {provinces.map((region, idx) => {
           const isHovered = hoveredRegion === region.id;
           if (isHovered) return null;
           const isSmall = ["seoul", "sejong", "daejeon", "gwangju"].includes(region.id);
@@ -473,6 +500,10 @@ function ProvinceMapSVG({
                 fontWeight: 400,
                 fill: MAP_COLORS.labelDefault,
                 fontFamily: "'Noto Sans KR', sans-serif",
+                ...(!hasAnimated ? {
+                  opacity: 0,
+                  animation: `labelFadeIn 0.4s ease-out ${idx * 80 + 300}ms forwards`,
+                } : {}),
               }}
             >
               {region.name}
