@@ -124,6 +124,7 @@ interface MapFeature {
   path: string;
   centroidX: number;
   centroidY: number;
+  area: number;
 }
 
 /* ── Filter out remote islands like 추자도 ── */
