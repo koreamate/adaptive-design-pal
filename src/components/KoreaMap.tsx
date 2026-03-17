@@ -356,6 +356,8 @@ function MapSVG({
               fill={isActive ? MAP_COLORS.regionSelected : MAP_COLORS.regionFill}
               stroke={MAP_COLORS.regionStroke}
               strokeWidth={isActive ? 1.5 : 1}
+              strokeLinejoin="round"
+              strokeLinecap="round"
               filter={isActive ? "url(#hoverGlow)" : undefined}
               className="cursor-pointer transition-all duration-200"
               style={{ opacity: isActive ? 1 : 0.95 }}
