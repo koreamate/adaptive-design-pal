@@ -191,7 +191,7 @@ function processFeatures(filtered: any[], svgW = 400, svgH = 400, padding = 20):
   const result: MapFeature[] = [];
   for (const f of filtered) {
     try {
-      const rings = extractRings(f.geometry);
+      const rings = filterRemoteIslands(extractRings(f.geometry));
       if (rings.length === 0) continue;
       const pathStr = geoToSvgPath(rings, project);
       
