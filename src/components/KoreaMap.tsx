@@ -126,6 +126,17 @@ interface MapFeature {
   centroidY: number;
 }
 
+/* ── Filter out remote islands like 추자도 ── */
+function filterRemoteIslands(rings: number[][][]): number[][][] {
+  return rings.filter((ring) => {
+    // 추자도: lat > 33.8, lon < 126.4 — skip these rings
+    const avgLat = ring.reduce((s, c) => s + (c[1] || 0), 0) / ring.length;
+    const avgLon = ring.reduce((s, c) => s + (c[0] || 0), 0) / ring.length;
+    if (avgLat > 33.8 && avgLon < 126.4) return false;
+    return true;
+  });
+}
+
 /* ── Process GeoJSON features into MapFeature[] ── */
 function processFeatures(filtered: any[], svgW = 400, svgH = 400, padding = 20): MapFeature[] {
   let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
