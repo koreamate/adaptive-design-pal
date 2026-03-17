@@ -162,7 +162,7 @@ function geoToSvgPath(
         const firstNext = closedPts[1 % closedPts.length];
         const firstPrevDist = getDistance(curr, first);
         const firstNextDist = getDistance(first, firstNext);
-        const firstRadius = clamp(Math.min(firstPrevDist, firstNextDist) * smoothing, 0.18, 1.8);
+        const firstRadius = clamp(Math.min(firstPrevDist, firstNextDist) * smoothing, 0.24, 2.35);
         const firstStartX = first[0] - ((first[0] - curr[0]) / (firstPrevDist || 1)) * firstRadius;
         const firstStartY = first[1] - ((first[1] - curr[1]) / (firstPrevDist || 1)) * firstRadius;
         const firstEndX = first[0] + ((firstNext[0] - first[0]) / (firstNextDist || 1)) * firstRadius;
