@@ -365,11 +365,25 @@ function MapSVG({
           );
         })}
 
-        {/* Region labels (non-active only) */}
+        {/* Region labels – hide for small areas, show only via hover tooltip */}
         {features.map((f, i) => {
           const isHovered = hoveredName === f.name;
           const isSelected = selectedName === f.name;
           if (isHovered || isSelected) return null;
+
+          // Estimate area from path bounding box to decide label visibility
+          const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          pathEl.setAttribute("d", f.path);
+          let tooSmall = false;
+          try {
+            const bbox = pathEl.getBBox();
+            const area = bbox.width * bbox.height;
+            tooSmall = area < 600; // threshold for 400x400 viewBox
+          } catch {
+            tooSmall = false;
+          }
+          if (tooSmall) return null;
+
           return (
             <text
               key={`label-${f.code}-${i}`}
