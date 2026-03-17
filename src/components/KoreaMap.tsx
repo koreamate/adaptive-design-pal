@@ -376,12 +376,7 @@ function ProvinceMapSVG({
   const activeProvince = provinces.find((p) => p.id === hoveredRegion);
 
   return (
-    <div
-      className="relative rounded-2xl overflow-hidden"
-      style={{
-        background: `linear-gradient(135deg, ${MAP_COLORS.gradientStart} 0%, ${MAP_COLORS.gradientMid} 50%, ${MAP_COLORS.gradientEnd} 100%)`,
-      }}
-    >
+    <div className="relative rounded-2xl overflow-hidden bg-card border border-border">
       <svg viewBox="-2 -2 140 215" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="provinceGlow" x="-10%" y="-10%" width="120%" height="120%">
@@ -395,9 +390,9 @@ function ProvinceMapSVG({
             <path
               key={region.id}
               d={region.path}
-              fill={isHovered ? MAP_COLORS.regionSelected : "hsla(0, 0%, 100%, 0.85)"}
-              stroke="hsla(0, 0%, 100%, 0.5)"
-              strokeWidth={isHovered ? 0.5 : 0.2}
+              fill={isHovered ? MAP_COLORS.regionSelected : MAP_COLORS.regionFill}
+              stroke="hsl(210, 15%, 80%)"
+              strokeWidth={isHovered ? 0.6 : 0.35}
               filter={isHovered ? "url(#provinceGlow)" : undefined}
               className="cursor-pointer transition-all duration-200"
               onMouseEnter={() => onHover(region.id)}
@@ -422,7 +417,7 @@ function ProvinceMapSVG({
               style={{
                 fontSize: isSmall ? "3px" : "4px",
                 fontWeight: 400,
-                fill: "hsla(210, 15%, 45%, 0.8)",
+                fill: MAP_COLORS.labelDefault,
                 fontFamily: "'Noto Sans KR', sans-serif",
               }}
             >
@@ -434,6 +429,10 @@ function ProvinceMapSVG({
         {/* Active tooltip pill */}
         {activeProvince && (
           <g className="pointer-events-none">
+            {/* Shadow */}
+            <rect x={activeProvince.labelX - 18} y={activeProvince.labelY - 8} width={36} height={14} rx={7} fill="rgba(0,0,0,0.08)" />
+            {/* Border */}
+            <rect x={activeProvince.labelX - 18} y={activeProvince.labelY - 9} width={36} height={14} rx={7} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.3" />
             <rect
               x={activeProvince.labelX - 18}
               y={activeProvince.labelY - 9}
@@ -464,11 +463,6 @@ function ProvinceMapSVG({
         )}
       </svg>
 
-      {/* Bottom caption */}
-      <div className="absolute bottom-4 left-0 right-0 text-center">
-        <p className="text-[11px] text-white/70">17개 시도와 전국 시군구·읍면동</p>
-        <p className="text-lg font-bold text-white tracking-wider mt-0.5">KOREA</p>
-      </div>
     </div>
   );
 }
