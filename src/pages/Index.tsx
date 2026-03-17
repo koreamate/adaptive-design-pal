@@ -1,6 +1,7 @@
 import GNBHeader from "@/components/GNBHeader";
 import HeroSection from "@/components/HeroSection";
 import WidgetSection from "@/components/WidgetSection";
+import KoreaMap from "@/components/KoreaMap";
 import ContentSection from "@/components/ContentSection";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -11,6 +12,7 @@ const Index = () => {
       <main>
         <HeroSection />
         <WidgetSection />
+        <KoreaMap />
         <ContentSection />
       </main>
       <SiteFooter />
