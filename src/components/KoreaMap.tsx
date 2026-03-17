@@ -390,7 +390,7 @@ function MapSVG({
               strokeWidth={isActive ? 1.5 : 1}
               strokeLinejoin="round"
               strokeLinecap="round"
-              filter={isActive ? "url(#hoverGlow)" : "url(#smoothEdge)"}
+              filter={isActive ? "url(#hoverGlow)" : edgeSoftness === "soft" ? "url(#smoothEdgeSoft)" : "url(#smoothEdge)"}
               className="cursor-pointer transition-all duration-200"
               style={{
                 opacity: isActive ? 1 : 0.95,
