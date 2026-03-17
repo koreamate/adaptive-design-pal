@@ -351,6 +351,10 @@ function MapSVG({
           <filter id="hoverGlow" x="-10%" y="-10%" width="120%" height="120%">
             <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="hsl(178, 60%, 52%)" floodOpacity="0.4" />
           </filter>
+          <filter id="smoothEdge" x="-2%" y="-2%" width="104%" height="104%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="0.35" result="smoothed" />
+            <feComposite in="smoothed" in2="SourceGraphic" operator="atop" />
+          </filter>
           {!hasAnimated && (
             <style>{`
               @keyframes regionReveal {
