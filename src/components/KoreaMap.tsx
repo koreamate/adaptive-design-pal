@@ -281,11 +281,7 @@ function MapSVG({
   const activeFeature = features.find((f) => f.name === (hoveredName ?? selectedName));
 
   return (
-    <div className={`relative rounded-2xl overflow-hidden ${showGradientBg ? "" : "bg-card border border-border"}`}
-      style={showGradientBg ? {
-        background: `linear-gradient(135deg, ${MAP_COLORS.gradientStart}, ${MAP_COLORS.gradientMid}, ${MAP_COLORS.gradientEnd})`,
-      } : undefined}
-    >
+    <div className="relative overflow-hidden">
       <svg viewBox="0 0 400 400" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
         {/* Definitions for drop shadow */}
         <defs>
@@ -372,7 +368,7 @@ function ProvinceMapSVG({
   const activeProvince = provinces.find((p) => p.id === hoveredRegion);
 
   return (
-    <div className="relative rounded-2xl overflow-hidden bg-card border border-border">
+    <div className="relative overflow-hidden">
       <svg viewBox="-2 -2 140 215" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="provinceGlow" x="-10%" y="-10%" width="120%" height="120%">
@@ -464,7 +460,7 @@ function ProvinceMapSVG({
 /* ── Loading Spinner ── */
 function LoadingSpinner() {
   return (
-    <div className="flex items-center justify-center h-[400px] bg-card rounded-2xl border border-border">
+    <div className="flex items-center justify-center h-[400px]">
       <div className="flex flex-col items-center gap-3">
         <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
         <p className="text-sm text-muted-foreground">지도 로딩 중...</p>
@@ -538,7 +534,7 @@ const KoreaMap = () => {
   }, [selectedProvince, selectedMuni, drillLevel, handleBackToProvinces, handleBackToMunicipalities]);
 
   return (
-    <section className="py-10 md:py-16 px-5 md:px-8 bg-background">
+    <section className="py-10 md:py-16 px-5 md:px-8 bg-white">
         <div className="max-w-[1400px] mx-auto">
 
         <div>
@@ -632,7 +628,7 @@ const KoreaMap = () => {
                   {subMuniLoading ? (
                     <LoadingSpinner />
                   ) : subMunicipalities.length === 0 ? (
-                    <div className="flex items-center justify-center h-[400px] bg-card rounded-2xl border border-border">
+                    <div className="flex items-center justify-center h-[400px]">
                       <p className="text-sm text-muted-foreground">읍면동 데이터가 없습니다</p>
                     </div>
                   ) : (
