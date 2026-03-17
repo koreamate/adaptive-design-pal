@@ -366,30 +366,39 @@ function MapSVG({
           );
         })}
 
-        {/* Region labels (non-active only) */}
-        {features.map((f, i) => {
-          const isHovered = hoveredName === f.name;
-          const isSelected = selectedName === f.name;
-          if (isHovered || isSelected) return null;
-          return (
-            <text
-              key={`label-${f.code}-${i}`}
-              x={f.centroidX}
-              y={f.centroidY}
-              textAnchor="middle"
-              dominantBaseline="central"
-              className="pointer-events-none select-none"
-              style={{
-                fontSize: `${fs}px`,
-                fontWeight: 400,
-                fill: MAP_COLORS.labelDefault,
-                fontFamily: "'Noto Sans KR', sans-serif",
-              }}
-            >
-              {f.name}
-            </text>
-          );
-        })}
+        {/* Region labels (non-active only, hide for small areas) */}
+        {(() => {
+          // Calculate area threshold: regions below this won't show labels
+          const areas = features.map(f => f.area).filter(a => a > 0);
+          const avgArea = areas.length > 0 ? areas.reduce((s, a) => s + a, 0) / areas.length : 0;
+          const areaThreshold = avgArea * 0.15; // regions smaller than 15% of average get no label
+
+          return features.map((f, i) => {
+            const isHovered = hoveredName === f.name;
+            const isSelected = selectedName === f.name;
+            if (isHovered || isSelected) return null;
+            // Hide label if area is too small
+            if (f.area < areaThreshold) return null;
+            return (
+              <text
+                key={`label-${f.code}-${i}`}
+                x={f.centroidX}
+                y={f.centroidY}
+                textAnchor="middle"
+                dominantBaseline="central"
+                className="pointer-events-none select-none"
+                style={{
+                  fontSize: `${fs}px`,
+                  fontWeight: 400,
+                  fill: MAP_COLORS.labelDefault,
+                  fontFamily: "'Noto Sans KR', sans-serif",
+                }}
+              >
+                {f.name}
+              </text>
+            );
+          });
+        })()}
 
         {/* Active tooltip pill */}
         {hasValidActiveFeature && (
