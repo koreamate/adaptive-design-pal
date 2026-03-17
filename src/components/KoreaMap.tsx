@@ -490,27 +490,34 @@ const KoreaMap = () => {
   const { features: subMunicipalities, loading: subMuniLoading } = useSubMunicipalityData(selectedMuni?.code ?? null);
 
   const handleProvinceClick = useCallback((code: string) => {
+    setHoveredRegion(null);
+    setHoveredMuni(null);
     setSelectedProvince(code);
     setSelectedMuni(null);
     setSelectedSubMuni(null);
   }, []);
 
   const handleMuniClick = useCallback((feature: MapFeature) => {
+    setHoveredMuni(null);
+    setHoveredSubMuni(null);
     setSelectedMuni(feature);
     setSelectedSubMuni(null);
-    setHoveredSubMuni(null);
   }, []);
 
   const handleBackToProvinces = useCallback(() => {
+    setHoveredRegion(null);
+    setHoveredMuni(null);
+    setHoveredSubMuni(null);
     setSelectedProvince(null);
     setSelectedMuni(null);
     setSelectedSubMuni(null);
   }, []);
 
   const handleBackToMunicipalities = useCallback(() => {
+    setHoveredMuni(null);
+    setHoveredSubMuni(null);
     setSelectedMuni(null);
     setSelectedSubMuni(null);
-    setHoveredSubMuni(null);
   }, []);
 
   /* ── Breadcrumb ── */
