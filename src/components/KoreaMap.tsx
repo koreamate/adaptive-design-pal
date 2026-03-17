@@ -99,46 +99,21 @@ function extractRings(geometry: any): number[][][] {
   return [];
 }
 
-/* ── Chaikin's corner-cutting smoothing (preserves shared edges) ── */
-function chaikinSmooth(points: [number, number][], iterations = 2): [number, number][] {
-  let pts = points;
-  for (let iter = 0; iter < iterations; iter++) {
-    const next: [number, number][] = [];
-    for (let i = 0; i < pts.length - 1; i++) {
-      const p0 = pts[i];
-      const p1 = pts[i + 1];
-      next.push([p0[0] * 0.75 + p1[0] * 0.25, p0[1] * 0.75 + p1[1] * 0.25]);
-      next.push([p0[0] * 0.25 + p1[0] * 0.75, p0[1] * 0.25 + p1[1] * 0.75]);
-    }
-    // Close the loop
-    const last = pts[pts.length - 1];
-    const first = pts[0];
-    next.push([last[0] * 0.75 + first[0] * 0.25, last[1] * 0.75 + first[1] * 0.25]);
-    next.push([last[0] * 0.25 + first[0] * 0.75, last[1] * 0.25 + first[1] * 0.75]);
-    pts = next;
-  }
-  return pts;
-}
-
-/* ── GeoJSON → SVG path converter (smooth curves) ── */
+/* ── GeoJSON → SVG path converter ── */
 function geoToSvgPath(
   rings: number[][][],
   project: (coord: number[]) => [number, number]
 ): string {
   return rings
-    .map((ring) => {
-      const projected: [number, number][] = [];
-      for (const coord of ring) {
-        const [x, y] = project(coord);
-        if (!isNaN(x) && !isNaN(y)) projected.push([x, y]);
-      }
-      if (projected.length < 3) return "";
-      // Apply Chaikin smoothing (1 iteration for subtle, 2 for smoother)
-      const smoothed = chaikinSmooth(projected, 1);
-      return smoothed
-        .map((p, i) => `${i === 0 ? "M" : "L"}${p[0].toFixed(2)},${p[1].toFixed(2)}`)
-        .join("") + "Z";
-    })
+    .map((ring) =>
+      ring
+        .map((coord, i) => {
+          const [x, y] = project(coord);
+          if (isNaN(x) || isNaN(y)) return "";
+          return `${i === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`;
+        })
+        .join("") + "Z"
+    )
     .join("");
 }
 
