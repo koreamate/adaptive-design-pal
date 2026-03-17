@@ -775,49 +775,13 @@ const KoreaMap = () => {
                 </div>
               </>
             ) : (
-              <>
-                <div className="bg-card rounded-2xl border border-border p-5 text-center shadow-sm">
+              <div className="bg-card rounded-2xl border border-border p-5 text-center shadow-sm">
                   <div className="py-8">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center"
-                      style={{ background: `${MAP_COLORS.regionSelected}15` }}
-                    >
-                      <MapPin className="w-6 h-6" style={{ color: MAP_COLORS.regionSelected }} />
-                    </div>
-                    <p className="text-sm font-semibold text-foreground mb-1">시도를 선택해주세요</p>
                     <p className="text-xs text-muted-foreground">
                       지도에서 시도를 클릭하면<br />시군구 → 읍면동 순으로 탐색합니다
                     </p>
                   </div>
                 </div>
-
-                <div className="bg-card rounded-2xl border border-border p-4 shadow-sm">
-                  <h4 className="text-xs font-semibold text-muted-foreground mb-3">시도 목록</h4>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {provinces.map((p) => (
-                      <button
-                        key={p.id}
-                        onClick={() => handleProvinceClick(p.code)}
-                        onMouseEnter={() => setHoveredRegion(p.id)}
-                        onMouseLeave={() => setHoveredRegion(null)}
-                        className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground transition-all"
-                        style={{}}
-                        onMouseOver={(e) => {
-                          (e.currentTarget as HTMLElement).style.background = `${MAP_COLORS.regionSelected}15`;
-                        }}
-                        onMouseOut={(e) => {
-                          (e.currentTarget as HTMLElement).style.background = "transparent";
-                        }}
-                      >
-                        <span
-                          className="w-2.5 h-2.5 rounded-full shrink-0"
-                          style={{ background: MAP_COLORS.regionSelected, opacity: 0.6 }}
-                        />
-                        {p.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
             )}
           </motion.div>
         </div>
