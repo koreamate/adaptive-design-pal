@@ -618,15 +618,9 @@ const KoreaMap = () => {
               >
                 {muniLoading ? (
                   <LoadingSpinner />
-                ) : (
-                  <div>
-                    {/* Title badge */}
-                    <div className="absolute top-2 left-3 z-10 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border">
-                      <span className="text-sm font-bold text-foreground">
-                        {PROVINCE_SHORT[selectedProvince!] || PROVINCE_MAP[selectedProvince!]}
-                      </span>
-                    </div>
-                    <MapSVG
+                  ) : (
+                    <div>
+                      <MapSVG
                       features={municipalities}
                       hoveredName={hoveredMuni}
                       selectedName={null}
