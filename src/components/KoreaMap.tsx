@@ -430,19 +430,19 @@ function ProvinceMapSVG({
         {activeProvince && (
           <g className="pointer-events-none">
             {/* Shadow */}
-            <rect x={activeProvince.labelX - 18} y={activeProvince.labelY - 8} width={36} height={14} rx={7} fill="rgba(0,0,0,0.08)" />
+            <rect x={activeProvince.labelX - 12.5} y={activeProvince.labelY - 6} width={25} height={10} rx={5} fill="rgba(0,0,0,0.08)" />
             {/* Border */}
-            <rect x={activeProvince.labelX - 18} y={activeProvince.labelY - 9} width={36} height={14} rx={7} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.3" />
+            <rect x={activeProvince.labelX - 12.5} y={activeProvince.labelY - 6.5} width={25} height={10} rx={5} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.2" />
             <rect
-              x={activeProvince.labelX - 18}
-              y={activeProvince.labelY - 9}
-              width={36}
-              height={14}
-              rx={7}
+              x={activeProvince.labelX - 12.5}
+              y={activeProvince.labelY - 6.5}
+              width={25}
+              height={10}
+              rx={5}
               fill={MAP_COLORS.tooltipBg}
             />
             <polygon
-              points={`${activeProvince.labelX - 3},${activeProvince.labelY + 5} ${activeProvince.labelX + 3},${activeProvince.labelY + 5} ${activeProvince.labelX},${activeProvince.labelY + 9}`}
+              points={`${activeProvince.labelX - 2},${activeProvince.labelY + 3.5} ${activeProvince.labelX + 2},${activeProvince.labelY + 3.5} ${activeProvince.labelX},${activeProvince.labelY + 6.5}`}
               fill={MAP_COLORS.tooltipBg}
             />
             <text
@@ -451,7 +451,7 @@ function ProvinceMapSVG({
               textAnchor="middle"
               dominantBaseline="central"
               style={{
-                fontSize: "5px",
+                fontSize: "3.5px",
                 fontWeight: 700,
                 fill: MAP_COLORS.tooltipText,
                 fontFamily: "'Noto Sans KR', sans-serif",
