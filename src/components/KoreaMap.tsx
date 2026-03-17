@@ -331,6 +331,15 @@ function MapSVG({
   const activeFeature = features.find((f) => f.name === (hoveredName ?? selectedName));
   const hasValidActiveFeature = !!activeFeature && Number.isFinite(activeFeature.centroidX) && Number.isFinite(activeFeature.centroidY) && activeFeature.centroidX > 0 && activeFeature.centroidY > 0;
 
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const featureKey = features.map(f => f.code).join(",");
+
+  useEffect(() => {
+    setHasAnimated(false);
+    const timer = setTimeout(() => setHasAnimated(true), features.length * 50 + 500);
+    return () => clearTimeout(timer);
+  }, [featureKey]);
+
   return (
     <div className="relative overflow-hidden">
       <svg viewBox="0 0 400 400" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
@@ -342,6 +351,19 @@ function MapSVG({
           <filter id="hoverGlow" x="-10%" y="-10%" width="120%" height="120%">
             <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="hsl(178, 60%, 52%)" floodOpacity="0.4" />
           </filter>
+          {!hasAnimated && (
+            <style>{`
+              @keyframes regionReveal {
+                0% { opacity: 0; transform: scale(0.92); }
+                60% { opacity: 1; transform: scale(1.02); }
+                100% { opacity: 1; transform: scale(1); }
+              }
+              @keyframes regionLabelFadeIn {
+                0% { opacity: 0; }
+                100% { opacity: 1; }
+              }
+            `}</style>
+          )}
         </defs>
 
         {/* Map regions */}
@@ -360,7 +382,14 @@ function MapSVG({
               strokeLinecap="round"
               filter={isActive ? "url(#hoverGlow)" : undefined}
               className="cursor-pointer transition-all duration-200"
-              style={{ opacity: isActive ? 1 : 0.95 }}
+              style={{
+                opacity: isActive ? 1 : 0.95,
+                transformOrigin: `${f.centroidX}px ${f.centroidY}px`,
+                ...(!hasAnimated ? {
+                  opacity: 0,
+                  animation: `regionReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 50}ms forwards`,
+                } : {}),
+              }}
               onMouseEnter={() => onHover(f.name)}
               onMouseLeave={onLeave}
               onClick={() => onClick(f)}
@@ -370,16 +399,14 @@ function MapSVG({
 
         {/* Region labels (non-active only, hide for small areas) */}
         {(() => {
-          // Calculate area threshold: regions below this won't show labels
           const areas = features.map(f => f.area).filter(a => a > 0);
           const avgArea = areas.length > 0 ? areas.reduce((s, a) => s + a, 0) / areas.length : 0;
-          const areaThreshold = avgArea * 0.15; // regions smaller than 15% of average get no label
+          const areaThreshold = avgArea * 0.15;
 
           return features.map((f, i) => {
             const isHovered = hoveredName === f.name;
             const isSelected = selectedName === f.name;
             if (isHovered || isSelected) return null;
-            // Hide label if area is too small
             if (f.area < areaThreshold) return null;
             return (
               <text
@@ -394,6 +421,10 @@ function MapSVG({
                   fontWeight: 400,
                   fill: MAP_COLORS.labelDefault,
                   fontFamily: "'Noto Sans KR', sans-serif",
+                  ...(!hasAnimated ? {
+                    opacity: 0,
+                    animation: `regionLabelFadeIn 0.4s ease-out ${i * 50 + 250}ms forwards`,
+                  } : {}),
                 }}
               >
                 {f.name}
