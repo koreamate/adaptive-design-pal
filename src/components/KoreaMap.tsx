@@ -271,23 +271,26 @@ function useSubMunicipalityData(muniCode: string | null) {
   return { features, loading };
 }
 
-/* ── Pill Tooltip Label (centered on label position) ── */
-function PillTooltip({ x, y, text }: { x: number; y: number; text: string }) {
+/* ── Pill Tooltip Label (above label position with offset) ── */
+function PillTooltip({ x, y, text, offsetY = 10 }: { x: number; y: number; text: string; offsetY?: number }) {
   const textLen = text.length;
   const w = Math.max(textLen * 7 + 16, 40);
   const h = 20;
+  const pillY = y - offsetY - h / 2;
   return (
     <g className="pointer-events-none">
       {/* Shadow */}
-      <rect x={x - w / 2} y={y - h / 2 + 1} width={w} height={h} rx={h / 2} fill="rgba(0,0,0,0.08)" />
+      <rect x={x - w / 2} y={pillY + 1} width={w} height={h} rx={h / 2} fill="rgba(0,0,0,0.08)" />
       {/* Border */}
-      <rect x={x - w / 2} y={y - h / 2} width={w} height={h} rx={h / 2} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.5" />
+      <rect x={x - w / 2} y={pillY} width={w} height={h} rx={h / 2} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.5" />
       {/* Pill bg */}
-      <rect x={x - w / 2} y={y - h / 2} width={w} height={h} rx={h / 2} fill={MAP_COLORS.tooltipBg} />
-      {/* Text - exactly centered */}
+      <rect x={x - w / 2} y={pillY} width={w} height={h} rx={h / 2} fill={MAP_COLORS.tooltipBg} />
+      {/* Arrow pointing down */}
+      <polygon points={`${x - 3},${pillY + h} ${x + 3},${pillY + h} ${x},${pillY + h + 4}`} fill={MAP_COLORS.tooltipBg} />
+      {/* Text */}
       <text
         x={x}
-        y={y}
+        y={pillY + h / 2}
         textAnchor="middle"
         dominantBaseline="central"
         style={{
