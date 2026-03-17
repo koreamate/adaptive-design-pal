@@ -233,7 +233,9 @@ function PillTooltip({ x, y, text }: { x: number; y: number; text: string }) {
   return (
     <g className="pointer-events-none">
       {/* Shadow */}
-      <rect x={x - w / 2} y={y - h / 2 - 2} width={w} height={h} rx={h / 2} fill="rgba(0,0,0,0.12)" />
+      <rect x={x - w / 2} y={y - h / 2 - 2} width={w} height={h} rx={h / 2} fill="rgba(0,0,0,0.1)" />
+      {/* Border */}
+      <rect x={x - w / 2} y={y - h / 2 - 3} width={w} height={h} rx={h / 2} fill="none" stroke="hsl(210,15%,85%)" strokeWidth="0.5" />
       {/* Pill bg */}
       <rect x={x - w / 2} y={y - h / 2 - 3} width={w} height={h} rx={h / 2} fill={MAP_COLORS.tooltipBg} />
       {/* Arrow */}
