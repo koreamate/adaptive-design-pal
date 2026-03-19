@@ -324,13 +324,12 @@ function processFeatures(
   return result;
 }
 
-/* ── Extract city name: "수원시 팔달구" → "수원시", "이천시" → "이천시" ── */
+/* ── Extract city name: "수원시팔달구" or "수원시 팔달구" → "수원시" ── */
 function extractCityName(name: string): string {
-  const parts = name.split(" ");
-  if (parts.length >= 2 && parts[parts.length - 1].endsWith("구")) {
-    // "수원시 팔달구" → "수원시", "용인시 처인구" → "용인시"
-    return parts.slice(0, -1).join(" ");
-  }
+  // Handle both "수원시 팔달구" (with space) and "수원시팔달구" (without space)
+  // Pattern: XX시 + YY구 → extract XX시
+  const match = name.match(/^(.+시)\s*.+구$/);
+  if (match) return match[1];
   return name;
 }
 
