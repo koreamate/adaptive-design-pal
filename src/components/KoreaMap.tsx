@@ -418,6 +418,34 @@ function useMunicipalityData(provinceCode: string | null) {
   return { features, loading };
 }
 
+/* ── District (구) data hook — loads individual 구 within a merged 시 ── */
+function useDistrictData(provinceCode: string | null, districtCodes: string[] | null) {
+  const [features, setFeatures] = useState<MapFeature[]>([]);
+  const [loading, setLoading] = useState(false);
+  const codesKey = districtCodes?.join(",") ?? "";
+
+  useEffect(() => {
+    if (!provinceCode || !districtCodes || districtCodes.length === 0) { setFeatures([]); return; }
+    const topoProvinceCode = TOPO_PROVINCE_CODE_MAP[provinceCode] ?? provinceCode;
+    setLoading(true);
+    fetch("/data/korea-municipalities-topo.json")
+      .then((r) => r.json())
+      .then((topoData) => {
+        const objectKey = Object.keys(topoData.objects)[0];
+        const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
+        let filtered = geoData.features.filter((f: any) => districtCodes.includes(f.properties.code));
+        if (topoProvinceCode === "37") {
+          filtered = shiftUlleungdo(filtered);
+        }
+        setFeatures(processFeatures(filtered));
+        setLoading(false);
+      })
+      .catch((err) => { console.error("Failed to load district data:", err); setLoading(false); });
+  }, [provinceCode, codesKey]);
+
+  return { features, loading };
+}
+
 /* ── Sub-municipality (읍면동) data hook — accepts multiple codes ── */
 function useSubMunicipalityData(muniCodes: string[] | null) {
   const [features, setFeatures] = useState<MapFeature[]>([]);
