@@ -41,6 +41,11 @@ const TOPO_PROVINCE_CODE_MAP: Record<string, string> = {
   "48": "38", "50": "39",
 };
 
+/* ── Reverse: TopoJSON 시도 코드 → UI(표준) 시도 코드 ── */
+const TOPO_TO_STANDARD_MAP: Record<string, string> = Object.fromEntries(
+  Object.entries(TOPO_PROVINCE_CODE_MAP).map(([std, topo]) => [topo, std])
+);
+
 /* ── Static 시도 SVG data ── */
 interface ProvinceRegion {
   id: string;
