@@ -470,25 +470,27 @@ function useSubMunicipalityData(muniCodes: string[] | null) {
   useEffect(() => {
     if (!muniCodes || muniCodes.length === 0) { setFeatures([]); return; }
     setLoading(true);
-    const prefixes = muniCodes.map((c) => c.substring(0, 4));
-    console.log("[DEBUG] useSubMunicipalityData - muniCodes:", muniCodes, "prefixes:", prefixes);
+    // Municipality codes may use topo format (e.g., "33xx" for 충청북도).
+    // Sub-municipality codes may use standard format (e.g., "43xx").
+    // Try both topo prefix AND converted standard prefix.
+    const topoPrefixes = muniCodes.map((c) => c.substring(0, 4));
+    const standardPrefixes = muniCodes.map((c) => {
+      const topoProvince = c.substring(0, 2);
+      const stdProvince = TOPO_TO_STANDARD_MAP[topoProvince] || topoProvince;
+      return stdProvince + c.substring(2, 4);
+    });
+    const allPrefixes = [...new Set([...topoPrefixes, ...standardPrefixes])];
+    console.log("[DEBUG] useSubMunicipalityData - muniCodes:", muniCodes, "allPrefixes:", allPrefixes);
     fetch("/data/korea-submunicipalities-topo.json")
       .then((r) => r.json())
       .then((topoData) => {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
-        // Log sample codes from submuni data
-        const sampleCodes = geoData.features.slice(0, 5).map((f: any) => f.properties.code);
-        console.log("[DEBUG] submuni sample codes:", sampleCodes);
-        // Also find any codes starting with similar prefix
-        const matching33 = geoData.features.filter((f: any) => f.properties.code?.startsWith("33")).slice(0, 3);
-        const matching43 = geoData.features.filter((f: any) => f.properties.code?.startsWith("43")).slice(0, 3);
-        console.log("[DEBUG] codes starting with 33:", matching33.map((f:any) => f.properties.code + " " + f.properties.name));
-        console.log("[DEBUG] codes starting with 43:", matching43.map((f:any) => f.properties.code + " " + f.properties.name));
         const filtered = geoData.features.filter((f: any) => {
           const code = f.properties.code;
-          return prefixes.some((p) => code?.substring(0, 4) === p);
+          return allPrefixes.some((p) => code?.substring(0, 4) === p);
         });
+        console.log("[DEBUG] filtered submuni count:", filtered.length);
         setFeatures(processFeatures(filtered, 400, 400, 20, { pathSmoothing: 0 }));
         setLoading(false);
       })
