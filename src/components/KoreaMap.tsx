@@ -466,11 +466,20 @@ function useSubMunicipalityData(muniCodes: string[] | null) {
     if (!muniCodes || muniCodes.length === 0) { setFeatures([]); return; }
     setLoading(true);
     const prefixes = muniCodes.map((c) => c.substring(0, 4));
+    console.log("[DEBUG] useSubMunicipalityData - muniCodes:", muniCodes, "prefixes:", prefixes);
     fetch("/data/korea-submunicipalities-topo.json")
       .then((r) => r.json())
       .then((topoData) => {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
+        // Log sample codes from submuni data
+        const sampleCodes = geoData.features.slice(0, 5).map((f: any) => f.properties.code);
+        console.log("[DEBUG] submuni sample codes:", sampleCodes);
+        // Also find any codes starting with similar prefix
+        const matching33 = geoData.features.filter((f: any) => f.properties.code?.startsWith("33")).slice(0, 3);
+        const matching43 = geoData.features.filter((f: any) => f.properties.code?.startsWith("43")).slice(0, 3);
+        console.log("[DEBUG] codes starting with 33:", matching33.map((f:any) => f.properties.code + " " + f.properties.name));
+        console.log("[DEBUG] codes starting with 43:", matching43.map((f:any) => f.properties.code + " " + f.properties.name));
         const filtered = geoData.features.filter((f: any) => {
           const code = f.properties.code;
           return prefixes.some((p) => code?.substring(0, 4) === p);
