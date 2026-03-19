@@ -326,9 +326,14 @@ function processFeatures(
 
 /* ── Extract city name: "수원시팔달구" or "수원시 팔달구" → "수원시" ── */
 function extractCityName(name: string): string {
-  // Handle both "수원시 팔달구" (with space) and "수원시팔달구" (without space)
-  // Pattern: XX시 + YY구 → extract XX시
   const match = name.match(/^(.+시)\s*.+구$/);
+  if (match) return match[1];
+  return name;
+}
+
+/* ── Extract district name: "수원시팔달구" → "팔달구", "수원시 팔달구" → "팔달구" ── */
+function extractDistrictName(name: string): string {
+  const match = name.match(/^.+시\s*(.+구)$/);
   if (match) return match[1];
   return name;
 }
