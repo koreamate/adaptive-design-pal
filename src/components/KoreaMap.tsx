@@ -418,26 +418,31 @@ function useMunicipalityData(provinceCode: string | null) {
   return { features, loading };
 }
 
-/* ── Sub-municipality (읍면동) data hook ── */
-function useSubMunicipalityData(muniCode: string | null) {
+/* ── Sub-municipality (읍면동) data hook — accepts multiple codes ── */
+function useSubMunicipalityData(muniCodes: string[] | null) {
   const [features, setFeatures] = useState<MapFeature[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const codesKey = muniCodes?.join(",") ?? "";
+
   useEffect(() => {
-    if (!muniCode) { setFeatures([]); return; }
+    if (!muniCodes || muniCodes.length === 0) { setFeatures([]); return; }
     setLoading(true);
-    const prefix = muniCode.substring(0, 4);
+    const prefixes = muniCodes.map((c) => c.substring(0, 4));
     fetch("/data/korea-submunicipalities-topo.json")
       .then((r) => r.json())
       .then((topoData) => {
         const objectKey = Object.keys(topoData.objects)[0];
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
-        const filtered = geoData.features.filter((f: any) => f.properties.code?.substring(0, 4) === prefix);
+        const filtered = geoData.features.filter((f: any) => {
+          const code = f.properties.code;
+          return prefixes.some((p) => code?.substring(0, 4) === p);
+        });
         setFeatures(processFeatures(filtered, 400, 400, 20, { pathSmoothing: 0 }));
         setLoading(false);
       })
       .catch((err) => { console.error("Failed to load sub-municipality data:", err); setLoading(false); });
-  }, [muniCode]);
+  }, [codesKey]);
 
   return { features, loading };
 }
