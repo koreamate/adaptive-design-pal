@@ -512,7 +512,6 @@ function useSubMunicipalityData(muniCodes: string[] | null) {
 
   return { features, loading };
 }
-}
 
 /* ── Pill Tooltip Label (above label position with offset) ── */
 function PillTooltip({ x, y, text, offsetY = 10 }: { x: number; y: number; text: string; offsetY?: number }) {
