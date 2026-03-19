@@ -811,75 +811,107 @@ function LoadingSpinner() {
 }
 
 /* ── Main Component ── */
-type DrillLevel = "province" | "municipality" | "submuni";
+type DrillLevel = "province" | "city" | "district" | "submuni";
 
 const KoreaMap = () => {
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
-  const [hoveredMuni, setHoveredMuni] = useState<string | null>(null);
-  const [selectedMuni, setSelectedMuni] = useState<MergedMapFeature | null>(null);
+  const [hoveredCity, setHoveredCity] = useState<string | null>(null);
+  const [selectedCity, setSelectedCity] = useState<MergedMapFeature | null>(null);
+  const [hoveredDistrict, setHoveredDistrict] = useState<string | null>(null);
+  const [selectedDistrict, setSelectedDistrict] = useState<MapFeature | null>(null);
   const [hoveredSubMuni, setHoveredSubMuni] = useState<string | null>(null);
   const [selectedSubMuni, setSelectedSubMuni] = useState<string | null>(null);
 
-  const drillLevel: DrillLevel = selectedMuni ? "submuni" : selectedProvince ? "municipality" : "province";
+  // Determine drill level
+  const drillLevel: DrillLevel = selectedDistrict
+    ? "submuni"
+    : selectedCity
+    ? "district"
+    : selectedProvince
+    ? "city"
+    : "province";
 
-  const { features: municipalities, loading: muniLoading } = useMunicipalityData(selectedProvince);
-  const { features: subMunicipalities, loading: subMuniLoading } = useSubMunicipalityData(selectedMuni?.codes ?? null);
+  // Data hooks
+  const { features: cities, loading: cityLoading } = useMunicipalityData(selectedProvince);
+  const { features: districts, loading: districtLoading } = useDistrictData(
+    selectedProvince,
+    selectedCity && selectedCity.codes.length > 1 ? selectedCity.codes : null
+  );
+  const { features: subMunicipalities, loading: subMuniLoading } = useSubMunicipalityData(
+    selectedDistrict ? [selectedDistrict.code] : (selectedCity && selectedCity.codes.length === 1 ? selectedCity.codes : null)
+  );
+
+  // If city has only 1 code (no 구), skip district level and go straight to 읍면동
+  const cityHasDistricts = selectedCity ? selectedCity.codes.length > 1 : false;
+
+  const clearHovers = useCallback(() => {
+    setHoveredRegion(null);
+    setHoveredCity(null);
+    setHoveredDistrict(null);
+    setHoveredSubMuni(null);
+  }, []);
 
   const handleProvinceClick = useCallback((code: string) => {
-    setHoveredRegion(null);
-    setHoveredMuni(null);
-    setHoveredSubMuni(null);
+    clearHovers();
     setSelectedProvince(code);
-    setSelectedMuni(null);
+    setSelectedCity(null);
+    setSelectedDistrict(null);
     setSelectedSubMuni(null);
-  }, []);
+  }, [clearHovers]);
 
-  const handleMuniClick = useCallback((feature: MapFeature) => {
-    setHoveredRegion(null);
-    setHoveredMuni(null);
-    setHoveredSubMuni(null);
-    // Find the MergedMapFeature to get codes
-    const merged = municipalities.find((m) => m.name === feature.name);
-    setSelectedMuni(merged || { ...feature, codes: [feature.code] });
+  const handleCityClick = useCallback((feature: MapFeature) => {
+    clearHovers();
+    const merged = cities.find((m) => m.name === feature.name);
+    const city = merged || { ...feature, codes: [feature.code] };
+    setSelectedCity(city);
+    setSelectedDistrict(null);
     setSelectedSubMuni(null);
-  }, [municipalities]);
+  }, [cities, clearHovers]);
 
-  const handleBackToProvinces = useCallback(() => {
-    setHoveredRegion(null);
-    setHoveredMuni(null);
-    setHoveredSubMuni(null);
-    setSelectedProvince(null);
-    setSelectedMuni(null);
+  const handleDistrictClick = useCallback((feature: MapFeature) => {
+    clearHovers();
+    setSelectedDistrict(feature);
     setSelectedSubMuni(null);
-  }, []);
+  }, [clearHovers]);
 
-  const handleBackToMunicipalities = useCallback(() => {
-    setHoveredRegion(null);
-    setHoveredMuni(null);
-    setHoveredSubMuni(null);
-    setSelectedMuni(null);
-    setSelectedSubMuni(null);
-  }, []);
+  const handleBack = useCallback(() => {
+    clearHovers();
+    if (drillLevel === "submuni") {
+      if (cityHasDistricts) {
+        setSelectedDistrict(null);
+        setSelectedSubMuni(null);
+      } else {
+        // No district level, go back to city list
+        setSelectedCity(null);
+        setSelectedSubMuni(null);
+      }
+    } else if (drillLevel === "district") {
+      setSelectedCity(null);
+      setSelectedDistrict(null);
+    } else if (drillLevel === "city") {
+      setSelectedProvince(null);
+      setSelectedCity(null);
+    }
+  }, [drillLevel, cityHasDistricts, clearHovers]);
+
+  // For cities without 구, skip district level — show 읍면동 directly
+  const effectiveDrillLevel: DrillLevel =
+    drillLevel === "district" && !cityHasDistricts ? "submuni" : drillLevel;
 
   useLayoutEffect(() => {
-    setHoveredRegion(null);
-    setHoveredMuni(null);
-    setHoveredSubMuni(null);
-  }, [drillLevel, selectedProvince, selectedMuni, municipalities.length, subMunicipalities.length]);
-
+    clearHovers();
+  }, [effectiveDrillLevel, selectedProvince, selectedCity, selectedDistrict, cities.length, districts.length, subMunicipalities.length]);
 
   return (
     <section className="py-10 md:py-16 px-5 md:px-8 bg-white">
-        <div className="max-w-[1400px] mx-auto">
-
+      <div className="max-w-[1400px] mx-auto">
         <div>
-          {/* Map area */}
           <div className="relative w-full max-w-[520px] mx-auto">
-            {drillLevel !== "province" && (
+            {effectiveDrillLevel !== "province" && (
               <div className="flex items-center gap-1 mb-4 flex-wrap">
                 <button
-                  onClick={drillLevel === "submuni" ? handleBackToMunicipalities : handleBackToProvinces}
+                  onClick={handleBack}
                   className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-sm font-semibold transition-colors"
                   style={{ color: MAP_COLORS.regionSelected }}
                 >
@@ -889,13 +921,9 @@ const KoreaMap = () => {
               </div>
             )}
 
-            {drillLevel === "province" && (
-              <motion.div
-                key="provinces"
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.2 }}
-              >
+            {/* Level 1: 전국 시도 */}
+            {effectiveDrillLevel === "province" && (
+              <motion.div key="provinces" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}>
                 <ProvinceMapSVG
                   hoveredRegion={hoveredRegion}
                   onHover={setHoveredRegion}
@@ -905,61 +933,66 @@ const KoreaMap = () => {
               </motion.div>
             )}
 
-            {drillLevel === "municipality" && (
-              <motion.div
-                key={`muni-${selectedProvince}`}
-                initial={{ opacity: 0, scale: 1.02 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.2 }}
-              >
-                {muniLoading ? (
+            {/* Level 2: 시/군 (merged) */}
+            {effectiveDrillLevel === "city" && (
+              <motion.div key={`city-${selectedProvince}`} initial={{ opacity: 0, scale: 1.02 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}>
+                {cityLoading ? (
                   <LoadingSpinner />
-                  ) : (
-                    <div>
-                      <MapSVG
-                      features={municipalities}
-                      hoveredName={hoveredMuni}
-                      selectedName={null}
-                      onHover={setHoveredMuni}
-                      onLeave={() => setHoveredMuni(null)}
-                      onClick={handleMuniClick}
-                    />
-                  </div>
+                ) : (
+                  <MapSVG
+                    features={cities}
+                    hoveredName={hoveredCity}
+                    selectedName={null}
+                    onHover={setHoveredCity}
+                    onLeave={() => setHoveredCity(null)}
+                    onClick={handleCityClick}
+                  />
                 )}
               </motion.div>
             )}
 
-            {drillLevel === "submuni" && (
-              <motion.div
-                key={`submuni-${selectedMuni?.code}`}
-                initial={{ opacity: 0, scale: 1.02 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.2 }}
-              >
+            {/* Level 3: 구 (individual districts within a city) */}
+            {effectiveDrillLevel === "district" && (
+              <motion.div key={`dist-${selectedCity?.code}`} initial={{ opacity: 0, scale: 1.02 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}>
+                {districtLoading ? (
+                  <LoadingSpinner />
+                ) : (
+                  <MapSVG
+                    features={districts}
+                    hoveredName={hoveredDistrict}
+                    selectedName={null}
+                    onHover={setHoveredDistrict}
+                    onLeave={() => setHoveredDistrict(null)}
+                    onClick={handleDistrictClick}
+                  />
+                )}
+              </motion.div>
+            )}
+
+            {/* Level 4: 읍면동 */}
+            {effectiveDrillLevel === "submuni" && (
+              <motion.div key={`submuni-${selectedDistrict?.code || selectedCity?.code}`} initial={{ opacity: 0, scale: 1.02 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}>
                 {subMuniLoading ? (
                   <LoadingSpinner />
                 ) : subMunicipalities.length === 0 ? (
                   <div className="flex items-center justify-center h-[400px]">
                     <p className="text-sm text-muted-foreground">읍면동 데이터가 없습니다</p>
                   </div>
-                  ) : (
-                    <div>
-                      <MapSVG
-                      features={subMunicipalities}
-                      hoveredName={hoveredSubMuni}
-                      selectedName={selectedSubMuni}
-                      onHover={setHoveredSubMuni}
-                      onLeave={() => setHoveredSubMuni(null)}
-                      onClick={(f) => setSelectedSubMuni(selectedSubMuni === f.name ? null : f.name)}
-                      fontSize={subMunicipalities.length > 30 ? 5.5 : subMunicipalities.length > 15 ? 6.5 : 8}
-                      edgeSoftness="default"
-                    />
-                  </div>
+                ) : (
+                  <MapSVG
+                    features={subMunicipalities}
+                    hoveredName={hoveredSubMuni}
+                    selectedName={selectedSubMuni}
+                    onHover={setHoveredSubMuni}
+                    onLeave={() => setHoveredSubMuni(null)}
+                    onClick={(f) => setSelectedSubMuni(selectedSubMuni === f.name ? null : f.name)}
+                    fontSize={subMunicipalities.length > 30 ? 5.5 : subMunicipalities.length > 15 ? 6.5 : 8}
+                    edgeSoftness="default"
+                  />
                 )}
               </motion.div>
             )}
           </div>
-
         </div>
       </div>
     </section>
