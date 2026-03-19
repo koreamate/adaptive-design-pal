@@ -460,6 +460,15 @@ function useDistrictData(provinceCode: string | null, districtCodes: string[] | 
   return { features, loading };
 }
 
+/* ── Fallback code prefix mapping for reorganized municipalities ──
+ * 2018 municipality codes may not match 2013 sub-municipality codes
+ * when administrative boundaries were reorganized between those years.
+ * Map: 4-char prefix from 2018 code → array of 4-char prefixes in 2013 sub-muni data */
+const SUBMUNI_CODE_FALLBACK: Record<string, string[]> = {
+  // 청주시 구 (2018: 33041~33044, prefix "3304") → old 청주시 (2013: prefix "3301")
+  "3304": ["3301"],
+};
+
 /* ── Sub-municipality (읍면동) data hook — accepts multiple codes ── */
 function useSubMunicipalityData(muniCodes: string[] | null) {
   const [features, setFeatures] = useState<MapFeature[]>([]);
@@ -470,17 +479,22 @@ function useSubMunicipalityData(muniCodes: string[] | null) {
   useEffect(() => {
     if (!muniCodes || muniCodes.length === 0) { setFeatures([]); return; }
     setLoading(true);
-    // Municipality codes may use topo format (e.g., "33xx" for 충청북도).
-    // Sub-municipality codes may use standard format (e.g., "43xx").
-    // Try both topo prefix AND converted standard prefix.
+    // Build all possible prefixes: topo, standard, and fallback
     const topoPrefixes = muniCodes.map((c) => c.substring(0, 4));
     const standardPrefixes = muniCodes.map((c) => {
       const topoProvince = c.substring(0, 2);
       const stdProvince = TOPO_TO_STANDARD_MAP[topoProvince] || topoProvince;
       return stdProvince + c.substring(2, 4);
     });
-    const allPrefixes = [...new Set([...topoPrefixes, ...standardPrefixes])];
-    console.log("[DEBUG] useSubMunicipalityData - muniCodes:", muniCodes, "allPrefixes:", allPrefixes);
+    // Add fallback prefixes for reorganized municipalities
+    const fallbackPrefixes: string[] = [];
+    for (const prefix of topoPrefixes) {
+      if (SUBMUNI_CODE_FALLBACK[prefix]) {
+        fallbackPrefixes.push(...SUBMUNI_CODE_FALLBACK[prefix]);
+      }
+    }
+    const allPrefixes = [...new Set([...topoPrefixes, ...standardPrefixes, ...fallbackPrefixes])];
+
     fetch("/data/korea-submunicipalities-topo.json")
       .then((r) => r.json())
       .then((topoData) => {
@@ -490,7 +504,6 @@ function useSubMunicipalityData(muniCodes: string[] | null) {
           const code = f.properties.code;
           return allPrefixes.some((p) => code?.substring(0, 4) === p);
         });
-        console.log("[DEBUG] filtered submuni count:", filtered.length);
         setFeatures(processFeatures(filtered, 400, 400, 20, { pathSmoothing: 0 }));
         setLoading(false);
       })
