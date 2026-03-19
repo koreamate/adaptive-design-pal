@@ -789,14 +789,14 @@ const KoreaMap = () => {
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
   const [hoveredMuni, setHoveredMuni] = useState<string | null>(null);
-  const [selectedMuni, setSelectedMuni] = useState<MapFeature | null>(null);
+  const [selectedMuni, setSelectedMuni] = useState<MergedMapFeature | null>(null);
   const [hoveredSubMuni, setHoveredSubMuni] = useState<string | null>(null);
   const [selectedSubMuni, setSelectedSubMuni] = useState<string | null>(null);
 
   const drillLevel: DrillLevel = selectedMuni ? "submuni" : selectedProvince ? "municipality" : "province";
 
   const { features: municipalities, loading: muniLoading } = useMunicipalityData(selectedProvince);
-  const { features: subMunicipalities, loading: subMuniLoading } = useSubMunicipalityData(selectedMuni?.code ?? null);
+  const { features: subMunicipalities, loading: subMuniLoading } = useSubMunicipalityData(selectedMuni?.codes ?? null);
 
   const handleProvinceClick = useCallback((code: string) => {
     setHoveredRegion(null);
@@ -811,9 +811,11 @@ const KoreaMap = () => {
     setHoveredRegion(null);
     setHoveredMuni(null);
     setHoveredSubMuni(null);
-    setSelectedMuni(feature);
+    // Find the MergedMapFeature to get codes
+    const merged = municipalities.find((m) => m.name === feature.name);
+    setSelectedMuni(merged || { ...feature, codes: [feature.code] });
     setSelectedSubMuni(null);
-  }, []);
+  }, [municipalities]);
 
   const handleBackToProvinces = useCallback(() => {
     setHoveredRegion(null);
