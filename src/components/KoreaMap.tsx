@@ -372,7 +372,6 @@ function useMunicipalityData(provinceCode: string | null) {
           try {
             const mergedGeometry = topojson.merge(topoData, geos);
             const codes = geos.map((g: any) => g.properties.code);
-            console.log("[DEBUG] Merged:", cityName, "codes:", codes);
             mergedGeoFeatures.push({
               type: "Feature",
               geometry: mergedGeometry,
