@@ -441,6 +441,11 @@ function useDistrictData(provinceCode: string | null, districtCodes: string[] | 
         if (topoProvinceCode === "37") {
           filtered = shiftUlleungdo(filtered);
         }
+        // Shorten names: "수원시팔달구" → "팔달구"
+        filtered = filtered.map((f: any) => ({
+          ...f,
+          properties: { ...f.properties, name: extractDistrictName(f.properties.name) },
+        }));
         setFeatures(processFeatures(filtered));
         setLoading(false);
       })
