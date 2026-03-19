@@ -324,9 +324,23 @@ function processFeatures(
   return result;
 }
 
-/* ── Municipality data hook ── */
+/* ── Extract city name: "수원시 팔달구" → "수원시", "이천시" → "이천시" ── */
+function extractCityName(name: string): string {
+  const parts = name.split(" ");
+  if (parts.length >= 2 && parts[parts.length - 1].endsWith("구")) {
+    // "수원시 팔달구" → "수원시", "용인시 처인구" → "용인시"
+    return parts.slice(0, -1).join(" ");
+  }
+  return name;
+}
+
+/* ── Municipality data hook (merges 구 into 시) ── */
+interface MergedMapFeature extends MapFeature {
+  codes: string[]; // all constituent municipality codes
+}
+
 function useMunicipalityData(provinceCode: string | null) {
-  const [features, setFeatures] = useState<MapFeature[]>([]);
+  const [features, setFeatures] = useState<MergedMapFeature[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -337,13 +351,65 @@ function useMunicipalityData(provinceCode: string | null) {
       .then((r) => r.json())
       .then((topoData) => {
         const objectKey = Object.keys(topoData.objects)[0];
-        const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
-        let filtered = geoData.features.filter((f: any) => f.properties.code?.substring(0, 2) === topoProvinceCode);
-        // 경상북도(37): shift 울릉도 closer to mainland
-        if (topoProvinceCode === "37") {
-          filtered = shiftUlleungdo(filtered);
+        const allGeos = topoData.objects[objectKey].geometries as any[];
+        const provinceGeos = allGeos.filter((g: any) => g.properties.code?.substring(0, 2) === topoProvinceCode);
+
+        // Group by city name
+        const groups: Record<string, any[]> = {};
+        for (const geo of provinceGeos) {
+          const cityName = extractCityName(geo.properties.name || "");
+          if (!groups[cityName]) groups[cityName] = [];
+          groups[cityName].push(geo);
         }
-        setFeatures(processFeatures(filtered));
+
+        // Merge each group using topojson.merge
+        const mergedGeoFeatures: any[] = [];
+        for (const [cityName, geos] of Object.entries(groups)) {
+          try {
+            const mergedGeometry = topojson.merge(topoData, geos);
+            const codes = geos.map((g: any) => g.properties.code);
+            mergedGeoFeatures.push({
+              type: "Feature",
+              geometry: mergedGeometry,
+              properties: {
+                name: cityName,
+                code: codes[0], // primary code for sorting
+                codes: codes,   // all codes
+              },
+            });
+          } catch (err) {
+            console.error("Failed to merge:", cityName, err);
+            // Fallback: use individual features
+            for (const geo of geos) {
+              const geoData = topojson.feature(topoData, { type: "GeometryCollection", geometries: [geo] }) as any;
+              mergedGeoFeatures.push({
+                ...geoData.features[0],
+                properties: {
+                  ...geoData.features[0].properties,
+                  codes: [geo.properties.code],
+                },
+              });
+            }
+          }
+        }
+
+        // Apply 울릉도 shift for 경상북도
+        let finalFeatures = mergedGeoFeatures;
+        if (topoProvinceCode === "37") {
+          finalFeatures = shiftUlleungdo(mergedGeoFeatures);
+        }
+
+        const processed = processFeatures(finalFeatures);
+        // Attach codes to processed features
+        const result: MergedMapFeature[] = processed.map((pf, i) => {
+          const source = finalFeatures.find((f: any) => f.properties.name === pf.name);
+          return {
+            ...pf,
+            codes: source?.properties?.codes || [pf.code],
+          };
+        });
+
+        setFeatures(result);
         setLoading(false);
       })
       .catch((err) => { console.error("Failed to load municipality data:", err); setLoading(false); });
