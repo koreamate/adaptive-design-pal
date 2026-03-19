@@ -41,6 +41,11 @@ const TOPO_PROVINCE_CODE_MAP: Record<string, string> = {
   "48": "38", "50": "39",
 };
 
+/* ── Reverse: TopoJSON 시도 코드 → UI(표준) 시도 코드 ── */
+const TOPO_TO_STANDARD_MAP: Record<string, string> = Object.fromEntries(
+  Object.entries(TOPO_PROVINCE_CODE_MAP).map(([std, topo]) => [topo, std])
+);
+
 /* ── Static 시도 SVG data ── */
 interface ProvinceRegion {
   id: string;
@@ -465,7 +470,17 @@ function useSubMunicipalityData(muniCodes: string[] | null) {
   useEffect(() => {
     if (!muniCodes || muniCodes.length === 0) { setFeatures([]); return; }
     setLoading(true);
-    const prefixes = muniCodes.map((c) => c.substring(0, 4));
+    // Municipality codes may use topo format (e.g., "33xx" for 충청북도).
+    // Sub-municipality codes may use standard format (e.g., "43xx").
+    // Try both topo prefix AND converted standard prefix.
+    const topoPrefixes = muniCodes.map((c) => c.substring(0, 4));
+    const standardPrefixes = muniCodes.map((c) => {
+      const topoProvince = c.substring(0, 2);
+      const stdProvince = TOPO_TO_STANDARD_MAP[topoProvince] || topoProvince;
+      return stdProvince + c.substring(2, 4);
+    });
+    const allPrefixes = [...new Set([...topoPrefixes, ...standardPrefixes])];
+    console.log("[DEBUG] useSubMunicipalityData - muniCodes:", muniCodes, "allPrefixes:", allPrefixes);
     fetch("/data/korea-submunicipalities-topo.json")
       .then((r) => r.json())
       .then((topoData) => {
@@ -473,8 +488,9 @@ function useSubMunicipalityData(muniCodes: string[] | null) {
         const geoData = topojson.feature(topoData, topoData.objects[objectKey]) as any;
         const filtered = geoData.features.filter((f: any) => {
           const code = f.properties.code;
-          return prefixes.some((p) => code?.substring(0, 4) === p);
+          return allPrefixes.some((p) => code?.substring(0, 4) === p);
         });
+        console.log("[DEBUG] filtered submuni count:", filtered.length);
         setFeatures(processFeatures(filtered, 400, 400, 20, { pathSmoothing: 0 }));
         setLoading(false);
       })
