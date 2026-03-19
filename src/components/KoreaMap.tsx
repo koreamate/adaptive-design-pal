@@ -363,10 +363,12 @@ function useMunicipalityData(provinceCode: string | null) {
 
         // Merge each group using topojson.merge
         const mergedGeoFeatures: any[] = [];
+        console.log("[DEBUG] City groups:", Object.entries(groups).map(([k, v]) => `${k}(${(v as any[]).length})`).join(", "));
         for (const [cityName, geos] of Object.entries(groups)) {
           try {
             const mergedGeometry = topojson.merge(topoData, geos);
             const codes = geos.map((g: any) => g.properties.code);
+            console.log("[DEBUG] Merged:", cityName, "codes:", codes);
             mergedGeoFeatures.push({
               type: "Feature",
               geometry: mergedGeometry,
